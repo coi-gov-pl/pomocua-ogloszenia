@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public class WorkResource {
 
     @PostMapping("/api/secure/offer/work")
     @ResponseStatus(HttpStatus.CREATED)
-    public WorkOffer create(@RequestBody WorkOffer workOffer) {
+    public WorkOffer create(@Valid @RequestBody WorkOffer workOffer) {
         workOffer.id = UUID.randomUUID();
         return repository.save(workOffer);
     }
