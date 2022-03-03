@@ -12,13 +12,15 @@ import java.util.List;
 import java.util.UUID;
 
 import static javax.persistence.EnumType.STRING;
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Data
 @Entity
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
 class WorkOffer {
     @Id
-    public UUID id;
+    @GeneratedValue(strategy = IDENTITY)
+    public Long id;
     @NotBlank
     @Length(max = 80)
     public String title;
@@ -57,7 +59,7 @@ class WorkOffer {
 }
 
 @Repository
-interface WorkOfferRepository extends PagingAndSortingRepository<WorkOffer, UUID> {
+interface WorkOfferRepository extends PagingAndSortingRepository<WorkOffer, Long> {
 
 }
 
