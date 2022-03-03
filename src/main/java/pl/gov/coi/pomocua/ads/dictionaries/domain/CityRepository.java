@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ogloszenia.dictionaries.domain;
+package pl.gov.coi.pomocua.ads.dictionaries.domain;
 
 import org.springframework.data.repository.CrudRepository;
 

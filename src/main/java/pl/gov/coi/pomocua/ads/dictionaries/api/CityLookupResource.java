@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ogloszenia.dictionaries.api;
+package pl.gov.coi.pomocua.ads.dictionaries.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.gov.coi.pomocua.ogloszenia.dictionaries.domain.City;
-import pl.gov.coi.pomocua.ogloszenia.dictionaries.domain.CityRepository;
+import pl.gov.coi.pomocua.ads.dictionaries.domain.City;
+import pl.gov.coi.pomocua.ads.dictionaries.domain.CityRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

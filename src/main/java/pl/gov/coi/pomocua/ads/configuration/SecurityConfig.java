@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ogloszenia.configuration;
+package pl.gov.coi.pomocua.ads.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

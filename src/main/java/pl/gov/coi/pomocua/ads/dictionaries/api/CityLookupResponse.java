@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ogloszenia.dictionaries.api;
+package pl.gov.coi.pomocua.ads.dictionaries.api;
 
 import java.util.List;
 
