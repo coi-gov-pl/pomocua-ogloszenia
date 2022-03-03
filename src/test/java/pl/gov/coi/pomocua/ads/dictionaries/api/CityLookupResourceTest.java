@@ -22,10 +22,12 @@ class CityLookupResourceTest {
     @Autowired
     private CityRepository cityRepository;
 
+    private static final String URL = "/api/dictionaries/city";
+
     @Test
     void shouldReturnEmptyResponse() {
         // when:
-        ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity("/api/dictionaries/cities/mazowieckie/x", CityLookupResponse.class);
+        ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity(URL + "/?region=mazowieckie&city=x", CityLookupResponse.class);
 
         // then:
         assertThat(response.hasBody()).isFalse();
@@ -38,7 +40,7 @@ class CityLookupResourceTest {
         givenFollowingCitiesExists("mazowieckie/war1", "mazowieckie/war2");
 
         // when:
-        ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity("/api/dictionaries/cities/mazowieckie/War", CityLookupResponse.class);
+        ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity(URL + "/?region=mazowieckie&city=War", CityLookupResponse.class);
 
         // then:
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -48,7 +50,7 @@ class CityLookupResourceTest {
     @Test
     void shouldImportCitiesFromFile() {
         // when:
-        ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity("/api/dictionaries/cities/ŚLĄSKIE/Bi", CityLookupResponse.class);
+        ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity(URL + "/?region=ŚLĄSKIE&city=Bi", CityLookupResponse.class);
 
         // then:
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
