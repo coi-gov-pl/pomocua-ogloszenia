@@ -1,28 +1,23 @@
 package pl.gov.coi.pomocua.ads.translations;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
+import pl.gov.coi.pomocua.ads.BaseOffer;
 
-import javax.persistence.*;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 import static javax.persistence.EnumType.STRING;
 
-@Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
-public class TranslationOffer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
-
-    @NotBlank
-    @Length(max = 80)
-    public String title;
+public class TranslationOffer extends BaseOffer {
 
     @Enumerated(STRING)
     public Mode mode;
@@ -47,7 +42,6 @@ public class TranslationOffer {
     enum Language {
         UA, PL
     }
-
 }
 
 @Repository
