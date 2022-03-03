@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
@@ -18,7 +17,7 @@ public class WorkResource {
     @PostMapping("/api/secure/offer/work")
     @ResponseStatus(HttpStatus.CREATED)
     public WorkOffer create(@Valid @RequestBody WorkOffer workOffer) {
-        workOffer.id = UUID.randomUUID();
+        workOffer.id = null;
         return repository.save(workOffer);
     }
 
@@ -27,7 +26,7 @@ public class WorkResource {
         return repository.findAll(pageRequest);
     }
     @GetMapping("/api/offer/work/{id}")
-    public Optional<WorkOffer> list(@PathVariable UUID id) {
+    public Optional<WorkOffer> list(@PathVariable Long id) {
         return repository.findById(id);
     }
 }

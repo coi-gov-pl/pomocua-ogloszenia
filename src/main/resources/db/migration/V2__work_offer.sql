@@ -1,5 +1,5 @@
 create table work_offer (
-    id uuid,
+    id bigserial,
     title text,
     mode text,
     city text,
@@ -8,11 +8,11 @@ create table work_offer (
 );
 
 create table work_offer_type(
-    work_offer_id uuid,
+    work_offer_id bigint,
     type text
 );
 
 create table work_offer_language (
-    work_offer_id uuid,
+    work_offer_id bigint,
     language text
 );

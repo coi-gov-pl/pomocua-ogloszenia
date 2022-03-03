@@ -63,7 +63,7 @@ class WorkResourceTest {
     @Test
     void shouldIgnoreSuppliedIdOnCreate() {
         WorkOffer request = sampleWorkOfferRequest();
-        request.id = UUID.randomUUID();
+        request.id = 42L;
         WorkOffer response = restTemplate.postForObject("/api/secure/offer/work", request, WorkOffer.class);
         assertThat(response.id).isNotNull();
         assertThat(response.id).isNotEqualTo(request.id);
