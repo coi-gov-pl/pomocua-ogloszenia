@@ -27,6 +27,7 @@ public class JobsResource {
     public Page<JobOffer> list(Pageable pageRequest) {
         return repository.findAll(pageRequest);
     }
+
     @GetMapping("jobs/{id}")
     public Optional<JobOffer> list(@PathVariable Long id) {
         return repository.findById(id);
