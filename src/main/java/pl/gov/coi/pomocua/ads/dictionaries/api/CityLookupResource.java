@@ -23,7 +23,7 @@ public class CityLookupResource {
         this.cityRepository = cityRepository;
     }
 
-    @GetMapping(value = "/")
+    @GetMapping
     public ResponseEntity<CityLookupResponse> getCities(@RequestParam String region, @RequestParam String city) {
         if (!StringUtils.hasText(city) || city.length() < 2 || !StringUtils.hasText(region)) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
