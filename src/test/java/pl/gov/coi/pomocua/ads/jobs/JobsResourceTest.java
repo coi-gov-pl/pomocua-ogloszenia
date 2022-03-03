@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ads.work;
+package pl.gov.coi.pomocua.ads.jobs;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +11,11 @@ import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.PageableResponse;
 
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class WorkResourceTest {
+class JobsResourceTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -28,70 +27,70 @@ class WorkResourceTest {
 
     @Test
     void shouldReturnCreatedWorkOfferOnList() {
-        WorkOffer response = postSampleWorkOffer();
+        JobOffer response = postSampleWorkOffer();
 
-        WorkOffer[] content = listWorkOffer();
+        JobOffer[] content = listWorkOffer();
         assertThat(content).contains(response);
     }
 
     @Test
     void shouldReturnCreatedWorkOffer() {
-        WorkOffer created = postSampleWorkOffer();
-        WorkOffer returned = restTemplate.getForObject("/api/offer/work/{id}", WorkOffer.class, created.id);
+        JobOffer created = postSampleWorkOffer();
+        JobOffer returned = restTemplate.getForObject("/api/jobs/{id}", JobOffer.class, created.id);
         assertThat(returned).isEqualTo(created);
     }
 
     @Test
     void shouldRejectBlankTitle() {
-        WorkOffer workOffer = sampleWorkOfferRequest();
+        JobOffer workOffer = sampleWorkOfferRequest();
         workOffer.title = "       ";
         assertPostResponseStatus(workOffer, HttpStatus.BAD_REQUEST);
     }
 
     @Test
     void shouldRejectTooLongTitle() {
-        WorkOffer workOffer = sampleWorkOfferRequest();
+        JobOffer workOffer = sampleWorkOfferRequest();
         workOffer.title = "x".repeat(100);
         assertPostResponseStatus(workOffer, HttpStatus.BAD_REQUEST);
     }
 
-    private void assertPostResponseStatus(WorkOffer workOffer, HttpStatus badRequest) {
-        ResponseEntity<WorkOffer> response = restTemplate.postForEntity("/api/secure/offer/work", workOffer, WorkOffer.class);
+    private void assertPostResponseStatus(JobOffer workOffer, HttpStatus badRequest) {
+        ResponseEntity<JobOffer> response = restTemplate.postForEntity("/api/secure/jobs", workOffer, JobOffer.class);
         assertThat(response.getStatusCode()).isEqualTo(badRequest);
     }
 
     @Test
     void shouldIgnoreSuppliedIdOnCreate() {
-        WorkOffer request = sampleWorkOfferRequest();
+        JobOffer request = sampleWorkOfferRequest();
         request.id = 42L;
-        WorkOffer response = restTemplate.postForObject("/api/secure/offer/work", request, WorkOffer.class);
+        JobOffer response = restTemplate.postForObject("/api/secure/jobs", request, JobOffer.class);
         assertThat(response.id).isNotNull();
         assertThat(response.id).isNotEqualTo(request.id);
     }
 
-    private WorkOffer[] listWorkOffer() {
-        ResponseEntity<PageableResponse<WorkOffer>> list = restTemplate.exchange("/api/offer/work", HttpMethod.GET, null,
+    private JobOffer[] listWorkOffer() {
+        ResponseEntity<PageableResponse<JobOffer>> list = restTemplate.exchange("/api/jobs", HttpMethod.GET, null,
                 new ParameterizedTypeReference<>() {
                 });
         return list.getBody().content;
     }
 
-    private WorkOffer postSampleWorkOffer() {
-        WorkOffer request = sampleWorkOfferRequest();
-        WorkOffer response = restTemplate.postForObject("/api/secure/offer/work", request, WorkOffer.class);
+    private JobOffer postSampleWorkOffer() {
+        JobOffer request = sampleWorkOfferRequest();
+        JobOffer response = restTemplate.postForObject("/api/secure/jobs", request, JobOffer.class);
         assertThat(response.id).isNotNull();
         assertThat(response).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
         return response;
     }
 
-    private WorkOffer sampleWorkOfferRequest() {
-        WorkOffer request = new WorkOffer();
+    private JobOffer sampleWorkOfferRequest() {
+        JobOffer request = new JobOffer();
         request.title = "sample work";
-        request.mode = WorkOffer.Mode.REMOTE;
+        request.mode = JobOffer.Mode.REMOTE;
         request.city = "Warszawa";
         request.voivodeship = "Mazowieckie";
-        request.type = List.of(WorkOffer.Type.TEMPORARY);
-        request.language = List.of(WorkOffer.Language.PL, WorkOffer.Language.UA);
+        request.type = List.of(JobOffer.Type.TEMPORARY);
+        request.language = List.of(JobOffer.Language.PL, JobOffer.Language.UA);
         request.description = "description";
         return request;
     }

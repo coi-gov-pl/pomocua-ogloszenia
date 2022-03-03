@@ -1,6 +1,7 @@
-package pl.gov.coi.pomocua.ads.work;
+package pl.gov.coi.pomocua.ads.jobs;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -10,23 +11,24 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
-@AllArgsConstructor
-public class WorkResource {
-    private final WorkOfferRepository repository;
+@RequiredArgsConstructor
+@RequestMapping("/api/")
+public class JobsResource {
+    private final JobsRepository repository;
 
-    @PostMapping("/api/secure/offer/work")
+    @PostMapping("secure/jobs")
     @ResponseStatus(HttpStatus.CREATED)
-    public WorkOffer create(@Valid @RequestBody WorkOffer workOffer) {
+    public JobOffer create(@Valid @RequestBody JobOffer workOffer) {
         workOffer.id = null;
         return repository.save(workOffer);
     }
 
-    @GetMapping("/api/offer/work")
-    public Page<WorkOffer> list(Pageable pageRequest) {
+    @GetMapping("jobs")
+    public Page<JobOffer> list(Pageable pageRequest) {
         return repository.findAll(pageRequest);
     }
-    @GetMapping("/api/offer/work/{id}")
-    public Optional<WorkOffer> list(@PathVariable Long id) {
+    @GetMapping("jobs/{id}")
+    public Optional<JobOffer> list(@PathVariable Long id) {
         return repository.findById(id);
     }
 }
