@@ -1,0 +1,10 @@
+CREATE SEQUENCE city_seq
+    MINVALUE 1
+    START WITH 50
+    INCREMENT BY 50;
+
+CREATE TABLE city (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    voivodeship TEXT NOT NULL,
+    city TEXT NOT NULL
+);
