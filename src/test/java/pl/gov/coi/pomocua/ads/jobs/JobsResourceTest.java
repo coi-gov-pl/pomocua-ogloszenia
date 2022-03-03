@@ -28,7 +28,6 @@ class JobsResourceTest {
     @Test
     void shouldReturnCreatedWorkOfferOnList() {
         JobOffer response = postSampleWorkOffer();
-
         JobOffer[] content = listWorkOffer();
         assertThat(content).contains(response);
     }
