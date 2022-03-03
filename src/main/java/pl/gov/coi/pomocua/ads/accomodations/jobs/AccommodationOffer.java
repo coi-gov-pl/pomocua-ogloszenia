@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ads.jobs;
+package pl.gov.coi.pomocua.ads.accomodations.jobs;
 
 import lombok.EqualsAndHashCode;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -9,45 +9,46 @@ import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 import static javax.persistence.EnumType.STRING;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-class JobOffer extends BaseOffer {
-    @Enumerated(STRING)
-    public Mode mode;
-
+class AccommodationOffer extends BaseOffer {
     public String voivodeship;
+    @NotBlank
     public String city;
 
-    @ElementCollection(targetClass = Type.class)
-    @CollectionTable
+    @Min(1)
+    public int guests;
+
     @Enumerated(STRING)
-    public List<Type> type;
+    public LengthOfStay lengthOfStay;
 
     @ElementCollection(targetClass = Language.class)
     @CollectionTable
     @Enumerated(STRING)
-    public List<Language> language;
+    public List<Language> hostLanguage;
 
-    enum Mode {
-        REMOTE
-    }
-
-    enum Type {
-        TEMPORARY
+    enum LengthOfStay {
+        WEEK_1,
+        WEEK_2,
+        MONTH_1,
+        MONTH_2,
+        MONTH_3,
+        LONGER
     }
 
     enum Language {
         UA, PL
     }
-
 }
 
 @Repository
-interface JobsRepository extends PagingAndSortingRepository<JobOffer, Long> {
+interface AccommodationsRepository extends PagingAndSortingRepository<AccommodationOffer, Long> {
 
 }
 
