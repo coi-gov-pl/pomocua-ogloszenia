@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import pl.gov.coi.pomocua.ads.dictionaries.domain.City;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serial;
@@ -13,7 +14,7 @@ import java.io.Serializable;
 @Setter
 @Getter
 @Builder
-public class MaterialAidAdDto implements Serializable {
+public class MaterialAidOfferDto implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 4899363368417701147L;
@@ -22,9 +23,11 @@ public class MaterialAidAdDto implements Serializable {
     private MaterialAidCategory category;
     private City location;
 
+    @NotBlank
     @Size(max = 255)
     @Pattern(regexp = EXCLUDING_SPECIAL_CHARS)
     private String title;
+    @NotBlank
     @Size(max = 1024)
     @Pattern(regexp = EXCLUDING_SPECIAL_CHARS)
     private String content;
