@@ -24,11 +24,11 @@ public class CityLookupResource {
 
     @GetMapping(value = "/{voivodeship}/{city}")
     public ResponseEntity<CityLookupResponse> getCities(@PathVariable String voivodeship, @PathVariable String city) {
-        if (city.isBlank() || city.length() < 2) {
+        if (city.isBlank() || city.length() < 2 || voivodeship.isBlank()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        List<String> cities = cityRepository.findByVoivodeshipAndCityStartsWith(voivodeship, city)
+        List<String> cities = cityRepository.findByVoivodeshipAndCityStartsWith(voivodeship.toLowerCase(), city.toLowerCase())
                 .stream()
                 .map(City::getCity)
                 .collect(Collectors.toList());

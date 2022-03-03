@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class DictionaryResourceTest {
+class CityLookupResourceTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -33,16 +33,26 @@ class DictionaryResourceTest {
     }
 
     @Test
-    void shouldReturListOfMatchingCities() {
+    void shouldReturnListOfMatchingCities() {
         // given:
-        givenFollowingCitiesExists("mazowieckie/War1", "mazowieckie/War2");
+        givenFollowingCitiesExists("mazowieckie/war1", "mazowieckie/war2");
 
         // when:
         ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity("/api/dictionaries/cities/mazowieckie/War", CityLookupResponse.class);
 
         // then:
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().cities()).contains("War1", "War2");
+        assertThat(response.getBody().cities()).contains("war1", "war2");
+    }
+
+    @Test
+    void shouldImportCitiesFromFile() {
+        // when:
+        ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity("/api/dictionaries/cities/ŚLĄSKIE/Bi", CityLookupResponse.class);
+
+        // then:
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().cities()).contains("bieruń", "bielsko-biała");
     }
 
     // ---
