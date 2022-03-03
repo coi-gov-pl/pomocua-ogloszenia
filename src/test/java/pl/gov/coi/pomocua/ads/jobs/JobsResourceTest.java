@@ -69,8 +69,8 @@ class JobsResourceTest {
     }
 
     private JobOffer[] listWorkOffer() {
-        ResponseEntity<PageableResponse<JobOffer>> list = restTemplate.exchange("/api/jobs", HttpMethod.GET, null,
-                new ParameterizedTypeReference<>() {
+        var list = restTemplate.exchange("/api/jobs", HttpMethod.GET, null,
+                new ParameterizedTypeReference<PageableResponse<JobOffer>>() {
                 });
         return list.getBody().content;
     }

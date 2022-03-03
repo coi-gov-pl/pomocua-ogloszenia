@@ -1,0 +1,4 @@
+spring.datasource.url: jdbc:postgresql://localhost:5432/postgres
+spring.datasource.username: postgres
+spring.datasource.password: admin
+spring.data.web.pageable.max-page-size: 1000
