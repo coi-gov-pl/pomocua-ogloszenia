@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ogloszenia.work;
+package pl.gov.coi.pomocua.ads.work;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

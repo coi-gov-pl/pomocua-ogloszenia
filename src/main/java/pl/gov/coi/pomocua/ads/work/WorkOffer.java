@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ogloszenia.work;
+package pl.gov.coi.pomocua.ads.work;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Data;

@@ -1,6 +1,5 @@
-package pl.gov.coi.pomocua.ogloszenia;
+package pl.gov.coi.pomocua.ads;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

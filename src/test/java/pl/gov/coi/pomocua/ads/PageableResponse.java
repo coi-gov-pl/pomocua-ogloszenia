@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ogloszenia;
+package pl.gov.coi.pomocua.ads;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
