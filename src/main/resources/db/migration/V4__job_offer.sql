@@ -1,4 +1,4 @@
-create table work_offer (
+create table job_offer (
     id bigserial,
     title text,
     mode text,
@@ -7,12 +7,12 @@ create table work_offer (
     description text
 );
 
-create table work_offer_type(
-    work_offer_id bigint,
+create table job_offer_type(
+    job_offer_id bigint,
     type text
 );
 
-create table work_offer_language (
-    work_offer_id bigint,
+create table job_offer_language (
+    job_offer_id bigint,
     language text
 );

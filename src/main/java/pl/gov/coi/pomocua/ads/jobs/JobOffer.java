@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ads.work;
+package pl.gov.coi.pomocua.ads.jobs;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Data;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
-import java.util.UUID;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -17,7 +16,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Data
 @Entity
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
-class WorkOffer {
+class JobOffer {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     public Long id;
@@ -59,7 +58,7 @@ class WorkOffer {
 }
 
 @Repository
-interface WorkOfferRepository extends PagingAndSortingRepository<WorkOffer, Long> {
+interface JobsRepository extends PagingAndSortingRepository<JobOffer, Long> {
 
 }
 
