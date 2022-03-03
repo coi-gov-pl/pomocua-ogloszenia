@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ads.accomodations.jobs;
+package pl.gov.coi.pomocua.ads.accomodations;
 
 import lombok.EqualsAndHashCode;
 import org.springframework.data.repository.PagingAndSortingRepository;
