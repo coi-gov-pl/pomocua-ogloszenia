@@ -4,13 +4,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class BaseResourceTest<T extends BaseOffer> {
+public abstract class BaseResourceTest<T extends BaseOffer> {
 
     @Autowired
     protected TestRestTemplate restTemplate;
@@ -63,23 +65,25 @@ public class BaseResourceTest<T extends BaseOffer> {
         assertThat(response.id).isNotEqualTo(request.id);
     }
 
-    protected Class<T> getClazz() {
-        return null;
+    protected abstract Class<T> getClazz();
+
+    protected abstract String getOfferSuffix();
+
+    protected abstract ParameterizedTypeReference<PageableResponse<T>> getResponseType();
+
+    protected abstract T sampleOfferRequest();
+
+    private T[] listOffers() {
+        ResponseEntity<PageableResponse<T>> list = restTemplate.exchange("/api/" + getOfferSuffix(), HttpMethod.GET, null,
+                getResponseType());
+        return list.getBody().content;
     }
 
-    protected String getOfferSuffix() {
-        return null;
-    }
-
-    protected T[] listOffers() {
-        return null;
-    }
-
-    protected T postSampleOffer() {
-        return null;
-    }
-
-    protected T sampleOfferRequest() {
-        return null;
+    private T postSampleOffer() {
+        T request = sampleOfferRequest();
+        T response = restTemplate.postForObject("/api/secure/" + getOfferSuffix(), request, getClazz());
+        assertThat(response.id).isNotNull();
+        assertThat(response).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
+        return response;
     }
 }
