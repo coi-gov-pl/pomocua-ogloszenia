@@ -1,6 +1,5 @@
 package pl.gov.coi.pomocua.ogloszenia.work;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,18 +23,14 @@ class WorkResourceTest {
 
     @Test
     void shouldCreateWorkOffer() {
-        ResponseEntity<WorkOffer> response = restTemplate.postForEntity("/api/secure/offer/work", sampleWorkOfferRequest(), WorkOffer.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertPostResponseStatus(sampleWorkOfferRequest(), HttpStatus.CREATED);
     }
 
     @Test
     void shouldReturnCreatedWorkOfferOnList() {
         WorkOffer response = postSampleWorkOffer();
 
-        ResponseEntity<PageableResponse<WorkOffer>> list = restTemplate.exchange("/api/offer/work", HttpMethod.GET, null,
-                new ParameterizedTypeReference<>() {
-                });
-        WorkOffer[] content = list.getBody().content;
+        WorkOffer[] content = listWorkOffer();
         assertThat(content).contains(response);
     }
 
@@ -47,12 +42,38 @@ class WorkResourceTest {
     }
 
     @Test
+    void shouldRejectBlankTitle() {
+        WorkOffer workOffer = sampleWorkOfferRequest();
+        workOffer.title = "       ";
+        assertPostResponseStatus(workOffer, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldRejectTooLongTitle() {
+        WorkOffer workOffer = sampleWorkOfferRequest();
+        workOffer.title = "x".repeat(100);
+        assertPostResponseStatus(workOffer, HttpStatus.BAD_REQUEST);
+    }
+
+    private void assertPostResponseStatus(WorkOffer workOffer, HttpStatus badRequest) {
+        ResponseEntity<WorkOffer> response = restTemplate.postForEntity("/api/secure/offer/work", workOffer, WorkOffer.class);
+        assertThat(response.getStatusCode()).isEqualTo(badRequest);
+    }
+
+    @Test
     void shouldIgnoreSuppliedIdOnCreate() {
         WorkOffer request = sampleWorkOfferRequest();
         request.id = UUID.randomUUID();
         WorkOffer response = restTemplate.postForObject("/api/secure/offer/work", request, WorkOffer.class);
         assertThat(response.id).isNotNull();
         assertThat(response.id).isNotEqualTo(request.id);
+    }
+
+    private WorkOffer[] listWorkOffer() {
+        ResponseEntity<PageableResponse<WorkOffer>> list = restTemplate.exchange("/api/offer/work", HttpMethod.GET, null,
+                new ParameterizedTypeReference<>() {
+                });
+        return list.getBody().content;
     }
 
     private WorkOffer postSampleWorkOffer() {
