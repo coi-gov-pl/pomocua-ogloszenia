@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.gov.coi.pomocua.ads.materialaid.domain.dto.MaterialAidAdDto;
+import pl.gov.coi.pomocua.ads.materialaid.domain.dto.MaterialAidOfferDto;
 
 import javax.validation.Valid;
 
@@ -15,9 +15,9 @@ import javax.validation.Valid;
 @RequestMapping("/api/secure/material-aid")
 public class MaterialAidAdController {
 
-    @Operation(description = "Saves accommodation ad")
+    @Operation(description = "Saves material aid offer")
     @PostMapping(produces = "application/json", consumes = "application/json")
-    public ResponseEntity<Object> postMaterialAidAd(@Valid @RequestBody final MaterialAidAdDto materialAidAdDto) {
+    public ResponseEntity<Object> postMaterialAidOffer(@Valid @RequestBody final MaterialAidOfferDto materialAidOfferDto) {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
