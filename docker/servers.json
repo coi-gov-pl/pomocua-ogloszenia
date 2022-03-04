@@ -1,9 +1,9 @@
 {
     "Servers": {
         "1": {
-            "Name": "pomoc-ua-ogloszenia",
+            "Name": "ads-postgres",
             "Group": "Servers",
-            "Host": "ogloszenia-postgres",
+            "Host": "ads-postgres",
             "Port": 5432,
             "MaintenanceDB": "postgres",
             "Username": "root",
