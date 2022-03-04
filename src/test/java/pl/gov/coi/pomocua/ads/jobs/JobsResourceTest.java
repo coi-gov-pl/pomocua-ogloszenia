@@ -20,8 +20,9 @@ class JobsResourceTest extends BaseResourceTest<JobOffer> {
         return "jobs";
     }
 
+
     @Override
-    protected ParameterizedTypeReference<PageableResponse<JobOffer>> getListType() {
+    protected ParameterizedTypeReference<PageableResponse<JobOffer>> getResponseType() {
         return new ParameterizedTypeReference<>() {
         };
     }

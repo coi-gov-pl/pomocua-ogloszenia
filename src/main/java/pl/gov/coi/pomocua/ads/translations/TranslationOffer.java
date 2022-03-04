@@ -31,10 +31,6 @@ public class TranslationOffer extends BaseOffer {
     public String city;
     public boolean sworn;
 
-    @NotBlank
-    @Length(max = 1000)
-    public String description;
-
     enum Mode {
         REMOTE
     }
