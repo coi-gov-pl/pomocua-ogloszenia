@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ads.materialaid.domain.dto;
+package pl.gov.coi.pomocua.ads.materialaid;
 
 public enum MaterialAidCategory {
     FOOD,
