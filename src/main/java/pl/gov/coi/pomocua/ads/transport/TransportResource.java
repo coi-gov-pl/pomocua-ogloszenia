@@ -1,5 +1,6 @@
 package pl.gov.coi.pomocua.ads.transport;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -9,14 +10,10 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/")
 public class TransportResource {
-
     private final TransportOfferRepository repository;
-
-    public TransportResource(TransportOfferRepository transportOfferRepository) {
-        this.repository = transportOfferRepository;
-    }
 
     @PostMapping("secure/transport")
     @ResponseStatus(HttpStatus.CREATED)
