@@ -13,5 +13,4 @@ public class TransportOfferSearchCriteria {
     private Integer capacity;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate transportDate;
-
 }
