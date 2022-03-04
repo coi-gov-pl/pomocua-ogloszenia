@@ -1,7 +1,7 @@
 services:
   database-postgres:
     profiles:
-      - backend-only
+      - db-only
       - all
     container_name: ads-postgres
     env_file:
@@ -22,7 +22,7 @@ services:
       target: /docker-entrypoint-initdb.d
   db-admin-pgadmin:
     profiles:
-      - backend-only
+      - db-only
       - all
     container_name: ads-pgadmin
     depends_on:
@@ -56,7 +56,7 @@ services:
     env_file:
     - ./docker/environment.env
     image: openjdk:17-jdk-bullseye
-    command: ["java", "-jar", "/build/libs/ogloszenia-0.0.1-SNAPSHOT.jar", "-Dspring.profiles.active=api-docs", "-Dspring.datasource.url=jdbc:postgresql://ogloszenia-postgres:5432/ogloszenia"]
+    command: ["java", "-jar", "/build/libs/ogloszenia-0.0.1-SNAPSHOT.jar", "-Dspring.profiles.active=api-docs", "-Dspring.datasource.url=jdbc:postgresql://ads-postgres:5432/ads"]
     ports:
     - mode: ingress
       target: 8080
