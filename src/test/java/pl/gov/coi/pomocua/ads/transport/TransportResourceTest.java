@@ -19,7 +19,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class TransportOfferResourceTest extends BaseResourceTest<TransportOffer> {
+class TransportResourceTest extends BaseResourceTest<TransportOffer> {
 
     @Autowired
     private TransportOfferRepository repository;
@@ -209,7 +209,7 @@ class TransportOfferResourceTest extends BaseResourceTest<TransportOffer> {
     }
 
     private TransportOfferBuilder aTransportOffer() {
-        return TransportOfferResourceTest.builder();
+        return TransportResourceTest.builder();
     }
 
     @Builder

@@ -10,11 +10,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/")
-public class TransportOfferResource {
+public class TransportResource {
 
     private final TransportOfferRepository repository;
 
-    public TransportOfferResource(TransportOfferRepository transportOfferRepository) {
+    public TransportResource(TransportOfferRepository transportOfferRepository) {
         this.repository = transportOfferRepository;
     }
 
