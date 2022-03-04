@@ -7,11 +7,14 @@
 
 ## Docker-Compose
 
-Sets up:
+start_database.sh sets up:
 
 - postgresql 14.2-alpine at postgres://127.0.0.1:5432 or postgres://ads-postgres:5432/
   with database "ads" and password "admin"
 - pgadmin at http://localhost:8081 (user: admin@admin.pl pass: admin)
+
+Additionally, start_server.sh will run the whole application 
+
 
 ## API documentation
 
