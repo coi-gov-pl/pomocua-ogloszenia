@@ -23,8 +23,13 @@ public class AccommodationsResource {
     }
 
     @GetMapping("accommodations")
-    public Page<AccommodationOffer> list(Pageable pageRequest) {
-        return repository.findAll(pageRequest);
+    public Page<AccommodationOffer> list(@RequestParam(required = false, defaultValue = "1") Integer noOfPeople, Pageable pageRequest) {
+        return repository.findAllByGuestsIsGreaterThanEqual(noOfPeople, pageRequest);
+    }
+
+    @GetMapping("accommodations/{region}/{city}")
+    public Page<AccommodationOffer> list(@PathVariable String region, @PathVariable String city, @RequestParam(defaultValue = "1") Integer noOfPeople, Pageable pageRequest) {
+        return repository.findAllByVoivodeshipIgnoreCaseAndCityIgnoreCaseAndGuestsIsGreaterThanEqual(region, city, noOfPeople, pageRequest);
     }
 
     @GetMapping("accommodations/{id}")

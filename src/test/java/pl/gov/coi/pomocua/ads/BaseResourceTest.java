@@ -81,7 +81,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         return list.getBody().content;
     }
 
-    private T postSampleOffer() {
+    protected T postSampleOffer() {
         T request = sampleOfferRequest();
         T response = restTemplate.postForObject("/api/secure/" + getOfferSuffix(), request, getClazz());
         assertThat(response.id).isNotNull();
