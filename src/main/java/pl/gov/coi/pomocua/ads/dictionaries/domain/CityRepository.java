@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface CityRepository extends CrudRepository<City, Long> {
 
-    List<City> findFirst5ByCityStartsWithOrderByCityAsc(String city);
+    List<City> findFirst5ByLocationCityStartsWithOrderByLocationCityAsc(String city);
 }
