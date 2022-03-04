@@ -2,18 +2,18 @@ package pl.gov.coi.pomocua.ads.dictionaries.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.gov.coi.pomocua.ads.dictionaries.domain.City;
 import pl.gov.coi.pomocua.ads.dictionaries.domain.CityRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(path = "/api/dictionaries/cities", produces = "application/json")
+@RequestMapping(path = "/api/dictionaries/city", produces = "application/json")
 public class CityLookupResource {
 
     private final CityRepository cityRepository;
@@ -22,15 +22,16 @@ public class CityLookupResource {
         this.cityRepository = cityRepository;
     }
 
-    @GetMapping(value = "/{voivodeship}/{city}")
-    public ResponseEntity<CityLookupResponse> getCities(@PathVariable String voivodeship, @PathVariable String city) {
-        if (city.isBlank() || city.length() < 2) {
+    @GetMapping
+    public ResponseEntity<CityLookupResponse> getCities(@RequestParam String query) {
+        if (!StringUtils.hasText(query) || query.length() < 2) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        List<String> cities = cityRepository.findByVoivodeshipAndCityStartsWith(voivodeship, city)
+        List<CityLookupDto> cities = cityRepository
+                .findFirst5ByLocationCityStartsWithOrderByLocationCityAsc(query.toLowerCase())
                 .stream()
-                .map(City::getCity)
+                .map(CityLookupDto::fromEntity)
                 .collect(Collectors.toList());
 
         return new ResponseEntity<>(new CityLookupResponse(cities), HttpStatus.OK);
