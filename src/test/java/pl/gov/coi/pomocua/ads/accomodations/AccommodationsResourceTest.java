@@ -19,14 +19,14 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
     void shouldReturnOffersByFullCriteria() {
         AccommodationOffer response = postSampleOffer();
 
-        String requestParams = "/MAzowIEckie/waRszaWA?noOfPeople=5";
+        String requestParams = "/MAzowIEckie/waRszaWA?capacity=5";
         AccommodationOffer[] offers = listOffers(requestParams);
 
         assertThat(offers).contains(response);
     }
 
     @Test
-    void shouldReturnOffersByCriteriaWithoutNoOfPeople() {
+    void shouldReturnOffersByCriteriaWithoutCapacity() {
         AccommodationOffer response = postSampleOffer();
 
         String requestParams = "/mazowIEckie/WARszaWA";
@@ -36,10 +36,10 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
     }
 
     @Test
-    void shouldReturnOffersByNoOfPeopleOnly() {
+    void shouldReturnOffersByCapacityOnly() {
         AccommodationOffer response = postSampleOffer();
 
-        String requestParams = "?noOfPeople=1";
+        String requestParams = "?capacity=1";
         AccommodationOffer[] offers = listOffers(requestParams);
 
         assertThat(offers).contains(response);
