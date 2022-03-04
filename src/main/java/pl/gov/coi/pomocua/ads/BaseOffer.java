@@ -11,13 +11,14 @@ import javax.validation.constraints.NotBlank;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-@EqualsAndHashCode()
+@EqualsAndHashCode
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
 @MappedSuperclass
 public abstract class BaseOffer {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     public Long id;
+
     @NotBlank
     @Length(max = 80)
     public String title;
