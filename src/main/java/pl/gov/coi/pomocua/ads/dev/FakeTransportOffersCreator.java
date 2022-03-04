@@ -20,22 +20,21 @@ public class FakeTransportOffersCreator {
 
     @PostConstruct
     public void create() {
-        TransportOffer transportOffer1 = new TransportOffer();
-        transportOffer1.id = 1L;
-        transportOffer1.description = "Darmowy transport z Ostrowa i okolic na granicę z Ukraniną i z granicy " +
-                "mam 4 miejsca mam foteliki dla dzieci najleipiej w weekend";
-        transportOffer1.title = "Darmowy transport na granicę i z granicy z Ostrowa i okolic";
-        transportOffer1.origin = new Location("Pomorskie", "Gdańsk");
-        transportOffer1.capacity = 10;
-        transportOfferRepository.save(transportOffer1);
+        TransportOffer t1 = TransportOffer.of(
+                "Transport busem 8osobowy",
+                "Witam, mam busa 8 osobowego jestem wstanie pomóż w transporcie. " +
+                        "Mogę też przewieź rzeczy pod granice.",
+                new Location("Pomorskie", "Gdynia"), new Location("Pomorskie", "Gdynia"), 11
+        );
+        TransportOffer t2 = TransportOffer.of(
+                "Darmowy transport na granicę i z granicy z Ostrowa i okolic",
+                "Darmowy transport z Ostrowa i okolic na granicę z Ukraniną i z granicy " +
+                        "mam 4 miejsca mam foteliki dla dzieci najleipiej w weekend",
+                new Location("Pomorskie", "Gdańsk"), null, 10
+        );
 
-        TransportOffer transportOffer2 = new TransportOffer();
-        transportOffer2.id = 2L;
-        transportOffer2.description = "Witam, mam busa 8 osobowego jestem wstanie pomóż w transporcie. " +
-                "Mogę też przewieź rzeczy pod granice.";
-        transportOffer2.title = "Transport busem 8osobowy";
-        transportOffer2.origin = new Location("Pomorskie", "Gdynia");
-        transportOffer2.capacity = 10;
-        transportOfferRepository.save(transportOffer2);
+        transportOfferRepository.save(t1);
+        transportOfferRepository.save(t2);
     }
+
 }

@@ -32,4 +32,14 @@ public class TransportOffer extends BaseOffer {
 
     public LocalDate transportDate;
 
+    public static TransportOffer of(String title, String description, Location origin, Location destination, Integer capacity) {
+        TransportOffer transportOffer = new TransportOffer();
+        transportOffer.title = title;
+        transportOffer.description = description;
+        transportOffer.origin = origin;
+        transportOffer.destination = destination;
+        transportOffer.capacity = capacity;
+        return transportOffer;
+    }
+
 }
