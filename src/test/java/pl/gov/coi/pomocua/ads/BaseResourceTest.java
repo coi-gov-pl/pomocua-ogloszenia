@@ -81,7 +81,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         return list.getBody().content;
     }
 
-    private T postSampleOffer() {
+    protected T postSampleOffer() {
         T request = sampleOfferRequest();
         return postOffer(request);
     }
