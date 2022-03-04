@@ -1,7 +1,6 @@
-package pl.gov.coi.pomocua.ads.translations;
+package pl.gov.coi.pomocua.ads.accomodations;
 
 import lombok.EqualsAndHashCode;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import pl.gov.coi.pomocua.ads.BaseOffer;
@@ -10,6 +9,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
@@ -17,22 +17,29 @@ import static javax.persistence.EnumType.STRING;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-public class TranslationOffer extends BaseOffer {
+class AccommodationOffer extends BaseOffer {
+    public String voivodeship;
+    @NotBlank
+    public String city;
+
+    @Min(1)
+    public int guests;
 
     @Enumerated(STRING)
-    public Mode mode;
+    public LengthOfStay lengthOfStay;
 
     @ElementCollection(targetClass = Language.class)
     @CollectionTable
     @Enumerated(STRING)
-    public List<Language> language;
+    public List<Language> hostLanguage;
 
-    public String voivodeship;
-    public String city;
-    public boolean sworn;
-
-    enum Mode {
-        REMOTE
+    enum LengthOfStay {
+        WEEK_1,
+        WEEK_2,
+        MONTH_1,
+        MONTH_2,
+        MONTH_3,
+        LONGER
     }
 
     enum Language {
@@ -41,5 +48,8 @@ public class TranslationOffer extends BaseOffer {
 }
 
 @Repository
-interface TranslationOfferRepository extends PagingAndSortingRepository<TranslationOffer, Long> {
+interface AccommodationsRepository extends PagingAndSortingRepository<AccommodationOffer, Long> {
+
 }
+
+
