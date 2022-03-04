@@ -1,5 +1,6 @@
 package pl.gov.coi.pomocua.ads;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = "dev")
 public abstract class BaseResourceTest<T extends BaseOffer> {
 
     @Autowired
@@ -83,6 +83,11 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
     private T postSampleOffer() {
         T request = sampleOfferRequest();
+        return postOffer(request);
+    }
+
+    @NotNull
+    protected T postOffer(T request) {
         T response = restTemplate.postForObject("/api/secure/" + getOfferSuffix(), request, getClazz());
         assertThat(response.id).isNotNull();
         assertThat(response).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
