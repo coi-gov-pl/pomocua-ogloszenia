@@ -11,8 +11,8 @@ record CityLookupDto(String city, String voivodeship) {
 
     static CityLookupDto fromEntity(City city) {
         return new CityLookupDto(
-                city.getLocation().city,
-                city.getLocation().voivodeship
+                city.getLocation().getCity(),
+                city.getLocation().getCity()
         );
     }
 }
