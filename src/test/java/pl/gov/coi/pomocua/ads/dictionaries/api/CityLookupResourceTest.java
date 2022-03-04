@@ -12,6 +12,7 @@ import pl.gov.coi.pomocua.ads.dictionaries.domain.CityRepository;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CityLookupResourceTest {
@@ -27,7 +28,7 @@ class CityLookupResourceTest {
     @Test
     void shouldReturnEmptyResponse() {
         // when:
-        ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity(URL + "/?region=mazowieckie&city=x", CityLookupResponse.class);
+        ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity(URL + "/?query=x", CityLookupResponse.class);
 
         // then:
         assertThat(response.hasBody()).isFalse();
@@ -40,21 +41,34 @@ class CityLookupResourceTest {
         givenFollowingCitiesExists("mazowieckie/war1", "mazowieckie/war2");
 
         // when:
-        ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity(URL + "/?region=mazowieckie&city=War", CityLookupResponse.class);
+        ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity(URL + "/?query=War", CityLookupResponse.class);
 
         // then:
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().cities()).contains("war1", "war2");
+        assertThat(response.getBody().cities())
+                .extracting("city", "voivodeship")
+                .contains(
+                        tuple("war1", "mazowieckie"),
+                        tuple("war2", "mazowieckie")
+                );
     }
 
     @Test
-    void shouldImportCitiesFromFile() {
+    void shouldReturnCitiesLimitedAndSortedByCityName() {
         // when:
-        ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity(URL + "/?region=ŚLĄSKIE&city=Bi", CityLookupResponse.class);
+        ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity(URL + "/?query=biel", CityLookupResponse.class);
 
         // then:
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().cities()).contains("bieruń", "bielsko-biała");
+        assertThat(response.getBody().cities())
+                .extracting("city", "voivodeship")
+                .contains(
+                        tuple("bielany", "mazowieckie"),
+                        tuple("bielawa", "dolnośląskie"),
+                        tuple("bielawy", "łódzkie"),
+                        tuple("bielice", "zachodniopomorskie"),
+                        tuple("bieliny", "świętokrzyskie")
+                );
     }
 
     // ---
