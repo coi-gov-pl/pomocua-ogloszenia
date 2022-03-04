@@ -44,7 +44,7 @@ class TransportOfferResourceTest extends BaseResourceTest<TransportOffer> {
     }
 
     @Test
-    void shouldFindByOriginLocation() {
+    void shouldFindByOrigin() {
         TransportOffer transportOffer1 = sampleOfferRequest();
         transportOffer1.origin = new Location("mazowieckie", "warszawa");
         transportOffer1 = postOffer(transportOffer1);
@@ -65,7 +65,7 @@ class TransportOfferResourceTest extends BaseResourceTest<TransportOffer> {
     }
 
     @Test
-    void shouldFindByDestinationLocation() {
+    void shouldFindByDestination() {
         TransportOffer transportOffer1 = sampleOfferRequest();
         transportOffer1.destination = new Location("pomorskie", "GdyniA");
         transportOffer1 = postOffer(transportOffer1);
@@ -81,6 +81,12 @@ class TransportOfferResourceTest extends BaseResourceTest<TransportOffer> {
         assertEquals(1, results.length);
         assertEquals(transportOffer1, results[0]);
     }
+
+    /*
+    * TODO
+    *  test for pagination
+    *  test and implementation for searching by capacity and transportDate
+    * */
 
     private TransportOffer[] searchOffers(TransportOfferSearchCriteria searchCriteria) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
