@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.gov.coi.pomocua.ads.dictionaries.domain.City;
 import pl.gov.coi.pomocua.ads.dictionaries.domain.CityRepository;
 
 import java.util.List;
@@ -24,14 +23,15 @@ public class CityLookupResource {
     }
 
     @GetMapping
-    public ResponseEntity<CityLookupResponse> getCities(@RequestParam String region, @RequestParam String city) {
-        if (!StringUtils.hasText(city) || city.length() < 2 || !StringUtils.hasText(region)) {
+    public ResponseEntity<CityLookupResponse> getCities(@RequestParam String query) {
+        if (!StringUtils.hasText(query) || query.length() < 2) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        List<String> cities = cityRepository.findByVoivodeshipAndCityStartsWith(region.toLowerCase(), city.toLowerCase())
+        List<CityLookupDto> cities = cityRepository
+                .findFirst5ByCityStartsWithOrderByCityAsc(query.toLowerCase())
                 .stream()
-                .map(City::getCity)
+                .map(CityLookupDto::fromEntity)
                 .collect(Collectors.toList());
 
         return new ResponseEntity<>(new CityLookupResponse(cities), HttpStatus.OK);
