@@ -26,6 +26,7 @@ class TransportOfferResourceTest  extends BaseResourceTest<TransportOffer> {
     protected TransportOffer sampleOfferRequest() {
         TransportOffer transportOffer = new TransportOffer();
         transportOffer.title = "jade do Pcimia";
+        transportOffer.description = "moge zabrac 20 osob";
         return transportOffer;
     }
 }
