@@ -1,0 +1,72 @@
+services:
+  database-postgres:
+    profiles:
+      - backend-only
+      - all
+    container_name: ads-postgres
+    env_file:
+    - ./docker/environment.env
+    image: postgres:14.2-alpine
+    ports:
+    - mode: ingress
+      target: 5432
+      published: 5432
+      protocol: tcp
+    restart: always
+    volumes:
+    - type: volume
+      source: postgres
+      target: /var/lib/postgresql/data
+    - type: bind
+      source: ./docker/volumes/postgres-init
+      target: /docker-entrypoint-initdb.d
+  db-admin-pgadmin:
+    profiles:
+      - backend-only
+      - all
+    container_name: ads-pgadmin
+    depends_on:
+      database-postgres:
+        condition: service_started
+    env_file:
+    - ./docker/environment.env
+    image: dpage/pgadmin4:latest
+    ports:
+    - mode: ingress
+      target: 80
+      published: 8081
+      protocol: tcp
+    volumes:
+    - type: volume
+      source: pgadmin
+      target: /var/lib/pgadmin
+    - type: bind
+      source: ./docker/servers.json
+      target: /pgadmin4/servers.json
+    - type: bind
+      source: ./docker/pgpasswords
+      target: /pgpasswords
+  application:
+    profiles:
+      - all
+    depends_on:
+      database-postgres:
+        condition: service_started
+    container_name: ads
+    env_file:
+    - ./docker/environment.env
+    image: openjdk:17-jdk-bullseye
+    command: ["java", "-jar", "/build/libs/ogloszenia-0.0.1-SNAPSHOT.jar", "-Dspring.profiles.active=api-docs", "-Dspring.datasource.url=jdbc:postgresql://ogloszenia-postgres:5432/ogloszenia"]
+    ports:
+    - mode: ingress
+      target: 8080
+      published: 8080
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: ./build
+      target: /build
+
+volumes:
+  pgadmin: {}
+  postgres: {}
