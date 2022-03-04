@@ -1,31 +1,24 @@
 package pl.gov.coi.pomocua.ads.jobs;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import lombok.Data;
-import org.hibernate.validator.constraints.Length;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
+import pl.gov.coi.pomocua.ads.BaseOffer;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import java.util.List;
 
 import static javax.persistence.EnumType.STRING;
-import static javax.persistence.GenerationType.IDENTITY;
 
-@Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
-class JobOffer {
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    public Long id;
-    @NotBlank
-    @Length(max = 80)
-    public String title;
-
+class JobOffer extends BaseOffer {
     @Enumerated(STRING)
     public Mode mode;
+
     public String voivodeship;
     public String city;
 
@@ -38,10 +31,6 @@ class JobOffer {
     @CollectionTable
     @Enumerated(STRING)
     public List<Language> language;
-
-    @NotBlank
-    @Length(max = 1000)
-    public String description;
 
     enum Mode {
         REMOTE

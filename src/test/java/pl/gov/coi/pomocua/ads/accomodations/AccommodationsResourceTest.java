@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ads.jobs;
+package pl.gov.coi.pomocua.ads.accomodations;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
@@ -8,35 +8,34 @@ import pl.gov.coi.pomocua.ads.PageableResponse;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class JobsResourceTest extends BaseResourceTest<JobOffer> {
+class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
 
     @Override
-    protected Class<JobOffer> getClazz() {
-        return JobOffer.class;
+    protected Class<AccommodationOffer> getClazz() {
+        return AccommodationOffer.class;
     }
 
     @Override
     protected String getOfferSuffix() {
-        return "jobs";
+        return "accommodations";
     }
 
-
     @Override
-    protected ParameterizedTypeReference<PageableResponse<JobOffer>> getResponseType() {
+    protected ParameterizedTypeReference<PageableResponse<AccommodationOffer>> getResponseType() {
         return new ParameterizedTypeReference<>() {
         };
     }
 
     @Override
-    protected JobOffer sampleOfferRequest() {
-        JobOffer request = new JobOffer();
+    protected AccommodationOffer sampleOfferRequest() {
+        AccommodationOffer request = new AccommodationOffer();
         request.title = "sample work";
-        request.mode = JobOffer.Mode.REMOTE;
         request.city = "Warszawa";
         request.voivodeship = "Mazowieckie";
-        request.type = List.of(JobOffer.Type.TEMPORARY);
-        request.language = List.of(JobOffer.Language.PL, JobOffer.Language.UA);
+        request.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
         request.description = "description";
+        request.lengthOfStay = AccommodationOffer.LengthOfStay.MONTH_2;
+        request.guests = 5;
         return request;
     }
 }
