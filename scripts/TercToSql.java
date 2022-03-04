@@ -54,7 +54,7 @@ public class TercToSql {
     }
 
     private String vacToSql(long id, VoivodeshipAndCity vac) {
-        return String.format("INSERT INTO city(id, voivodeship, city) VALUES(%d, '%s', '%s');",id, vac.voivodeship, vac.city);
+        return String.format("INSERT INTO city(id, region, city) VALUES(%d, '%s', '%s');",id, vac.voivodeship, vac.city);
     }
 
     public static void main(String[] args) {

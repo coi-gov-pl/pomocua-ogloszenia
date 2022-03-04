@@ -5,6 +5,6 @@ CREATE SEQUENCE city_seq
 
 CREATE TABLE city (
     id BIGSERIAL NOT NULL PRIMARY KEY,
-    voivodeship TEXT NOT NULL,
+    region TEXT NOT NULL,
     city TEXT NOT NULL
 );

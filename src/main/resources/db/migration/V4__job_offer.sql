@@ -3,7 +3,7 @@ create table job_offer (
     title text,
     mode text,
     city text,
-    voivodeship text,
+    region text,
     description text
 );
 

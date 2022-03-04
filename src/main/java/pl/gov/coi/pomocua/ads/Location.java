@@ -11,6 +11,6 @@ import javax.persistence.Embeddable;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class Location {
-    public String voivodeship;
+    public String region;
     public String city;
 }

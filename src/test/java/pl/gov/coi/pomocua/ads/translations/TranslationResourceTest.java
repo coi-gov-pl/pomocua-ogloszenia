@@ -32,7 +32,7 @@ class TranslationResourceTest extends BaseResourceTest<TranslationOffer> {
         request.title = "sample translation";
         request.mode = TranslationOffer.Mode.REMOTE;
         request.city = "Warszawa";
-        request.voivodeship = "Mazowieckie";
+        request.region = "Mazowieckie";
         request.sworn = true;
         request.language = List.of(TranslationOffer.Language.PL, TranslationOffer.Language.UA);
         request.description = "description";

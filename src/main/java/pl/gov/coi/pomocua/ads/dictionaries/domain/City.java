@@ -18,8 +18,8 @@ public class City {
     protected City() {
     }
 
-    public City(String city, String voivodeship) {
-        this.location = new Location(voivodeship, city);
+    public City(String city, String region) {
+        this.location = new Location(region, city);
     }
 
     public Location getLocation() {

@@ -4,7 +4,7 @@ create table translation_offer (
     mode        text,
     sworn       bool,
     city        text,
-    voivodeship text,
+    region      text,
     description text
 );
 

@@ -46,7 +46,7 @@ class CityLookupResourceTest {
         // then:
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().cities())
-                .extracting("city", "voivodeship")
+                .extracting("city", "region")
                 .contains(
                         tuple("war1", "mazowieckie"),
                         tuple("war2", "mazowieckie")
@@ -61,7 +61,7 @@ class CityLookupResourceTest {
         // then:
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().cities())
-                .extracting("city", "voivodeship")
+                .extracting("city", "region")
                 .contains(
                         tuple("bielany", "mazowieckie"),
                         tuple("bielawa", "dolnośląskie"),
