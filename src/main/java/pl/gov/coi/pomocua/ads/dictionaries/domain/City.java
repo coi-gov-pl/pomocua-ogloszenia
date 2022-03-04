@@ -1,5 +1,7 @@
 package pl.gov.coi.pomocua.ads.dictionaries.domain;
 
+import pl.gov.coi.pomocua.ads.Location;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,22 +12,17 @@ public class City {
     @SequenceGenerator(name="city_gen", sequenceName="city_seq")
     private Long id;
 
-    private String voivodeship;
-    private String city;
+    @Embedded
+    private Location location;
 
     protected City() {
     }
 
     public City(String city, String voivodeship) {
-        this.city = city;
-        this.voivodeship = voivodeship;
+        this.location = new Location(voivodeship, city);
     }
 
-    public String getCity() {
-        return this.city;
-    }
-
-    public String getVoivodeship() {
-        return this.voivodeship;
+    public Location getLocation() {
+        return location;
     }
 }
