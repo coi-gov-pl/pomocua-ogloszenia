@@ -4,11 +4,9 @@ import lombok.EqualsAndHashCode;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import pl.gov.coi.pomocua.ads.BaseOffer;
+import pl.gov.coi.pomocua.ads.Location;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 import java.util.List;
 
 import static javax.persistence.EnumType.STRING;
@@ -19,8 +17,8 @@ class JobOffer extends BaseOffer {
     @Enumerated(STRING)
     public Mode mode;
 
-    public String voivodeship;
-    public String city;
+    @Embedded
+    public Location location;
 
     @ElementCollection(targetClass = Type.class)
     @CollectionTable
