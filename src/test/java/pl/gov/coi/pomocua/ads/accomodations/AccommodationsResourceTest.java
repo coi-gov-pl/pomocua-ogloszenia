@@ -21,7 +21,7 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
     }
 
     @Override
-    protected ParameterizedTypeReference<PageableResponse<AccommodationOffer>> getListType() {
+    protected ParameterizedTypeReference<PageableResponse<AccommodationOffer>> getResponseType() {
         return new ParameterizedTypeReference<>() {
         };
     }
