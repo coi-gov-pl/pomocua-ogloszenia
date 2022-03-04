@@ -13,10 +13,6 @@ public class City {
     private Long id;
 
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "city", column = @Column(name = "city")),
-            @AttributeOverride(name = "voivodeship", column = @Column(name = "voivodeship"))
-    })
     private Location location;
 
     protected City() {
