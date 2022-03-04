@@ -9,7 +9,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -88,9 +87,11 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
     @NotNull
     protected T postOffer(T request) {
-        T response = restTemplate.postForObject("/api/secure/" + getOfferSuffix(), request, getClazz());
-        assertThat(response.id).isNotNull();
-        assertThat(response).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
-        return response;
+        ResponseEntity<T> response = restTemplate.postForEntity("/api/secure/" + getOfferSuffix(), request, getClazz());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        T entity = response.getBody();
+        assertThat(entity.id).isNotNull();
+        assertThat(entity).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
+        return entity;
     }
 }
