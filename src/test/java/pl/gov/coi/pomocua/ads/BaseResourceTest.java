@@ -69,12 +69,15 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
     protected abstract String getOfferSuffix();
 
+    protected abstract ParameterizedTypeReference<PageableResponse<T>> getResponseType();
+
+    protected abstract T sampleOfferRequest();
+
     private T[] listOffers() {
-        var list = restTemplate.exchange("/api/" + getOfferSuffix(), HttpMethod.GET, null, getListType());
+        ResponseEntity<PageableResponse<T>> list = restTemplate.exchange("/api/" + getOfferSuffix(), HttpMethod.GET, null,
+                getResponseType());
         return list.getBody().content;
     }
-
-    protected abstract ParameterizedTypeReference<PageableResponse<T>> getListType();
 
     private T postSampleOffer() {
         T request = sampleOfferRequest();
@@ -83,7 +86,4 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         assertThat(response).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
         return response;
     }
-
-
-    protected abstract T sampleOfferRequest();
 }
