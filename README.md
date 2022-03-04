@@ -14,7 +14,7 @@ start_database.sh sets up:
 - pgadmin at http://localhost:8081 (user: admin@admin.pl pass: admin)
 
 Additionally, start_server.sh will run the whole application 
-
+- API running on `http://localhost:8080` with API docs: `http://localhost:8080/swagger-ui.html`
 
 ## API documentation
 
