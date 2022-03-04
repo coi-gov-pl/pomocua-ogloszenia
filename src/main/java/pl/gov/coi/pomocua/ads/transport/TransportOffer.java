@@ -40,6 +40,7 @@ public class TransportOffer extends BaseOffer {
         transportOffer.origin = origin;
         transportOffer.destination = destination;
         transportOffer.capacity = capacity;
+        transportOffer.transportDate = LocalDate.now();
         return transportOffer;
     }
 
