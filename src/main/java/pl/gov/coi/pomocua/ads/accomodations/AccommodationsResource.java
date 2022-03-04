@@ -29,7 +29,7 @@ public class AccommodationsResource {
 
     @GetMapping("accommodations/{region}/{city}")
     public Page<AccommodationOffer> list(@PathVariable String region, @PathVariable String city, @RequestParam(defaultValue = "1") Integer capacity, Pageable pageRequest) {
-        return repository.findAllByVoivodeshipIgnoreCaseAndCityIgnoreCaseAndGuestsIsGreaterThanEqual(region, city, capacity, pageRequest);
+        return repository.findAllByLocation_VoivodeshipIgnoreCaseAndLocation_CityIgnoreCaseAndGuestsIsGreaterThanEqual(region, city, capacity, pageRequest);
     }
 
     @GetMapping("accommodations/{id}")

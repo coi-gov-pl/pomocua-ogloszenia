@@ -6,6 +6,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
+import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.PageableResponse;
 
 import java.util.List;
@@ -19,10 +20,30 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
     void shouldReturnOffersByFullCriteria() {
         AccommodationOffer response = postSampleOffer();
 
-        String requestParams = "/MAzowIEckie/waRszaWA?capacity=5";
+        String requestParams = "/MAzowIEckie/waRszaWA?capacity=4";
         AccommodationOffer[] offers = listOffers(requestParams);
 
         assertThat(offers).contains(response);
+    }
+
+    @Test
+    void shouldNotFindOffersForTooHighCapacity() {
+        postSampleOffer();
+
+        String requestParams = "/MAzowIEckie/waRszaWA?capacity=15";
+        AccommodationOffer[] offers = listOffers(requestParams);
+
+        assertThat(offers).isEmpty();
+    }
+
+    @Test
+    void shouldNotFindOffersForWrongLocation() {
+        postSampleOffer();
+
+        String requestParams = "/MAłopolskie/Kraków?capacity=1";
+        AccommodationOffer[] offers = listOffers(requestParams);
+
+        assertThat(offers).isEmpty();
     }
 
     @Test
@@ -72,8 +93,7 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
     protected AccommodationOffer sampleOfferRequest() {
         AccommodationOffer request = new AccommodationOffer();
         request.title = "sample work";
-        request.city = "Warszawa";
-        request.voivodeship = "Mazowieckie";
+        request.location = new Location("Mazowieckie", "Warszawa");
         request.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
         request.description = "description";
         request.lengthOfStay = AccommodationOffer.LengthOfStay.MONTH_2;
