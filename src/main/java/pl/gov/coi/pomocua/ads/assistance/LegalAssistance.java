@@ -1,9 +1,9 @@
 package pl.gov.coi.pomocua.ads.assistance;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import pl.gov.coi.pomocua.ads.BaseOffer;
+import pl.gov.coi.pomocua.ads.Location;
 
 import javax.persistence.*;
 
@@ -17,8 +17,7 @@ public class LegalAssistance extends BaseOffer {
     @Enumerated(STRING)
     public Mode mode;
 
-    public String voivodeship;
-    public String city;
+    public Location location;
 
     @ElementCollection(targetClass = HelpType.class)
     @CollectionTable
