@@ -12,6 +12,6 @@ public class ApiDocsConfig {
     @Bean
     public OpenAPI openApi() {
         return new OpenAPI()
-                .info(new Info().title("Documentation for ads portal"));
+                .info(new Info().title("Documentation for ads portal").version("1.0"));
     }
 }
