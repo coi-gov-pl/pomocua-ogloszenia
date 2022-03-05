@@ -20,4 +20,8 @@ public class TestCurrentUser implements CurrentUser {
     public void clear() {
         this.currentUserId = null;
     }
+
+    public void setDefault() {
+        this.currentUserId = DEFAULT_USER_ID;
+    }
 }
