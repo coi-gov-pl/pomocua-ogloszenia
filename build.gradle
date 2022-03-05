@@ -1,6 +1,14 @@
+buildscript {
+	ext {
+		springBootVersion = '2.6.4'
+		springDependencyVersion = '1.0.11.RELEASE'
+		springDocVersion = '1.6.6'
+	}
+}
+
 plugins {
-	id 'org.springframework.boot' version '2.6.4'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyVersion}"
 	id 'java'
 }
 
@@ -30,6 +38,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.flywaydb:flyway-core'
 	implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
+
+	//generates open-api contract and exposes swagger-ui
+	implementation "org.springdoc:springdoc-openapi-ui:${springDocVersion}"
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
