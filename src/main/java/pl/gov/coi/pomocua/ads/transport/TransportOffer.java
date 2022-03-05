@@ -8,8 +8,8 @@ import pl.gov.coi.pomocua.ads.Location;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
 public class TransportOffer extends BaseOffer {
 
@@ -38,6 +38,7 @@ public class TransportOffer extends BaseOffer {
         transportOffer.origin = origin;
         transportOffer.destination = destination;
         transportOffer.capacity = capacity;
+        transportOffer.transportDate = LocalDate.now();
         return transportOffer;
     }
 

@@ -1,5 +1,6 @@
 package pl.gov.coi.pomocua.ads;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,12 +9,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = "dev")
 public abstract class BaseResourceTest<T extends BaseOffer> {
 
     @Autowired
@@ -83,9 +82,16 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
     protected T postSampleOffer() {
         T request = sampleOfferRequest();
-        T response = restTemplate.postForObject("/api/secure/" + getOfferSuffix(), request, getClazz());
-        assertThat(response.id).isNotNull();
-        assertThat(response).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
-        return response;
+        return postOffer(request);
+    }
+
+    @NotNull
+    protected T postOffer(T request) {
+        ResponseEntity<T> response = restTemplate.postForEntity("/api/secure/" + getOfferSuffix(), request, getClazz());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        T entity = response.getBody();
+        assertThat(entity.id).isNotNull();
+        assertThat(entity).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
+        return entity;
     }
 }
