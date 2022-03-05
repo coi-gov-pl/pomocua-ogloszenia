@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import pl.gov.coi.pomocua.ads.UserId;
 
 import java.util.Optional;
 
@@ -47,6 +48,7 @@ public class TransportOfferResourceFunctionalTest {
     TransportOffer transportOffer = transportOfferOptional.get();
     assertThat(transportOffer.title).isEqualTo("testTitle");
     assertThat(transportOffer.description).isEqualTo("testDescription");
+    assertThat(transportOffer.userId).isEqualTo(new UserId("testUser1"));
     assertThat(transportOffer.origin.region).isEqualTo("Małopolska");
     assertThat(transportOffer.origin.city).isEqualTo("Kraków");
     assertThat(transportOffer.destination.region).isEqualTo("Mazowieckie");
@@ -149,6 +151,7 @@ public class TransportOfferResourceFunctionalTest {
       {
         "title": "testTitle",
         "description": "testDescription",
+        "userId": "testUser1",
         "origin": {
           "region": "Małopolska",
           "city": "Kraków"
@@ -167,6 +170,7 @@ public class TransportOfferResourceFunctionalTest {
     response
         .body("title", equalTo("testTitle"))
         .body("description", equalTo("testDescription"))
+        .body("userId.value", equalTo("testUser1"))
         .body("origin.region", equalTo("Małopolska"))
         .body("origin.city", equalTo("Kraków"))
         .body("destination.region", equalTo("Mazowieckie"))
@@ -179,6 +183,7 @@ public class TransportOfferResourceFunctionalTest {
     response
         .body("content[0].title", equalTo("testTitle"))
         .body("content[0].description", equalTo("testDescription"))
+        .body("content[0].userId.value", equalTo("testUser1"))
         .body("content[0].origin.region", equalTo("Małopolska"))
         .body("content[0].origin.city", equalTo("Kraków"))
         .body("content[0].destination.region", equalTo("Mazowieckie"))

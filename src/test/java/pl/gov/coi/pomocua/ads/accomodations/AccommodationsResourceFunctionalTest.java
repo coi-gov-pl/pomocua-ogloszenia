@@ -169,6 +169,7 @@ public class AccommodationsResourceFunctionalTest {
     response
         .body("title", equalTo("testTitle"))
         .body("description", equalTo("testDescription"))
+        .body("userId.value", equalTo("testUser1"))
         .body("location.region", equalTo("Mazowieckie"))
         .body("location.city", equalTo("Warszawa"))
         .body("guests", equalTo(3))
@@ -180,6 +181,7 @@ public class AccommodationsResourceFunctionalTest {
     response
         .body("content[0].title", equalTo("testTitle"))
         .body("content[0].description", equalTo("testDescription"))
+        .body("content[0].userId.value", equalTo("testUser1"))
         .body("content[0].location.region", equalTo("Mazowieckie"))
         .body("content[0].location.city", equalTo("Warszawa"))
         .body("content[0].guests", equalTo(3))
@@ -202,6 +204,7 @@ public class AccommodationsResourceFunctionalTest {
     return """
     {
       "title": "testTitle",
+      "userId": "testUser1",
       "description": "testDescription",
       "location": {
         "region": "Mazowieckie",
