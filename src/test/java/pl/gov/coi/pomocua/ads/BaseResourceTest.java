@@ -1,24 +1,36 @@
 package pl.gov.coi.pomocua.ads;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(TestConfiguration.class)
 public abstract class BaseResourceTest<T extends BaseOffer> {
 
     @Autowired
     protected TestRestTemplate restTemplate;
+
+    @Autowired
+    protected TestCurrentUser testCurrentUser;
+
+    @BeforeEach
+    public void clear() {
+        testCurrentUser.clear();
+    }
 
     @Test
     void shouldCreateOffer() {

@@ -1,6 +1,14 @@
+buildscript {
+	ext {
+		springBootVersion = '2.6.4'
+		springDependencyVersion = '1.0.11.RELEASE'
+		springDocVersion = '1.6.6'
+	}
+}
+
 plugins {
-	id 'org.springframework.boot' version '2.6.4'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyVersion}"
 	id 'java'
 }
 
@@ -42,6 +50,7 @@ dependencies {
 	testImplementation 'org.assertj:assertj-core'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'io.rest-assured:rest-assured:4.4.0'
 }
 
 dependencyManagement {
