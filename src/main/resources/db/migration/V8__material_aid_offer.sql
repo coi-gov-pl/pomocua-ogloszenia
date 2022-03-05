@@ -3,7 +3,7 @@ create table material_aid_offer (
     title text,
     description text,
     category text,
-    location text
+    location text,
 
     CONSTRAINT PK_MAO_ID PRIMARY KEY (ID)
 );
