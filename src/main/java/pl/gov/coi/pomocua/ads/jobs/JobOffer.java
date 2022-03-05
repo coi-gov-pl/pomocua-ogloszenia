@@ -48,5 +48,3 @@ class JobOffer extends BaseOffer {
 interface JobsRepository extends PagingAndSortingRepository<JobOffer, Long> {
 
 }
-
-
