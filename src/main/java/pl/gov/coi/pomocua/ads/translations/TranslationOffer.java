@@ -1,10 +1,12 @@
 package pl.gov.coi.pomocua.ads.translations;
 
 import lombok.EqualsAndHashCode;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import pl.gov.coi.pomocua.ads.BaseOffer;
 
+import javax.persistence.*;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -15,6 +17,7 @@ import static javax.persistence.EnumType.STRING;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class TranslationOffer extends BaseOffer {
 
     @Enumerated(STRING)

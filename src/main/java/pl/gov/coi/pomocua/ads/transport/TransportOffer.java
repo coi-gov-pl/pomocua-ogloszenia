@@ -2,6 +2,7 @@ package pl.gov.coi.pomocua.ads.transport;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.EqualsAndHashCode;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.UserId;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 
 @Entity
 @EqualsAndHashCode(callSuper = true)
+@EntityListeners(AuditingEntityListener.class)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
 public class TransportOffer extends BaseOffer {
 
