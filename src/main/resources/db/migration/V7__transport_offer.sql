@@ -1,7 +1,7 @@
 create table transport_offer
 (
     id                      bigserial,
-    user_id                  bigint,
+    user_id                 text,
     title                   text,
     description             text,
     origin_region           text,

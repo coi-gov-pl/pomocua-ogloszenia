@@ -31,7 +31,7 @@ class TranslationResourceTest extends BaseResourceTest<TranslationOffer> {
     protected TranslationOffer sampleOfferRequest() {
         TranslationOffer request = new TranslationOffer();
         request.title = "sample translation";
-        request.userId = new UserId(1L);
+        request.userId = new UserId("1");
         request.mode = TranslationOffer.Mode.REMOTE;
         request.city = "Warszawa";
         request.region = "Mazowieckie";

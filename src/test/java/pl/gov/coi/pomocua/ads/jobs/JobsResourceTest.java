@@ -33,7 +33,7 @@ class JobsResourceTest extends BaseResourceTest<JobOffer> {
     protected JobOffer sampleOfferRequest() {
         JobOffer request = new JobOffer();
         request.title = "sample work";
-        request.userId = new UserId(1L);
+        request.userId = new UserId("1");
         request.mode = JobOffer.Mode.REMOTE;
         request.location = new Location("Mazowieckie", "Warszawa");
         request.type = List.of(JobOffer.Type.TEMPORARY);

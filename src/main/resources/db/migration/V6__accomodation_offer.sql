@@ -1,6 +1,6 @@
 create table accommodation_offer (
     id              bigserial,
-    user_id          bigint,
+    user_id         text,
     title           text,
     city            text,
     region          text,

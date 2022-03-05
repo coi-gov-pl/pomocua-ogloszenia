@@ -14,5 +14,5 @@ import javax.persistence.Embeddable;
 public class UserId {
 
     @Column(name = "user_id")
-    public Long value;
+    public String value;
 }

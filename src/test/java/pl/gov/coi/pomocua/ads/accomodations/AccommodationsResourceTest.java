@@ -94,7 +94,7 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
     protected AccommodationOffer sampleOfferRequest() {
         AccommodationOffer request = new AccommodationOffer();
         request.title = "sample work";
-        request.userId = new UserId(1L);
+        request.userId = new UserId("1");
         request.location = new Location("Mazowieckie", "Warszawa");
         request.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
         request.description = "description";
