@@ -12,10 +12,10 @@ import static javax.persistence.EnumType.STRING;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-public class MaterialAidOffer extends BaseOffer {
+class MaterialAidOffer extends BaseOffer {
 
     @Enumerated(STRING)
-    private MaterialAidCategory category;
+    public MaterialAidCategory category;
 
     @Embedded
     public Location location;

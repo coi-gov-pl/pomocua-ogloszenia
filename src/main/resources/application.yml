@@ -3,5 +3,5 @@ spring.datasource.username: ads
 spring.datasource.password: admin
 spring.data.web.pageable.max-page-size: 1000
 
-springdoc.api-docs.enabled: false
-springdoc.swagger-ui.enabled: false
+springdoc.api-docs.enabled: true
+springdoc.swagger-ui.enabled: true

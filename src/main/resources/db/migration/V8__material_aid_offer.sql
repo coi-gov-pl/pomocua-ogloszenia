@@ -1,9 +1,9 @@
 create table material_aid_offer (
     id bigserial,
+    user_id text,
     title text,
     description text,
     category text,
-    location text,
-
-    CONSTRAINT PK_MAO_ID PRIMARY KEY (ID)
+    city text,
+    region text
 );
