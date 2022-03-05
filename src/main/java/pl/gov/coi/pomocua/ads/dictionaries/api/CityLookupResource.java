@@ -1,6 +1,7 @@
 package pl.gov.coi.pomocua.ads.dictionaries.api;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(path = "/api/dictionaries/city", produces = "application/json")
+@RequestMapping(path = "/api/dictionaries/city", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CityLookupResource {
 
     private final CityRepository cityRepository;
