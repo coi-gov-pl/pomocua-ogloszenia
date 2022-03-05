@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.gov.coi.pomocua.ads.TestConfiguration;
+import pl.gov.coi.pomocua.ads.UserId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,12 +28,12 @@ public class CurrentUserTest {
 
     @Test
     void shouldReturnCurrentUserIdIfSet() {
-        testCurrentUser.setCurrentUserId("some-current-id");
+        testCurrentUser.setCurrentUserId(new UserId("some-current-id"));
 
-        ResponseEntity<String> response = restTemplate.getForEntity("/api/test-authentication", String.class);
+        ResponseEntity<UserId> response = restTemplate.getForEntity("/api/test-authentication", UserId.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo("some-current-id");
+        assertThat(response.getBody()).isEqualTo(new UserId("some-current-id"));
     }
 
     @Test
@@ -59,7 +60,7 @@ public class CurrentUserTest {
         private final CurrentUser currentUser;
 
         @GetMapping
-        public String getCurrentUserId() {
+        public UserId getCurrentUserId() {
             return currentUser.getCurrentUserId();
         }
     }

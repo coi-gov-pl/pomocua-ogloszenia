@@ -5,6 +5,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.PageableResponse;
+import pl.gov.coi.pomocua.ads.UserId;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ class JobsResourceTest extends BaseResourceTest<JobOffer> {
     protected JobOffer sampleOfferRequest() {
         JobOffer request = new JobOffer();
         request.title = "sample work";
+        request.userId = new UserId("1");
         request.mode = JobOffer.Mode.REMOTE;
         request.location = new Location("Mazowieckie", "Warszawa");
         request.type = List.of(JobOffer.Type.TEMPORARY);

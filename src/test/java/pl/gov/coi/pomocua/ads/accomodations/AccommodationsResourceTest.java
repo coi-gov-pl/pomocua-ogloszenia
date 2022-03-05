@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.PageableResponse;
+import pl.gov.coi.pomocua.ads.UserId;
 
 import java.util.List;
 
@@ -93,6 +94,7 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
     protected AccommodationOffer sampleOfferRequest() {
         AccommodationOffer request = new AccommodationOffer();
         request.title = "sample work";
+        request.userId = new UserId("1");
         request.location = new Location("Mazowieckie", "Warszawa");
         request.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
         request.description = "description";

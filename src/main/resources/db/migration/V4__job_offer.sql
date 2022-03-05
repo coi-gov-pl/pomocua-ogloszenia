@@ -1,9 +1,10 @@
 create table job_offer (
-    id bigserial,
-    title text,
-    mode text,
-    city text,
-    region text,
+    id          bigserial,
+    user_id     text,
+    title       text,
+    mode        text,
+    city        text,
+    region      text,
     description text
 );
 

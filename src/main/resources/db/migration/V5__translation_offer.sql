@@ -1,5 +1,6 @@
 create table translation_offer (
     id          bigserial,
+    user_id     text,
     title       text,
     mode        text,
     sworn       bool,

@@ -1,11 +1,13 @@
 package pl.gov.coi.pomocua.ads.authentication;
 
+import pl.gov.coi.pomocua.ads.UserId;
+
 import java.util.Optional;
 
 public interface CurrentUser {
-    Optional<String> findCurrentUserId();
+    Optional<UserId> findCurrentUserId();
 
-    default String getCurrentUserId() {
+    default UserId getCurrentUserId() {
         return findCurrentUserId().orElseThrow(UnauthorizedException::new);
     }
 }
