@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.UserId;
-import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationsRepository;
 import pl.gov.coi.pomocua.ads.transport.TransportOffer;
@@ -47,7 +46,7 @@ public class FakeOffersCreator {
     public void accommodation() {
         AccommodationOffer o1 = new AccommodationOffer();
         o1.title = "Mieszkanie w bloku, 2 osoby - Rzeszów, woj. podkarpackie";
-        o1.description = "#nocleg #noclegmazowieckie #transport Dolnośląskie, miejscowość Wrocław - ok. 5 km od Dworca głównego. Kawalerka na wyłączność pomieści 2 osoby + zwierzęta są mile widziane. Okres: 2 miesiące, Bezpłatnie....";
+        o1.description = "nocleg noclegmazowieckie transport Dolnośląskie, miejscowość Wrocław - ok. 5 km od Dworca głównego. Kawalerka na wyłączność pomieści 2 osoby + zwierzęta są mile widziane. Okres: 2 miesiące, Bezpłatnie....";
         o1.userId = new UserId("1");
         o1.location = new Location("podkarpackie", "Rzeszów");
         o1.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
