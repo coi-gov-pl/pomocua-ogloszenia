@@ -39,9 +39,6 @@ dependencies {
 	implementation 'org.flywaydb:flyway-core'
 	implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
 
-	//generates open-api contract and exposes swagger-ui
-	implementation "org.springdoc:springdoc-openapi-ui:${springDocVersion}"
-
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

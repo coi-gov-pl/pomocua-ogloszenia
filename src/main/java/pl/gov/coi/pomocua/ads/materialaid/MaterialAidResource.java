@@ -19,7 +19,7 @@ public class MaterialAidResource {
     private final MaterialAidOfferManager manager;
 
     @Operation(description = "Saves material aid offer")
-    @PostMapping(value = "secure/transport", produces = "application/json", consumes = "application/json")
+    @PostMapping(value = "secure/material-aid", produces = "application/json", consumes = "application/json")
     public ResponseEntity<Object> postMaterialAidOffer(@Valid @RequestBody final MaterialAidOffer materialAidOffer) {
         manager.saveMaterialAidOffer(materialAidOffer);
         return new ResponseEntity<>(HttpStatus.OK);
