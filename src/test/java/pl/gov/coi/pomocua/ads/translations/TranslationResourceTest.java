@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.repository.CrudRepository;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
+import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.PageableResponse;
 
 import java.util.List;
@@ -35,8 +36,7 @@ class TranslationResourceTest extends BaseResourceTest<TranslationOffer> {
         TranslationOffer request = new TranslationOffer();
         request.title = "sample translation";
         request.mode = TranslationOffer.Mode.REMOTE;
-        request.city = "Warszawa";
-        request.region = "Mazowieckie";
+        request.location = new Location("Mazowieckie", "Warszawa");
         request.sworn = true;
         request.language = List.of(TranslationOffer.Language.PL, TranslationOffer.Language.UA);
         request.description = "description";

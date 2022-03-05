@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.server.LocalServerPort;
 import pl.gov.coi.pomocua.ads.BaseResourceFunctionalTest;
+import pl.gov.coi.pomocua.ads.Location;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,8 +49,10 @@ public class TranslationResourceFunctionalTest extends BaseResourceFunctionalTes
             "UA",
             "PL"
           ],
-          "region": "Mazowieckie",
-          "city": "Warszawa",
+          "location": {
+            "region": "Mazowieckie",
+            "city": "Warszawa"
+          },
           "sworn": true
         }
         """;
@@ -62,8 +65,8 @@ public class TranslationResourceFunctionalTest extends BaseResourceFunctionalTes
         .body("description", equalTo("testDescription"))
         .body("mode", equalTo("REMOTE"))
         .body("language", equalTo(List.of("UA", "PL")))
-        .body("city", equalTo("Warszawa"))
-        .body("region", equalTo("Mazowieckie"))
+        .body("location.city", equalTo("Warszawa"))
+        .body("location.region", equalTo("Mazowieckie"))
         .body("sworn", equalTo(true));
   }
 
@@ -74,8 +77,8 @@ public class TranslationResourceFunctionalTest extends BaseResourceFunctionalTes
         .body("content[0].description", equalTo("testDescription"))
         .body("content[0].mode", equalTo("REMOTE"))
         .body("content[0].language", equalTo(List.of("UA", "PL")))
-        .body("content[0].city", equalTo("Warszawa"))
-        .body("content[0].region", equalTo("Mazowieckie"))
+        .body("content[0].location.city", equalTo("Warszawa"))
+        .body("content[0].location.region", equalTo("Mazowieckie"))
         .body("content[0].sworn", equalTo(true));
   }
 
@@ -88,8 +91,7 @@ public class TranslationResourceFunctionalTest extends BaseResourceFunctionalTes
     assertThat(translationOffer.description).isEqualTo("testDescription");
     assertThat(translationOffer.mode).isEqualTo(TranslationOffer.Mode.REMOTE);
     assertThat(translationOffer.language.toString()).isEqualTo("[UA, PL]");
-    assertThat(translationOffer.city).isEqualTo("Warszawa");
-    assertThat(translationOffer.region).isEqualTo("Mazowieckie");
+    assertThat(translationOffer.location).isEqualTo(new Location("Mazowieckie", "Warszawa"));
     assertThat(translationOffer.sworn).isEqualTo(true);
   }
 }

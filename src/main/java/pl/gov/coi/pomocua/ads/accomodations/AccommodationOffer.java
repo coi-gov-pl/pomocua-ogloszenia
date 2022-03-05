@@ -10,6 +10,7 @@ import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.Location;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import static javax.persistence.EnumType.STRING;
 public class AccommodationOffer extends BaseOffer {
 
     @Embedded
+    @Valid
     public Location location;
 
     @Min(1)
