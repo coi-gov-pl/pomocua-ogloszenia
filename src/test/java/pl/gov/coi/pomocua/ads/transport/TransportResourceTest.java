@@ -20,6 +20,7 @@ import pl.gov.coi.pomocua.ads.PageableResponse;
 import pl.gov.coi.pomocua.ads.UserId;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,6 +61,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         transportOffer.origin = new Location("Pomorskie", "Pruszcz Gdański");
         transportOffer.transportDate = LocalDate.of(2022, 4, 1);
         transportOffer.capacity = 28;
+        transportOffer.modifiedDate = LocalDateTime.parse("2020-10-17T00:00");
         return transportOffer;
     }
 
@@ -279,6 +281,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         result.destination = destination;
         result.capacity = capacity;
         result.transportDate = transportDate;
+        result.modifiedDate = LocalDateTime.parse("2020-10-17T00:00");
         return result;
     }
 }

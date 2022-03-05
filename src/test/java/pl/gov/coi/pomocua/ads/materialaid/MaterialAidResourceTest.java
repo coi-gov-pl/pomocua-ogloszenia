@@ -6,6 +6,8 @@ import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.PageableResponse;
 import pl.gov.coi.pomocua.ads.UserId;
 
+import java.time.LocalDateTime;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
     @Override
@@ -31,6 +33,7 @@ public class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> 
         request.description = "some description";
         request.title = "some title";
         request.category = MaterialAidCategory.CLOTHING;
+        request.modifiedDate = LocalDateTime.parse("2020-10-17T00:00");
         return request;
     }
 }
