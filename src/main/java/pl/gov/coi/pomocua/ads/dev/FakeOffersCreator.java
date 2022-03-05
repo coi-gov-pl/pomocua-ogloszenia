@@ -32,7 +32,7 @@ public class FakeOffersCreator {
                 "Darmowy transport na granicę i z granicy z Ostrowa i okolic",
                 "Darmowy transport z Ostrowa i okolic na granicę z Ukraniną i z granicy " +
                         "mam 4 miejsca mam foteliki dla dzieci najleipiej w weekend",
-                new Location("Pomorskie", "Gdańsk"), null, 10
+                new Location("Pomorskie", "Gdańsk"), new Location("Mazowieckie", "Warszawa"), 10
         );
 
         transportOfferRepository.save(t1);
