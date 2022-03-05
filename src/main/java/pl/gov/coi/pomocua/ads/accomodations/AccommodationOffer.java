@@ -16,7 +16,7 @@ import static javax.persistence.EnumType.STRING;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-class AccommodationOffer extends BaseOffer {
+public class AccommodationOffer extends BaseOffer {
 
     @Embedded
     public Location location;
@@ -41,15 +41,8 @@ class AccommodationOffer extends BaseOffer {
         LONGER
     }
 
-    enum Language {
+    public enum Language {
         UA, PL
     }
-}
-
-@Repository
-interface AccommodationsRepository extends PagingAndSortingRepository<AccommodationOffer, Long> {
-
-    Page<AccommodationOffer> findAllByLocation_RegionIgnoreCaseAndLocation_CityIgnoreCaseAndGuestsIsGreaterThanEqual(String region, String city, int guests, Pageable pageable);
-    Page<AccommodationOffer> findAllByGuestsIsGreaterThanEqual(int guests, Pageable pageable);
 }
 
