@@ -3,7 +3,7 @@ create table legal_assistance_offer
     id                      bigserial,
     title                   text,
     description             text,
-    voivodeship             text,
+    region                  text,
     city                    text,
     mode                    text
 );

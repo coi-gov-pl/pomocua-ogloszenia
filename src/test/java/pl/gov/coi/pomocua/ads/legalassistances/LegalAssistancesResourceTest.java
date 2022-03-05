@@ -16,7 +16,7 @@ public class LegalAssistancesResourceTest extends BaseResourceTest<LegalAssistan
 
     @Override
     protected String getOfferSuffix() {
-        return "legal_assistances";
+        return "legal-assistances";
     }
 
     @Override

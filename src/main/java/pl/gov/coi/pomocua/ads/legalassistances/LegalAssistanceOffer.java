@@ -17,6 +17,7 @@ public class LegalAssistanceOffer extends BaseOffer {
     @Enumerated(STRING)
     public Mode mode;
 
+    @Embedded
     public Location location;
 
     @ElementCollection(targetClass = Type.class)
