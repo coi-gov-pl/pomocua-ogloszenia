@@ -7,6 +7,9 @@ import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.UserId;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -14,6 +17,7 @@ import java.time.LocalDate;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
 public class TransportOffer extends BaseOffer {
 
+    @NotNull
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "region", column = @Column(name = "origin_region")),
@@ -21,6 +25,7 @@ public class TransportOffer extends BaseOffer {
     })
     public Location origin;
 
+    @NotNull
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "region", column = @Column(name = "destination_region")),
@@ -28,6 +33,9 @@ public class TransportOffer extends BaseOffer {
     })
     public Location destination;
 
+    @NotNull
+    @Min(1)
+    @Max(99)
     public Integer capacity;
 
     public LocalDate transportDate;

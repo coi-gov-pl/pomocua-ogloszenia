@@ -2,12 +2,16 @@ package pl.gov.coi.pomocua.ads.transport;
 
 import lombok.Builder;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
@@ -170,6 +174,40 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
                 .containsExactly("d", "ć", "c", "bb", "bą", "a");
     }
 
+    @Nested
+    class ValidationTest {
+
+        @Test
+        void shouldRejectNullCapacity() {
+            TransportOffer offer = sampleOfferRequest();
+            offer.capacity = null;
+            assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = {-10, -1, 0, 100, 101, 1000})
+        void shouldRejectIncorrectCapacity(int capacity) {
+            TransportOffer offer = sampleOfferRequest();
+            offer.capacity = capacity;
+            assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        void shouldRejectNullOrigin() {
+            TransportOffer offer = sampleOfferRequest();
+            offer.origin = null;
+            assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        void shouldRejectNullDestination() {
+            TransportOffer offer = sampleOfferRequest();
+            offer.destination = null;
+            assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
     private TransportOffer[] searchOffers(TransportOfferSearchCriteria searchCriteria) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         if (searchCriteria.getOrigin() != null) {
@@ -214,7 +252,13 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
     }
 
     private TransportOfferBuilder aTransportOffer() {
-        return TransportResourceTest.builder();
+        return TransportResourceTest.builder()
+                .title("some title")
+                .description("some description")
+                .capacity(1)
+                .origin(new Location("mazowieckie", "warszawa"))
+                .destination(new Location("pomorskie", "gdańsk"))
+                ;
     }
 
     @Builder

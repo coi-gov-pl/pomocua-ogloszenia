@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.UserId;
+import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationsRepository;
 import pl.gov.coi.pomocua.ads.transport.TransportOffer;
@@ -35,7 +36,7 @@ public class FakeOffersCreator {
                 "Darmowy transport z Ostrowa i okolic na granicę z Ukraniną i z granicy " +
                         "mam 4 miejsca mam foteliki dla dzieci najleipiej w weekend",
                 new UserId("2"),
-                new Location("Pomorskie", "Gdańsk"), null, 10
+                new Location("Pomorskie", "Gdańsk"), new Location("Mazowieckie", "Warszawa"), 10
         );
 
         transportOfferRepository.save(t1);

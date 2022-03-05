@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -17,6 +18,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
 @MappedSuperclass
 public abstract class BaseOffer {
+    protected static final String ALLOWED_TEXT = "^[^<>()%#@\"']*$";
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     public Long id;
@@ -27,9 +30,11 @@ public abstract class BaseOffer {
 
     @NotBlank
     @Length(max = 80)
+    @Pattern(regexp = ALLOWED_TEXT)
     public String title;
 
     @NotBlank
     @Length(max = 1000)
+    @Pattern(regexp = ALLOWED_TEXT)
     public String description;
 }

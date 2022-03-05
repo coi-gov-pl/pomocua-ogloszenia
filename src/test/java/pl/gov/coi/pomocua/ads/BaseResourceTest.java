@@ -3,6 +3,8 @@ package pl.gov.coi.pomocua.ads;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -57,6 +59,14 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
+    void shouldRejectIncorrectTitle(String notAllowedChar) {
+        T offer = sampleOfferRequest();
+        offer.title = "title" + notAllowedChar;
+        assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+    }
+
     @Test
     void shouldRejectTooLongTitle() {
         T offer = sampleOfferRequest();
@@ -64,9 +74,24 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
     }
 
-    private void assertPostResponseStatus(T offer, HttpStatus badRequest) {
+    @Test
+    void shouldRejectBlankDescription() {
+        T offer = sampleOfferRequest();
+        offer.description = "       ";
+        assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
+    void shouldRejectIncorrectDescription(String notAllowedChar) {
+        T offer = sampleOfferRequest();
+        offer.description = "description" + notAllowedChar;
+        assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+    }
+
+    protected void assertPostResponseStatus(T offer, HttpStatus status) {
         ResponseEntity<T> response = restTemplate.postForEntity("/api/secure/" + getOfferSuffix(), offer, getClazz());
-        assertThat(response.getStatusCode()).isEqualTo(badRequest);
+        assertThat(response.getStatusCode()).isEqualTo(status);
     }
 
     @Test
