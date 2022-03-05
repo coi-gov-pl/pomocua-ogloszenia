@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.EqualsAndHashCode;
 import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.Location;
+import pl.gov.coi.pomocua.ads.UserId;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -31,10 +32,11 @@ public class TransportOffer extends BaseOffer {
 
     public LocalDate transportDate;
 
-    public static TransportOffer of(String title, String description, Location origin, Location destination, Integer capacity) {
+    public static TransportOffer of(String title, String description, UserId user, Location origin, Location destination, Integer capacity) {
         TransportOffer transportOffer = new TransportOffer();
         transportOffer.title = title;
         transportOffer.description = description;
+        transportOffer.userId = user;
         transportOffer.origin = origin;
         transportOffer.destination = destination;
         transportOffer.capacity = capacity;

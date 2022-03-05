@@ -13,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.PageableResponse;
+import pl.gov.coi.pomocua.ads.UserId;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -49,6 +50,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
     protected TransportOffer sampleOfferRequest() {
         TransportOffer transportOffer = new TransportOffer();
         transportOffer.title = "jade do Pcimia";
+        transportOffer.userId = new UserId(1L);
         transportOffer.description = "moge zabrac 20 osob";
         transportOffer.destination = new Location("Pomorskie", "Gdańsk");
         transportOffer.origin = new Location("Pomorskie", "Pruszcz Gdański");
@@ -219,6 +221,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
     private static TransportOffer transportOfferBuilder(
             String title,
             String description,
+            UserId userId,
             Location origin,
             Location destination,
             Integer capacity,
@@ -227,6 +230,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         TransportOffer result = new TransportOffer();
         result.title = Optional.ofNullable(title).orElse("some title");
         result.description = Optional.ofNullable(description).orElse("some description");
+        result.userId = Optional.ofNullable(userId).orElse(new UserId(1L));
         result.origin = origin;
         result.destination = destination;
         result.capacity = capacity;
