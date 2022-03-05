@@ -1,7 +1,29 @@
-spring.datasource.url: jdbc:postgresql://localhost:5432/ads
-spring.datasource.username: ads
-spring.datasource.password: admin
+spring.datasource.url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/ads}
+spring.datasource.username: ${POSTGRES_APPLICATION_USER:ads}
+spring.datasource.password: ${POSTGRES_APPLICATION_USER_PASSWORD:admin}
 spring.data.web.pageable.max-page-size: 1000
 
 springdoc.api-docs.enabled: false
 springdoc.swagger-ui.enabled: false
+
+
+keycloak:
+  enabled: ${KEYCLOAK_ENABLED:true}
+  realm: POMOCUA
+  auth-server-url: ${KEYCLOAK_URL:https://local.pomagamukrainie.gov.pl/auth}
+  disable-trust-manager: true
+  resource: ${KEYCLOAK_CLIENT_ID:ogloszenia-be}
+  credentials.secret: ${KEYCLOAK_CLIENT_SECRET:280b739d-7150-44f6-8a95-260719782925}
+  bearer-only: true
+  security-constraints:
+    - authRoles:
+        - uma_authorization
+      securityCollections:
+        - name: secure
+          patterns:
+            - "/api/secure/*"
+    - securityCollections:
+        - name: PERMIT ALL
+          patterns:
+            - /*
+

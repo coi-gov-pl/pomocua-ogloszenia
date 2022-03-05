@@ -29,6 +29,7 @@ repositories {
 ext {
 	set('testcontainersVersion', "1.16.2")
 	set('springdocVersion', "1.6.6")
+	set('keycloakVersion', "15.0.2")
 }
 
 dependencies {
@@ -38,6 +39,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.flywaydb:flyway-core'
 	implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
+        implementation "org.keycloak:keycloak-spring-boot-starter:${keycloakVersion}"
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
