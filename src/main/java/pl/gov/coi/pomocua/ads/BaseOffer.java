@@ -1,6 +1,7 @@
 package pl.gov.coi.pomocua.ads;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Length;
 
@@ -9,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -24,8 +24,8 @@ public abstract class BaseOffer {
     @GeneratedValue(strategy = IDENTITY)
     public Long id;
 
-    @NotNull
     @Embedded
+    @JsonIgnore
     public UserId userId;
 
     @NotBlank

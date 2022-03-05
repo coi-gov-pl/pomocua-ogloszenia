@@ -7,8 +7,8 @@ import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import pl.gov.coi.pomocua.ads.BaseResourceFunctionalTest;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,14 +18,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AccommodationsResourceFunctionalTest {
+public class AccommodationsResourceFunctionalTest extends BaseResourceFunctionalTest {
 
   @Autowired
-  AccommodationsRepository accommodationsRepository;
+  private AccommodationsRepository accommodationsRepository;
 
   @LocalServerPort
-  int port;
+  private int port;
 
   private static final String POST_URL = "/api/secure/accommodations";
   private static final String GET_URL = "/api/accommodations";
@@ -169,7 +168,6 @@ public class AccommodationsResourceFunctionalTest {
     response
         .body("title", equalTo("testTitle"))
         .body("description", equalTo("testDescription"))
-        .body("userId.value", equalTo("testUser1"))
         .body("location.region", equalTo("Mazowieckie"))
         .body("location.city", equalTo("Warszawa"))
         .body("guests", equalTo(3))
@@ -181,7 +179,6 @@ public class AccommodationsResourceFunctionalTest {
     response
         .body("content[0].title", equalTo("testTitle"))
         .body("content[0].description", equalTo("testDescription"))
-        .body("content[0].userId.value", equalTo("testUser1"))
         .body("content[0].location.region", equalTo("Mazowieckie"))
         .body("content[0].location.city", equalTo("Warszawa"))
         .body("content[0].guests", equalTo(3))
@@ -204,7 +201,6 @@ public class AccommodationsResourceFunctionalTest {
     return """
     {
       "title": "testTitle",
-      "userId": "testUser1",
       "description": "testDescription",
       "location": {
         "region": "Mazowieckie",

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -14,11 +15,13 @@ import java.util.Optional;
 @RequestMapping("/api/")
 public class AccommodationsResource {
     private final AccommodationsRepository repository;
+    private final CurrentUser currentUser;
 
     @PostMapping("secure/accommodations")
     @ResponseStatus(HttpStatus.CREATED)
     public AccommodationOffer create(@Valid @RequestBody AccommodationOffer offer) {
         offer.id = null;
+        offer.userId = currentUser.getCurrentUserId();
         return repository.save(offer);
     }
 

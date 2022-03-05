@@ -1,20 +1,17 @@
 package pl.gov.coi.pomocua.ads.accomodations;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.PageableResponse;
-import pl.gov.coi.pomocua.ads.UserId;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
 
     @Test
@@ -94,7 +91,6 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
     protected AccommodationOffer sampleOfferRequest() {
         AccommodationOffer request = new AccommodationOffer();
         request.title = "sample work";
-        request.userId = new UserId("1");
         request.location = new Location("Mazowieckie", "Warszawa");
         request.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
         request.description = "description";
