@@ -49,7 +49,7 @@ class AccommodationOffer extends BaseOffer {
 @Repository
 interface AccommodationsRepository extends PagingAndSortingRepository<AccommodationOffer, Long> {
 
-    Page<AccommodationOffer> findAllByLocation_VoivodeshipIgnoreCaseAndLocation_CityIgnoreCaseAndGuestsIsGreaterThanEqual(String voivodeship, String city, int guests, Pageable pageable);
+    Page<AccommodationOffer> findAllByLocation_RegionIgnoreCaseAndLocation_CityIgnoreCaseAndGuestsIsGreaterThanEqual(String region, String city, int guests, Pageable pageable);
     Page<AccommodationOffer> findAllByGuestsIsGreaterThanEqual(int guests, Pageable pageable);
 }
 
