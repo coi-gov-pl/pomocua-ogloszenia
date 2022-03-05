@@ -170,12 +170,12 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         if (searchCriteria.getOrigin() != null) {
             builder
                     .queryParam("origin.city", searchCriteria.getOrigin().getCity())
-                    .queryParam("origin.voivodeship", searchCriteria.getOrigin().getVoivodeship());
+                    .queryParam("origin.region", searchCriteria.getOrigin().getRegion());
         }
         if (searchCriteria.getDestination() != null) {
             builder
                     .queryParam("destination.city", searchCriteria.getDestination().getCity())
-                    .queryParam("destination.voivodeship", searchCriteria.getDestination().getVoivodeship());
+                    .queryParam("destination.region", searchCriteria.getDestination().getRegion());
         }
         if (searchCriteria.getCapacity() != null) {
             builder.queryParam("capacity", searchCriteria.getCapacity());

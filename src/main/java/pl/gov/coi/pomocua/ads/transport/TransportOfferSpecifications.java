@@ -32,8 +32,8 @@ public class TransportOfferSpecifications {
         if (location.getCity() != null) {
             specifications.add((root, cq, cb) -> cb.equal(cb.lower(root.get(fieldName).get("city")), location.getCity().toLowerCase()));
         }
-        if (location.getVoivodeship() != null) {
-            specifications.add((root, cq, cb) -> cb.equal(cb.lower(root.get(fieldName).get("voivodeship")), location.getVoivodeship().toLowerCase()));
+        if (location.getRegion() != null) {
+            specifications.add((root, cq, cb) -> cb.equal(cb.lower(root.get(fieldName).get("region")), location.getRegion().toLowerCase()));
         }
         return joinSpecifications(specifications);
     }
