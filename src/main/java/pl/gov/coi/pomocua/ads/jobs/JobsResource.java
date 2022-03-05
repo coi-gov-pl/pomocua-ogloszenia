@@ -1,6 +1,5 @@
 package pl.gov.coi.pomocua.ads.jobs;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

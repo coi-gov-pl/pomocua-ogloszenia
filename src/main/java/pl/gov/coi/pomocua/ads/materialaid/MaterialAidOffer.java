@@ -15,7 +15,7 @@ import static javax.persistence.EnumType.STRING;
 public class MaterialAidOffer extends BaseOffer {
 
     @Enumerated(STRING)
-    private MaterialAidCategory category;
+    public MaterialAidCategory category;
 
     @Embedded
     public Location location;
