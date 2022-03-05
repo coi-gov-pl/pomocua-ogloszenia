@@ -10,27 +10,27 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping(path = "/api", produces = "application/json")
+@RequestMapping(path = "/api/", produces = "application/json")
 public class LegalAssistanceResource {
 
     private final LegalAssistanceRepository legalAssistanceRepository;
 
     public LegalAssistanceResource(LegalAssistanceRepository legalAssistanceRepository){this.legalAssistanceRepository = legalAssistanceRepository;}
 
-    @GetMapping(value = "/legal_assistances")
-    public Page<LegalAssistance> getLegalAssistances(Pageable pageRequest){
+    @GetMapping(value = "legal_assistances")
+    public Page<LegalAssistanceOffer> getLegalAssistances(Pageable pageRequest){
         return legalAssistanceRepository.findAll(pageRequest);
     }
 
-    @GetMapping(value = "/legal_assistances/{id}")
-    public Optional<LegalAssistance> getLegalAssistance(@PathVariable Long id){
+    @GetMapping(value = "legal_assistances/{id}")
+    public Optional<LegalAssistanceOffer> getLegalAssistance(@PathVariable Long id){
         return legalAssistanceRepository.findById(id);
     }
 
-    @PostMapping(value = "/secure/legal_assistances")
+    @PostMapping(value = "secure/legal_assistances")
     @ResponseStatus(HttpStatus.CREATED)
-    public LegalAssistance create(@Valid @RequestBody LegalAssistance legalAssistance){
-        legalAssistance.id = null;
-        return legalAssistanceRepository.save(legalAssistance);
+    public LegalAssistanceOffer create(@Valid @RequestBody LegalAssistanceOffer legalAssistanceOffer){
+        legalAssistanceOffer.id = null;
+        return legalAssistanceRepository.save(legalAssistanceOffer);
     }
 }

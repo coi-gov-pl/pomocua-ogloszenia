@@ -4,13 +4,15 @@ import org.springframework.core.ParameterizedTypeReference;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.PageableResponse;
-import pl.gov.coi.pomocua.ads.assistance.LegalAssistance;
+import pl.gov.coi.pomocua.ads.assistance.LegalAssistanceOffer;
 
-public class LegalAssistancesResourceTest extends BaseResourceTest<LegalAssistance> {
+import java.util.List;
+
+public class LegalAssistancesResourceTest extends BaseResourceTest<LegalAssistanceOffer> {
 
     @Override
-    protected Class<LegalAssistance> getClazz() {
-        return LegalAssistance.class;
+    protected Class<LegalAssistanceOffer> getClazz() {
+        return LegalAssistanceOffer.class;
     }
 
     @Override
@@ -19,18 +21,20 @@ public class LegalAssistancesResourceTest extends BaseResourceTest<LegalAssistan
     }
 
     @Override
-    protected ParameterizedTypeReference<PageableResponse<LegalAssistance>> getResponseType() {
+    protected ParameterizedTypeReference<PageableResponse<LegalAssistanceOffer>> getResponseType() {
         return new ParameterizedTypeReference<>() {
         };
     }
 
     @Override
-    protected LegalAssistance sampleOfferRequest() {
-        LegalAssistance legalAssistance = new LegalAssistance();
-        legalAssistance.title = "Help in legal issues";
-        legalAssistance.description = "I can help";
-        legalAssistance.location = new Location("lubelskie", "Lublin");
-
-        return legalAssistance;
+    protected LegalAssistanceOffer sampleOfferRequest() {
+        LegalAssistanceOffer legalAssistanceOffer = new LegalAssistanceOffer();
+        legalAssistanceOffer.title = "Help in legal issues";
+        legalAssistanceOffer.description = "I can help";
+        legalAssistanceOffer.location = new Location("lubelskie", "Lublin");
+        legalAssistanceOffer.type = List.of(LegalAssistanceOffer.Type.TEMPORARY);
+        legalAssistanceOffer.mode = LegalAssistanceOffer.Mode.REMOTE;
+        legalAssistanceOffer.language = List.of(LegalAssistanceOffer.Language.PL);
+        return legalAssistanceOffer;
     }
 }

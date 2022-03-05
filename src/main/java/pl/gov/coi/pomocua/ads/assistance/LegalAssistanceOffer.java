@@ -13,28 +13,34 @@ import static javax.persistence.EnumType.STRING;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-public class LegalAssistance extends BaseOffer {
+public class LegalAssistanceOffer extends BaseOffer {
     @Enumerated(STRING)
     public Mode mode;
 
     public Location location;
 
-    @ElementCollection(targetClass = HelpType.class)
+    @ElementCollection(targetClass = Type.class)
     @CollectionTable
     @Enumerated(STRING)
-    public List<HelpType> typeOfHelp;
+    public List<Type> type;
 
     @ElementCollection(targetClass = Language.class)
     @CollectionTable
     @Enumerated(STRING)
     public List<Language> language;
 
-    enum Language {}
+    public enum Language {
+        PL
+    }
 
-    enum Mode {}
+    public enum Mode {
+        REMOTE
+    }
 
-    enum HelpType {}
+    public enum Type {
+        TEMPORARY
+    }
 }
 
-interface LegalAssistanceRepository  extends PagingAndSortingRepository<LegalAssistance, Long> {
+interface LegalAssistanceRepository  extends PagingAndSortingRepository<LegalAssistanceOffer, Long> {
 }
