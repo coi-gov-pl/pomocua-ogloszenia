@@ -27,7 +27,7 @@ class AccommodationOffer extends BaseOffer {
     @Enumerated(STRING)
     public LengthOfStay lengthOfStay;
 
-    @ElementCollection(targetClass = Language.class)
+    @ElementCollection(targetClass = Language.class, fetch = FetchType.EAGER)
     @CollectionTable
     @Enumerated(STRING)
     public List<Language> hostLanguage;

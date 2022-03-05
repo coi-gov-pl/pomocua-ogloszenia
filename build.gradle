@@ -42,6 +42,7 @@ dependencies {
 	testImplementation 'org.assertj:assertj-core'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'io.rest-assured:rest-assured:4.4.0'
 }
 
 dependencyManagement {
