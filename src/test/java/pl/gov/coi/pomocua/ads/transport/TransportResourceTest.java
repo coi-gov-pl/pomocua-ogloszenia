@@ -154,15 +154,18 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
     @Test
     void shouldSortResults() {
         postOffer(aTransportOffer().title("a").build());
-        postOffer(aTransportOffer().title("b").build());
+        postOffer(aTransportOffer().title("bb").build());
+        postOffer(aTransportOffer().title("bą").build());
         postOffer(aTransportOffer().title("c").build());
+        postOffer(aTransportOffer().title("ć").build());
+        postOffer(aTransportOffer().title("d").build());
 
         PageRequest page = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "title"));
         PageableResponse<TransportOffer> results = searchOffers(page);
 
         assertThat(results.content)
                 .extracting(r -> r.title)
-                .containsExactly("c", "b", "a");
+                .containsExactly("d", "ć", "c", "bb", "bą", "a");
     }
 
     private TransportOffer[] searchOffers(TransportOfferSearchCriteria searchCriteria) {
