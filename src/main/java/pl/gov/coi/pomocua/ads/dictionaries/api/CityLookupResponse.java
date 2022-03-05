@@ -7,12 +7,12 @@ import java.util.List;
 public record CityLookupResponse(List<CityLookupDto> cities) {
 }
 
-record CityLookupDto(String city, String voivodeship) {
+record CityLookupDto(String city, String region) {
 
     static CityLookupDto fromEntity(City city) {
         return new CityLookupDto(
                 city.getLocation().getCity(),
-                city.getLocation().getVoivodeship()
+                city.getLocation().getRegion()
         );
     }
 }

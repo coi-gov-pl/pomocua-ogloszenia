@@ -11,6 +11,6 @@ import javax.persistence.Embeddable;
 @AllArgsConstructor
 @Data
 public class Location {
-    private String voivodeship;
-    private String city;
+    public String region;
+    public String city;
 }
