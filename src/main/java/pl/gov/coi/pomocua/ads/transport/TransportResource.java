@@ -25,7 +25,6 @@ public class TransportResource {
     }
 
     @Operation(description = "Allows to search for transport offers using different criterias (passes as query params). Each criteria is optional.")
-    @PaginatedOperation
     @GetMapping("transport")
     public Page<TransportOffer> list(Pageable pageRequest, TransportOfferSearchCriteria searchCriteria) {
         return repository.findAll(TransportOfferSpecifications.from(searchCriteria), pageRequest);
