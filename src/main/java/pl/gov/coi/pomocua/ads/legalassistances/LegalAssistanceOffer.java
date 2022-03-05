@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ads.assistance;
+package pl.gov.coi.pomocua.ads.legalassistances;
 
 import lombok.EqualsAndHashCode;
 import org.springframework.data.repository.PagingAndSortingRepository;

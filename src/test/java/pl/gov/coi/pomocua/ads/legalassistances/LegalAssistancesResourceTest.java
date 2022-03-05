@@ -1,10 +1,9 @@
-package pl.gov.coi.pomocua.ads.assistances;
+package pl.gov.coi.pomocua.ads.legalassistances;
 
 import org.springframework.core.ParameterizedTypeReference;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.PageableResponse;
-import pl.gov.coi.pomocua.ads.assistance.LegalAssistanceOffer;
 
 import java.util.List;
 

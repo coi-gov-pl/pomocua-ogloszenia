@@ -1,4 +1,4 @@
-package pl.gov.coi.pomocua.ads.assistance;
+package pl.gov.coi.pomocua.ads.legalassistances;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
