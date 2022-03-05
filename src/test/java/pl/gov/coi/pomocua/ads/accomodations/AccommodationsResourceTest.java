@@ -10,6 +10,7 @@ import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.PageableResponse;
 import pl.gov.coi.pomocua.ads.UserId;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -100,6 +101,7 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
         request.description = "description";
         request.lengthOfStay = AccommodationOffer.LengthOfStay.MONTH_2;
         request.guests = 5;
+        request.modifiedDate = LocalDateTime.parse("2020-10-17T00:00");
         return request;
     }
 }

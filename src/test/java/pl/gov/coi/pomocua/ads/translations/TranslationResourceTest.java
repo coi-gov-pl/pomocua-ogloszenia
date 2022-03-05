@@ -6,6 +6,7 @@ import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.PageableResponse;
 import pl.gov.coi.pomocua.ads.UserId;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -38,6 +39,7 @@ class TranslationResourceTest extends BaseResourceTest<TranslationOffer> {
         request.sworn = true;
         request.language = List.of(TranslationOffer.Language.PL, TranslationOffer.Language.UA);
         request.description = "description";
+        request.modifiedDate = LocalDateTime.parse("2020-10-17T00:00");
         return request;
     }
 }
