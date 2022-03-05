@@ -7,7 +7,7 @@ create table accommodation_offer (
     description     text,
     guests          integer,
     length_of_stay  text,
-    modified_date   date not null
+    modified_date   timestamp not null
 );
 
 create table accommodation_offer_host_language (

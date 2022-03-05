@@ -7,7 +7,7 @@ create table translation_offer (
     city            text,
     region          text,
     description     text,
-    modified_date   date not null
+    modified_date   timestamp not null
 );
 
 create table translation_offer_language (

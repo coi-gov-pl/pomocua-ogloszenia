@@ -6,7 +6,7 @@ create table job_offer (
     city            text,
     region          text,
     description     text,
-    modified_date   date not null
+    modified_date   timestamp not null
 );
 
 create table job_offer_type(
