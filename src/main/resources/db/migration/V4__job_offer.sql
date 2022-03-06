@@ -67,8 +67,6 @@ create table job_offer_type_AUD (
             REFERENCES revinfo(rev)
 );
 
-
-
 CREATE TABLE job_offer_AUD
 (
     id          bigserial,

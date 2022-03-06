@@ -2,6 +2,7 @@ package pl.gov.coi.pomocua.ads.transport;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.EqualsAndHashCode;
+import org.hibernate.envers.Audited;
 import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.UserId;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
+@Audited
 @EqualsAndHashCode(callSuper = true)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
 public class TransportOffer extends BaseOffer {

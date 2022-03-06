@@ -1,6 +1,7 @@
 package pl.gov.coi.pomocua.ads.translations;
 
 import lombok.EqualsAndHashCode;
+import org.hibernate.envers.Audited;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import pl.gov.coi.pomocua.ads.BaseOffer;
@@ -15,6 +16,7 @@ import static javax.persistence.EnumType.STRING;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Audited
 public class TranslationOffer extends BaseOffer {
 
     @Enumerated(STRING)
