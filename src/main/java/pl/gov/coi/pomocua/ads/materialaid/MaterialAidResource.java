@@ -5,9 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
 
 import javax.validation.Valid;
 
@@ -16,6 +17,7 @@ import javax.validation.Valid;
 @RequestMapping(value = "/api/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MaterialAidResource {
     private final MaterialAidOfferRepository repository;
+    private final CurrentUser currentUser;
 
     @Operation(description = "Creates material aid offer")
     @PostMapping(value = "secure/material-aid")
@@ -23,6 +25,7 @@ public class MaterialAidResource {
     public MaterialAidOffer postMaterialAidOffer(
             @Valid @RequestBody final MaterialAidOffer materialAidOffer) {
         materialAidOffer.id = null;
+        materialAidOffer.userId = currentUser.getCurrentUserId();
         return repository.save(materialAidOffer);
     }
 

@@ -15,7 +15,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @EqualsAndHashCode
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class BaseOffer {
+public class BaseOffer {
     protected static final String ALLOWED_TEXT = "^[^<>()%#@\"']*$";
 
     @Id

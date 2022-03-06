@@ -1,5 +1,6 @@
 package pl.gov.coi.pomocua.ads.myoffers;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,27 +32,49 @@ class MyOffersResourceTest {
     @Autowired
     private TestCurrentUser testCurrentUser;
 
+    @AfterEach
+    void tearDown() {
+        testCurrentUser.setDefault();
+    }
+
     @Test
-    void shouldReturnOffersForUser() {
+    void shouldReturnDifferentOffersForUser() {
         UserId userId = new UserId("my-offer user id");
         testCurrentUser.setCurrentUserId(userId);
 
-        AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), AccommodationOffer.class);
-        JobOffer jobOffer = postOffer(JobsTestDataGenerator.sampleOffer(), JobOffer.class);
+        AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
+        JobOffer jobOffer = postOffer(JobsTestDataGenerator.sampleOffer(), "jobs", JobOffer.class);
 
         BaseOffer[] offers = listOffers();
         assertThat(offers).extracting("title").contains(accOffer.title, jobOffer.title);
+        assertThat(offers).extracting("description").contains(accOffer.description, jobOffer.description);
+    }
+
+    @Test
+    void shouldReturnOffersOnlyForLoggedUser() {
+        UserId accommodationOfferUserId = new UserId("acommodation offer user id");
+        testCurrentUser.setCurrentUserId(accommodationOfferUserId);
+        AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
+
+        UserId jobOfferUserId = new UserId("job offer user id");
+        testCurrentUser.setCurrentUserId(jobOfferUserId);
+        JobOffer jobOffer = postOffer(JobsTestDataGenerator.sampleOffer(), "jobs", JobOffer.class);
+
+        testCurrentUser.setCurrentUserId(accommodationOfferUserId);
+        BaseOffer[] offers = listOffers();
+        assertThat(offers).extracting("title").contains(accOffer.title);
+        assertThat(offers).extracting("description").contains(accOffer.description);
     }
 
     private BaseOffer[] listOffers() {
-        ResponseEntity<PageableResponse<AccommodationOffer>> list = restTemplate.exchange(
+        ResponseEntity<PageableResponse<BaseOffer>> list = restTemplate.exchange(
                 "/api/secure/my-offers", HttpMethod.GET, null, new ParameterizedTypeReference<>() {}
         );
         return list.getBody().content;
     }
 
-    private <T extends BaseOffer> T postOffer(T request, Class<T> clazz) {
-        ResponseEntity<T> response = restTemplate.postForEntity("/api/secure/jobs", request, clazz);
+    private <T extends BaseOffer> T postOffer(T request, String urlSuffix, Class<T> clazz) {
+        ResponseEntity<T> response = restTemplate.postForEntity("/api/secure/" + urlSuffix, request, clazz);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         T entity = response.getBody();
         assertThat(entity.id).isNotNull();
