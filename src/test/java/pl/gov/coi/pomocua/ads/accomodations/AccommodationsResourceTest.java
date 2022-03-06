@@ -6,12 +6,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
-import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.PageableResponse;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -112,13 +110,6 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
 
     @Override
     protected AccommodationOffer sampleOfferRequest() {
-        AccommodationOffer request = new AccommodationOffer();
-        request.title = "sample work";
-        request.location = new Location("Mazowieckie", "Warszawa");
-        request.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
-        request.description = "description";
-        request.lengthOfStay = AccommodationOffer.LengthOfStay.MONTH_2;
-        request.guests = 5;
-        return request;
+        return AccommodationsTestDataGenerator.sampleOffer();
     }
 }
