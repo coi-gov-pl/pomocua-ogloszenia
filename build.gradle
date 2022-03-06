@@ -10,6 +10,7 @@ plugins {
 	id 'org.springframework.boot' version "${springBootVersion}"
 	id 'io.spring.dependency-management' version "${springDependencyVersion}"
 	id 'java'
+	id 'io.gatling.gradle' version "3.7.6"
 }
 
 group = 'pl.gov.coi.pomocua'
