@@ -16,8 +16,8 @@ import static javax.persistence.EnumType.STRING;
 @Entity
 public class MaterialAidOffer extends BaseOffer {
 
-    @NotNull
     @Enumerated(STRING)
+    @NotNull
     public MaterialAidCategory category;
 
     @Valid
