@@ -1,10 +1,8 @@
 package pl.gov.coi.pomocua.ads.users;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import pl.gov.coi.pomocua.ads.UserId;
 
 public class User {
-    @JsonIgnore
     private final UserId userId;
     public final String email;
     public final String phoneNumber;
