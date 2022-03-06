@@ -1,6 +1,7 @@
 package pl.gov.coi.pomocua.ads;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -8,7 +9,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import java.time.LocalDateTime;
@@ -26,8 +26,8 @@ public abstract class BaseOffer {
     @GeneratedValue(strategy = IDENTITY)
     public Long id;
 
-    @NotNull
     @Embedded
+    @JsonIgnore
     public UserId userId;
 
     @NotBlank

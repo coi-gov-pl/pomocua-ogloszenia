@@ -17,7 +17,29 @@ sdk install java
 
 Follow instructions on [this page](https://docs.docker.com/get-docker/).
 
+### Installing docker-compose
+
+Follow instructions on [this page](https://docs.docker.com/compose/install/).
+
 ## Running the app
+
+### Running whole environment:
+
+If you want to run the app with keycloak, proxy and db you can do it with:
+
+        $ docker-compose -p help-ua build
+        $ REINIT_KEYCLOAK=1 docker-compose -p help-ua up -d
+
+REINIT\_KEYCLOAK forces the keycloak to reinit the DB to initial state (all changes **WILL GET LOST**)._
+After reiniting keycloak you can restart the containers without REINIT\_KEYCLOAK flag:
+
+        $ docker-compose -p help-ua stop
+        $ docker-compose -p help-ua up -d
+
+TODO: it would be good to add to nginx the FrontEnd code somehow? For now you
+can modify the docker-compose to have volume bind to the web dist folder..
+
+### Other modes:
 
 Execute `./start_server.sh` to run the server with running database, pgAdmin and Swagger documentation.
 
@@ -29,6 +51,26 @@ This command will setup:
 - PostgreSQL 14.2-alpine running on `http://localhost:5432` (or `http://ads-postgres:5432` internally on docker network)
 
 Execute `./start_db.sh` to run only database with pgAdmin (without the server and Swagger).
+
+## How to use?
+
+You can use PostMan to get token and query the API. You should use in PostMan the following oauth2 token configuration:
+
+Authorization type: oauth2
+Header prefix: Bearer
+Token name: token
+Callback URL: https://local.pomagamukrainie.gov.pl/ogloszenia/test
+Auth URL: https://local.pomagamukrainie.gov.pl/auth/realms/POMOCUA/protocol/openid-connect/auth
+Access Token URL: https://local.pomagamukrainie.gov.pl/auth/realms/POMOCUA/protocol/openid-connect/token
+ClientId: ogloszenia-fe
+ClientSecret: 
+Scope: openid profile
+State: 123
+
+You can use the following sample user to login:
+login: znxtfetqfiqsds6wqzbdl6pb4eslbyxx
+password: test
+
 
 ## API documentation
 

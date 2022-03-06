@@ -4,7 +4,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.PageableResponse;
-import pl.gov.coi.pomocua.ads.UserId;
 
 import java.time.LocalDateTime;
 
@@ -29,7 +28,6 @@ public class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> 
     @Override
     protected MaterialAidOffer sampleOfferRequest() {
         MaterialAidOffer request = new MaterialAidOffer();
-        request.userId= new UserId("1");
         request.description = "some description";
         request.title = "some title";
         request.category = MaterialAidCategory.CLOTHING;

@@ -1,0 +1,6 @@
+embed-server --server-config=standalone-ha.xml --std-out=echo
+
+run-batch --file=/opt/jboss/startup-scripts/cli/change-frontendUrl.cli
+run-batch --file=/opt/jboss/startup-scripts/cli/proxy.cli
+
+stop-embedded-server

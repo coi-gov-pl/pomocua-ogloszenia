@@ -4,7 +4,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.PageableResponse;
-import pl.gov.coi.pomocua.ads.UserId;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,7 +31,6 @@ class TranslationResourceTest extends BaseResourceTest<TranslationOffer> {
     protected TranslationOffer sampleOfferRequest() {
         TranslationOffer request = new TranslationOffer();
         request.title = "sample translation";
-        request.userId = new UserId("1");
         request.mode = TranslationOffer.Mode.REMOTE;
         request.city = "Warszawa";
         request.region = "Mazowieckie";

@@ -1,7 +1,7 @@
 package pl.gov.coi.pomocua.ads;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -53,9 +53,9 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     @Autowired
     protected TestCurrentUser testCurrentUser;
 
-    @BeforeEach
-    public void clear() {
-        testCurrentUser.clear();
+    @AfterEach
+    void tearDown() {
+        testCurrentUser.setDefault();
     }
 
     @Test
@@ -129,6 +129,23 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         assertThat(response.id).isNotEqualTo(request.id);
     }
 
+    @Test
+    void shouldReturnSingleOffer() {
+        T createdOffer = postSampleOffer();
+
+        ResponseEntity<T> response = restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), createdOffer.id), getClazz());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(createdOffer);
+    }
+
+    @Test
+    void shouldReturn404WhenSingleOfferNotFound() {
+        ResponseEntity<T> response = restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), 123L), getClazz());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
     protected abstract Class<T> getClazz();
 
     protected abstract String getOfferSuffix();
@@ -148,7 +165,6 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         return postOffer(request);
     }
 
-    @NotNull
     protected T postOffer(T request) {
         ResponseEntity<T> response = restTemplate.postForEntity("/api/secure/" + getOfferSuffix(), request, getClazz());
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);

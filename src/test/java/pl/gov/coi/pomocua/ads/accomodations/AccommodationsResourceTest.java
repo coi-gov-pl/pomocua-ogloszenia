@@ -1,7 +1,7 @@
 package pl.gov.coi.pomocua.ads.accomodations;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -9,14 +9,21 @@ import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.PageableResponse;
 import pl.gov.coi.pomocua.ads.UserId;
+import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
+
+    @Autowired
+    private TestCurrentUser testCurrentUser;
+
+    @Autowired
+    private AccommodationsRepository repository;
 
     @Test
     void shouldReturnOffersByFullCriteria() {
@@ -59,6 +66,19 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
     }
 
     @Test
+    void shouldSetUserIdWhenStoreOfferInDB() {
+        UserId userId = new UserId("user with accommodation offer");
+        testCurrentUser.setCurrentUserId(userId);
+
+        AccommodationOffer postedOffer = postSampleOffer();
+
+        Optional<AccommodationOffer> storedOffer = repository.findById(postedOffer.id);
+
+        assertThat(storedOffer).isNotEmpty();
+        assertThat(storedOffer.get().userId).isEqualTo(userId);
+    }
+
+    @Test
     void shouldReturnOffersByCapacityOnly() {
         AccommodationOffer response = postSampleOffer();
 
@@ -95,7 +115,6 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
     protected AccommodationOffer sampleOfferRequest() {
         AccommodationOffer request = new AccommodationOffer();
         request.title = "sample work";
-        request.userId = new UserId("1");
         request.location = new Location("Mazowieckie", "Warszawa");
         request.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
         request.description = "description";
