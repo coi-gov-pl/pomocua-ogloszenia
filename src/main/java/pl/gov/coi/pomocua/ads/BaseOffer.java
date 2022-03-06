@@ -3,6 +3,7 @@ package pl.gov.coi.pomocua.ads;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
+import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Embedded;

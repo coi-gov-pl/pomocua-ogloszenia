@@ -1,6 +1,7 @@
 package pl.gov.coi.pomocua.ads.jobs;
 
 import lombok.EqualsAndHashCode;
+import org.hibernate.envers.Audited;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import pl.gov.coi.pomocua.ads.BaseOffer;
@@ -13,6 +14,7 @@ import static javax.persistence.EnumType.STRING;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Audited
 class JobOffer extends BaseOffer {
     @Enumerated(STRING)
     public Mode mode;
