@@ -43,4 +43,15 @@ public class UserResourceTest {
         assertThat(response.getBody().email).isEqualTo("some@email.invalid");
         assertThat(response.getBody().phoneNumber).isEqualTo("600000000");
     }
+
+    @Test
+    void handleMissingUser() {
+        User user = new User(new UserId("some-current-id"), "some@email.invalid", "600000000");
+        testUsersRepository.clear();
+        testCurrentUser.setCurrentUserId(user.id());
+
+        ResponseEntity<UserInfo> response = restTemplate.getForEntity("/api/secure/me", UserInfo.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
+import pl.gov.coi.pomocua.ads.authentication.UnauthorizedException;
 
 import java.util.Optional;
 
@@ -19,7 +20,7 @@ public class UsersResource {
 
     @GetMapping("secure/me")
     public ResponseEntity<UserInfo> me() {
-        return ResponseEntity.of(UserInfo.from(usersRepository.getById(currentUser.getCurrentUserId())));
+        return ResponseEntity.ok(UserInfo.from(usersRepository.getById(currentUser.getCurrentUserId())).orElseThrow(UnauthorizedException::new));
     }
 
     @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
@@ -36,7 +37,7 @@ public class UsersResource {
         }
 
         public static Optional<UserInfo> from(User user) {
-            return Optional.ofNullable(user).map(value -> new UserInfo(value.email, value.phoneNumber));
+            return Optional.ofNullable(user).map(value -> new UserInfo(value.email(), value.phoneNumber()));
         }
     }
 }

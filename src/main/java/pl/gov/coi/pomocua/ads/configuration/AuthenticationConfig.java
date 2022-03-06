@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
 import pl.gov.coi.pomocua.ads.dev.FakeCurrentUser;
-import pl.gov.coi.pomocua.ads.dev.FakeUserRepository;
+import pl.gov.coi.pomocua.ads.dev.FakeUsersRepository;
 import pl.gov.coi.pomocua.ads.users.UsersRepository;
 
 @Configuration
@@ -18,7 +18,7 @@ public class AuthenticationConfig {
 
     @Profile("dev")
     @Bean
-    public UsersRepository fakeUsersRepository() {
-        return new FakeUserRepository();
+    public UsersRepository fakeUsersRepository(CurrentUser currentUser) {
+        return new FakeUsersRepository(currentUser);
     }
 }

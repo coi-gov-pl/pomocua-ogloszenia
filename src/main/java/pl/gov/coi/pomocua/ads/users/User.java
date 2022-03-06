@@ -4,8 +4,8 @@ import pl.gov.coi.pomocua.ads.UserId;
 
 public class User {
     private final UserId userId;
-    public final String email;
-    public final String phoneNumber;
+    private final String email;
+    private final String phoneNumber;
 
     public User() {
         this(null,null,null);
@@ -22,5 +22,13 @@ public class User {
 
     public UserId id() {
         return userId;
+    }
+
+    public String email() {
+        return email;
+    }
+
+    public String phoneNumber() {
+        return phoneNumber;
     }
 }
