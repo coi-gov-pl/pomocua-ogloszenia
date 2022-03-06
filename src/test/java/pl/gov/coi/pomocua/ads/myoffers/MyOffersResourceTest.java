@@ -17,8 +17,8 @@ import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationsTestDataGenerator;
 import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
-import pl.gov.coi.pomocua.ads.jobs.JobOffer;
-import pl.gov.coi.pomocua.ads.jobs.JobsTestDataGenerator;
+import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
+import pl.gov.coi.pomocua.ads.materialaid.MaterialAidTestDataGenerator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,12 +43,12 @@ class MyOffersResourceTest {
         testCurrentUser.setCurrentUserId(userId);
 
         AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
-        JobOffer jobOffer = postOffer(JobsTestDataGenerator.sampleOffer(), "jobs", JobOffer.class);
+        MaterialAidOffer materialAidOffer = postOffer(MaterialAidTestDataGenerator.sampleOffer(), "material-aid", MaterialAidOffer.class);
 
         BaseOffer[] offers = listOffers();
-        assertThat(offers).extracting("id").containsExactly(accOffer.id, jobOffer.id);
-        assertThat(offers).extracting("title").containsExactly(accOffer.title, jobOffer.title);
-        assertThat(offers).extracting("description").containsExactly(accOffer.description, jobOffer.description);
+        assertThat(offers).extracting("id").containsExactly(accOffer.id, materialAidOffer.id);
+        assertThat(offers).extracting("title").containsExactly(accOffer.title, materialAidOffer.title);
+        assertThat(offers).extracting("description").containsExactly(accOffer.description, materialAidOffer.description);
     }
 
     @Test
@@ -57,9 +57,9 @@ class MyOffersResourceTest {
         testCurrentUser.setCurrentUserId(accommodationOfferUserId);
         AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
 
-        UserId jobOfferUserId = new UserId("job offer user id");
-        testCurrentUser.setCurrentUserId(jobOfferUserId);
-        postOffer(JobsTestDataGenerator.sampleOffer(), "jobs", JobOffer.class);
+        UserId materialAidOfferUserId = new UserId("job offer user id");
+        testCurrentUser.setCurrentUserId(materialAidOfferUserId);
+        postOffer(MaterialAidTestDataGenerator.sampleOffer(), "material-aid", MaterialAidOffer.class);
 
         testCurrentUser.setCurrentUserId(accommodationOfferUserId);
         BaseOffer[] offers = listOffers();
