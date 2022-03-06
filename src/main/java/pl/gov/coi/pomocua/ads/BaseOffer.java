@@ -52,5 +52,5 @@ public abstract class BaseOffer {
     public String description;
 
     @Transient
-    public String type = getClass().getSimpleName();;
+    public String type = getClass().getSimpleName();
 }
