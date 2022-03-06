@@ -3,7 +3,6 @@ package pl.gov.coi.pomocua.ads.accomodations;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +68,7 @@ public class AccommodationsResourceFunctionalTest extends BaseResourceFunctional
     assertResponseBody(response);
   }
 
-  @Ignore
+  @Test
   void shouldReturnNotFoundWhenAccommodationOfferNotExistsById() {
     postAccommodation(getBody());
     given()
