@@ -6,7 +6,10 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.UserId;
 
+import java.util.Optional;
+
 public interface MyOffersRepository extends PagingAndSortingRepository<BaseOffer, Long> {
 
     Page<BaseOffer> findAllByUserId(UserId userId, Pageable pageable);
+    Optional<BaseOffer> findByIdAndUserId(Long id, UserId userId);
 }

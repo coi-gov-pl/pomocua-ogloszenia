@@ -3,6 +3,7 @@ package pl.gov.coi.pomocua.ads.myoffers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,8 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
-
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,7 +26,8 @@ public class MyOffersResource {
     }
 
     @GetMapping("my-offers/{id}")
-    public Optional<BaseOffer> get(@PathVariable Long id) {
-        return repository.findById(id);
+    public ResponseEntity<BaseOffer> get(@PathVariable Long id) {
+        UserId userId = currentUser.getCurrentUserId();
+        return ResponseEntity.of(repository.findByIdAndUserId(id, userId));
     }
 }

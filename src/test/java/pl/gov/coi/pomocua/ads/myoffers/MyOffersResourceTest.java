@@ -46,8 +46,9 @@ class MyOffersResourceTest {
         JobOffer jobOffer = postOffer(JobsTestDataGenerator.sampleOffer(), "jobs", JobOffer.class);
 
         BaseOffer[] offers = listOffers();
-        assertThat(offers).extracting("title").contains(accOffer.title, jobOffer.title);
-        assertThat(offers).extracting("description").contains(accOffer.description, jobOffer.description);
+        assertThat(offers).extracting("id").containsExactly(accOffer.id, jobOffer.id);
+        assertThat(offers).extracting("title").containsExactly(accOffer.title, jobOffer.title);
+        assertThat(offers).extracting("description").containsExactly(accOffer.description, jobOffer.description);
     }
 
     @Test
@@ -62,8 +63,22 @@ class MyOffersResourceTest {
 
         testCurrentUser.setCurrentUserId(accommodationOfferUserId);
         BaseOffer[] offers = listOffers();
-        assertThat(offers).extracting("title").contains(accOffer.title);
-        assertThat(offers).extracting("description").contains(accOffer.description);
+        assertThat(offers).extracting("id").containsExactly(accOffer.id);
+        assertThat(offers).extracting("title").containsExactly(accOffer.title);
+        assertThat(offers).extracting("description").containsExactly(accOffer.description);
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenGettingOfferForOtherUser() {
+        UserId accommodationOfferUserId = new UserId("acommodation offer user id");
+        testCurrentUser.setCurrentUserId(accommodationOfferUserId);
+        AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
+
+        UserId differentUserId = new UserId("different user id");
+        testCurrentUser.setCurrentUserId(differentUserId);
+
+        ResponseEntity<BaseOffer> response = restTemplate.getForEntity("/api/secure/my-offers/" + accOffer.id, BaseOffer.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     private BaseOffer[] listOffers() {
