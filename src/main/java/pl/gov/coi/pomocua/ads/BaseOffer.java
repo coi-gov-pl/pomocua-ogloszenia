@@ -50,4 +50,7 @@ public abstract class BaseOffer {
     @Length(max = 1000)
     @Pattern(regexp = ALLOWED_TEXT)
     public String description;
+
+    @Transient
+    public String type = getClass().getSimpleName();;
 }
