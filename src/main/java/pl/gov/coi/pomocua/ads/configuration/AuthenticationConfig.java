@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
 import pl.gov.coi.pomocua.ads.dev.FakeCurrentUser;
+import pl.gov.coi.pomocua.ads.iam.KeycloakCurrentUser;
 
 @Configuration
 public class AuthenticationConfig {
@@ -12,5 +13,11 @@ public class AuthenticationConfig {
     @Bean
     public CurrentUser fakeCurrentUser() {
         return new FakeCurrentUser();
+    }
+
+    @Profile("!dev")
+    @Bean
+    public CurrentUser keycloakCurrentUser() {
+        return new KeycloakCurrentUser();
     }
 }
