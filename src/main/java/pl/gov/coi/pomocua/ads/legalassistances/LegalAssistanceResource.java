@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,8 +24,8 @@ public class LegalAssistanceResource {
     }
 
     @GetMapping(value = "legal-assistances/{id}")
-    public Optional<LegalAssistanceOffer> getLegalAssistance(@PathVariable Long id){
-        return legalAssistanceRepository.findById(id);
+    public ResponseEntity<LegalAssistanceOffer> get(@PathVariable Long id){
+        return ResponseEntity.of(legalAssistanceRepository.findById(id));
     }
 
     @PostMapping(value = "secure/legal-assistances")
