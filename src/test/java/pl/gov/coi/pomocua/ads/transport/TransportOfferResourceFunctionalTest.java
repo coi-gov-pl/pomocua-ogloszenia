@@ -80,6 +80,7 @@ public class TransportOfferResourceFunctionalTest extends BaseResourceFunctional
         .body("content[0].destination.city", equalTo("Warszawa"))
         .body("content[0].capacity", equalTo(3))
         .body("content[0].transportDate", equalTo("2022-03-05"));
+
   }
 
   @Override

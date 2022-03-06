@@ -1,6 +1,5 @@
 package pl.gov.coi.pomocua.ads;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,10 +9,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,13 +28,15 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
     @Autowired
     protected TestRestTemplate restTemplate;
-
     @Autowired
     protected TestCurrentUser testCurrentUser;
+    @Autowired
+    private TestTimeProvider testTimeProvider;
 
     @AfterEach
     void tearDown() {
         testCurrentUser.setDefault();
+        testTimeProvider.reset();
     }
 
     @Test
@@ -50,6 +57,18 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         T created = postSampleOffer();
         T returned = restTemplate.getForObject("/api/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
         assertThat(returned).isEqualTo(created);
+    }
+
+    @Test
+    void shouldSetModifiedDateWhenOfferCreated() {
+        setCurrentTime(Instant.parse("2022-03-05T14:20:00Z"));
+
+        T created = postSampleOffer();
+
+        Optional<T> createdEntity = getRepository().findById(created.id);
+        assertThat(createdEntity)
+                .isNotEmpty()
+                .get().extracting(e -> e.modifiedDate).isEqualTo(Instant.parse("2022-03-05T14:20:00Z"));
     }
 
     @Test
@@ -128,6 +147,8 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
     protected abstract T sampleOfferRequest();
 
+    protected abstract CrudRepository<T, Long> getRepository();
+
     private T[] listOffers() {
         ResponseEntity<PageableResponse<T>> list = restTemplate.exchange("/api/" + getOfferSuffix(), HttpMethod.GET, null,
                 getResponseType());
@@ -139,7 +160,6 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         return postOffer(request);
     }
 
-    @NotNull
     protected T postOffer(T request) {
         ResponseEntity<T> response = restTemplate.postForEntity("/api/secure/" + getOfferSuffix(), request, getClazz());
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -147,5 +167,9 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         assertThat(entity.id).isNotNull();
         assertThat(entity).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
         return entity;
+    }
+
+    protected void setCurrentTime(Instant time) {
+        testTimeProvider.setClock(Clock.fixed(time, ZoneOffset.UTC));
     }
 }

@@ -15,5 +15,13 @@ public class TestConfiguration {
     }
 
     @Bean
-    public TestUsersRepository usersRepository() { return new TestUsersRepository(); }
+    public TestUsersRepository usersRepository() {
+        return new TestUsersRepository();
+    }
+
+    @Bean
+    @Primary
+    public TestTimeProvider testTimeProvider() {
+        return new TestTimeProvider();
+    }
 }
