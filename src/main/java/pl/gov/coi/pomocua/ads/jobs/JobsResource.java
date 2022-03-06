@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class JobsResource {
     }
 
     @GetMapping("jobs/{id}")
-    public Optional<JobOffer> get(@PathVariable Long id) {
-        return repository.findById(id);
+    public ResponseEntity<JobOffer> get(@PathVariable Long id) {
+        return ResponseEntity.of(repository.findById(id));
     }
 }

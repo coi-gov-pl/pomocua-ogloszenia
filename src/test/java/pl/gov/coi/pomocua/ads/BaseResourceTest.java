@@ -103,6 +103,23 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         assertThat(response.id).isNotEqualTo(request.id);
     }
 
+    @Test
+    void shouldReturnSingleOffer() {
+        T createdOffer = postSampleOffer();
+
+        ResponseEntity<T> response = restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), createdOffer.id), getClazz());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(createdOffer);
+    }
+
+    @Test
+    void shouldReturn404WhenSingleOfferNotFound() {
+        ResponseEntity<T> response = restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), 123L), getClazz());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
     protected abstract Class<T> getClazz();
 
     protected abstract String getOfferSuffix();
