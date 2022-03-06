@@ -40,7 +40,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.flywaydb:flyway-core'
 	implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
-  implementation "org.keycloak:keycloak-spring-boot-starter:${keycloakVersion}"
+  	implementation "org.keycloak:keycloak-spring-boot-starter:${keycloakVersion}"
+	implementation "org.keycloak:keycloak-admin-client:${keycloakVersion}"
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
