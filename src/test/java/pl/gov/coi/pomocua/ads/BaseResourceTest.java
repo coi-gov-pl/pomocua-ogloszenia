@@ -1,6 +1,7 @@
 package pl.gov.coi.pomocua.ads;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -25,6 +26,11 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
     @Autowired
     protected TestCurrentUser testCurrentUser;
+
+    @AfterEach
+    void tearDown() {
+        testCurrentUser.setDefault();
+    }
 
     @Test
     void shouldCreateOffer() {

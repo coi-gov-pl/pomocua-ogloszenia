@@ -75,8 +75,6 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
 
         assertThat(storedOffer).isNotEmpty();
         assertThat(storedOffer.get().userId).isEqualTo(userId);
-
-        testCurrentUser.setDefault();
     }
 
     @Test
