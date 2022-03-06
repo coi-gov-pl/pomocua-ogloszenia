@@ -1,10 +1,8 @@
 package pl.gov.coi.pomocua.ads.jobs;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.repository.CrudRepository;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
-import pl.gov.coi.pomocua.ads.PageableResponse;
 
 class JobsResourceTest extends BaseResourceTest<JobOffer> {
 
@@ -19,12 +17,6 @@ class JobsResourceTest extends BaseResourceTest<JobOffer> {
     @Override
     protected String getOfferSuffix() {
         return "jobs";
-    }
-
-    @Override
-    protected ParameterizedTypeReference<PageableResponse<JobOffer>> getResponseType() {
-        return new ParameterizedTypeReference<>() {
-        };
     }
 
     @Override

@@ -6,6 +6,10 @@ spring.data.web.pageable.max-page-size: 1000
 springdoc.api-docs.enabled: false
 springdoc.swagger-ui.enabled: false
 
+spring:
+  jackson:
+    mapper:
+      USE_BASE_TYPE_AS_DEFAULT_IMPL: true
 
 keycloak:
   enabled: ${KEYCLOAK_ENABLED:true}

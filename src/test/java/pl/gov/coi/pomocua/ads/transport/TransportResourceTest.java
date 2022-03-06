@@ -7,19 +7,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
-import pl.gov.coi.pomocua.ads.PageableResponse;
+import pl.gov.coi.pomocua.ads.Offers;
 
+import java.net.URI;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,12 +36,6 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
     @Override
     protected String getOfferSuffix() {
         return "transport";
-    }
-
-    @Override
-    protected ParameterizedTypeReference<PageableResponse<TransportOffer>> getResponseType() {
-        return new ParameterizedTypeReference<>() {
-        };
     }
 
     @BeforeEach
@@ -81,10 +74,10 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
 
         TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
         searchCriteria.setOrigin(new Location("Mazowieckie", "Warszawa"));
-        TransportOffer[] results = searchOffers(searchCriteria);
+        var results = searchOffers(searchCriteria);
 
-        assertThat(results.length).isEqualTo(1);
-        assertThat(results[0]).isEqualTo(transportOffer1);
+        assertThat(results).hasSize(1);
+        assertThat(results).first().isEqualTo(transportOffer1);
     }
 
     @Test
@@ -98,10 +91,10 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
 
         TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
         searchCriteria.setDestination(new Location("Pomorskie", "Gdynia"));
-        TransportOffer[] results = searchOffers(searchCriteria);
+        var results = searchOffers(searchCriteria);
 
-        assertThat(results.length).isEqualTo(1);
-        assertThat(results[0]).isEqualTo(transportOffer1);
+        assertThat(results).hasSize(1);
+        assertThat(results).first().isEqualTo(transportOffer1);
     }
 
     @Test
@@ -118,11 +111,8 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
 
         TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
         searchCriteria.setCapacity(10);
-        TransportOffer[] results = searchOffers(searchCriteria);
-
-        assertThat(results.length).isEqualTo(2);
-        assertThat(results[0]).isEqualTo(transportOffer1);
-        assertThat(results[1]).isEqualTo(transportOffer2);
+        var results = searchOffers(searchCriteria);
+        assertThat(results).containsExactly(transportOffer1,transportOffer2);
     }
 
     @Test
@@ -136,10 +126,8 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
 
         TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
         searchCriteria.setTransportDate(LocalDate.of(2022, 3, 21));
-        TransportOffer[] results = searchOffers(searchCriteria);
-
-        assertThat(results.length).isEqualTo(1);
-        assertThat(results[0]).isEqualTo(transportOffer1);
+        var results = searchOffers(searchCriteria);
+        assertThat(results).containsExactly(transportOffer1);
     }
 
     @Test
@@ -152,7 +140,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         postOffer(aTransportOffer().title("f").build());
 
         PageRequest page = PageRequest.of(1, 2);
-        PageableResponse<TransportOffer> results = searchOffers(page);
+        var results = searchOffers(page);
 
         assertThat(results.totalElements).isEqualTo(6);
         assertThat(results.content)
@@ -171,7 +159,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         postOffer(aTransportOffer().title("d").build());
 
         PageRequest page = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "title"));
-        PageableResponse<TransportOffer> results = searchOffers(page);
+        var results = searchOffers(page);
 
         assertThat(results.content)
                 .extracting(r -> r.title)
@@ -212,7 +200,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
 
     }
 
-    private TransportOffer[] searchOffers(TransportOfferSearchCriteria searchCriteria) {
+    private List<TransportOffer> searchOffers(TransportOfferSearchCriteria searchCriteria) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         if (searchCriteria.getOrigin() != null) {
             builder
@@ -232,16 +220,10 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         }
         String url = builder.encode().toUriString();
 
-        ResponseEntity<PageableResponse<TransportOffer>> list = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                getResponseType()
-        );
-        return list.getBody().content;
+        return listOffers(URI.create(url)).content;
     }
 
-    private PageableResponse<TransportOffer> searchOffers(PageRequest pageRequest) {
+    private Offers<TransportOffer> searchOffers(PageRequest pageRequest) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         builder.queryParam("page", pageRequest.getPageNumber());
         builder.queryParam("size", pageRequest.getPageSize());
@@ -250,9 +232,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         });
         String url = builder.encode().toUriString();
 
-        ResponseEntity<PageableResponse<TransportOffer>> list = restTemplate
-                .exchange(url, HttpMethod.GET, null, getResponseType());
-        return list.getBody();
+        return listOffers(URI.create(url));
     }
 
     private TransportOfferBuilder aTransportOffer() {
