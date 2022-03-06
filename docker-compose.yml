@@ -63,6 +63,7 @@ services:
       - app-db-only
     environment:
       - SPRING_DATASOURCE_URL
+      - SPRING_PROFILES_ACTIVE
       - POSTGRES_APPLICATION_USER
       - POSTGRES_APPLICATION_USER_PASSWORD
     depends_on:
