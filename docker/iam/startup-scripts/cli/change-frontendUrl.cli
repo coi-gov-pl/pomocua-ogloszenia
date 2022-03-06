@@ -1,0 +1,2 @@
+/subsystem=keycloak-server/spi=hostname/provider=default:write-attribute(name=properties.frontendUrl,value="${env.IAM_HOSTNAME:https://local.pomagamukrainie.gov.pl}/auth")
+/subsystem=keycloak-server/spi=hostname/provider=default:write-attribute(name=properties.forceBackendUrlToFrontendUrl,value="true")

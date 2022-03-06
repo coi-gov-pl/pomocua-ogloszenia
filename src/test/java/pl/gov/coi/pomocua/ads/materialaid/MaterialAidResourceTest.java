@@ -12,7 +12,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.PageableResponse;
-import pl.gov.coi.pomocua.ads.UserId;
 
 import java.util.Optional;
 
@@ -113,7 +112,6 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
     @Override
     protected MaterialAidOffer sampleOfferRequest() {
         MaterialAidOffer request = new MaterialAidOffer();
-        request.userId = new UserId("1");
         request.description = "some description";
         request.title = "some title";
         request.category = MaterialAidCategory.CLOTHING;

@@ -5,7 +5,8 @@ import pl.gov.coi.pomocua.ads.UserId;
 import java.util.Optional;
 
 public class TestCurrentUser implements CurrentUser {
-    private UserId currentUserId;
+    private static final UserId DEFAULT_USER_ID = new UserId("some default user");
+    private UserId currentUserId = DEFAULT_USER_ID;
 
     @Override
     public Optional<UserId> findCurrentUserId() {
@@ -18,5 +19,9 @@ public class TestCurrentUser implements CurrentUser {
 
     public void clear() {
         this.currentUserId = null;
+    }
+
+    public void setDefault() {
+        this.currentUserId = DEFAULT_USER_ID;
     }
 }
