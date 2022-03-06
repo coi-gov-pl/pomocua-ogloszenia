@@ -17,7 +17,6 @@ import static javax.persistence.EnumType.STRING;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 public class TranslationOffer extends BaseOffer {
 
     @Enumerated(STRING)
