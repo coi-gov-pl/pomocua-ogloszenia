@@ -1,12 +1,13 @@
 create table translation_offer (
-    id          bigint,
-    user_id     text,
-    title       text,
-    description text,
-    mode        text,
-    sworn       bool,
-    city        text,
-    region      text,
+    id              bigserial,
+    user_id         text,
+    title           text,
+    mode            text,
+    sworn           bool,
+    city            text,
+    region          text,
+    description     text,
+    modified_date   timestamp not null,
     CONSTRAINT PK_TO_ID PRIMARY KEY (ID)
 );
 
@@ -14,3 +15,6 @@ create table translation_offer_language (
     translation_offer_id bigint,
     language             text
 );
+
+create index idx_translation_offer_modified_date
+ON translation_offer(modified_date);

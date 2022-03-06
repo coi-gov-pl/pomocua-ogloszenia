@@ -1,11 +1,12 @@
 create table job_offer (
-    id          bigint,
-    user_id     text,
-    title       text,
-    description text,
-    mode        text,
-    city        text,
-    region      text,
+    id              bigserial,
+    user_id         text,
+    title           text,
+    mode            text,
+    city            text,
+    region          text,
+    description     text,
+    modified_date   timestamp not null,
     CONSTRAINT PK_JO_ID PRIMARY KEY (ID)
 );
 
@@ -13,6 +14,9 @@ create table job_offer_type(
     job_offer_id bigint,
     type text
 );
+
+create index idx_job_offer_modified_date
+ON job_offer(modified_date);
 
 create table job_offer_language (
     job_offer_id bigint,
