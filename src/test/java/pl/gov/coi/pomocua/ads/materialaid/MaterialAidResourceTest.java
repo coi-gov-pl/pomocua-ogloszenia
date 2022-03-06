@@ -2,11 +2,13 @@ package pl.gov.coi.pomocua.ads.materialaid;
 
 import lombok.Builder;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
@@ -103,6 +105,23 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
                 .containsExactly("c", "d");
     }
 
+    @Nested
+    class ValidationTest {
+        @Test
+        void shouldRejectNullCategory() {
+            MaterialAidOffer offer = sampleOfferRequest();
+            offer.category = null;
+            assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        void shouldRejectNullLocation() {
+            MaterialAidOffer offer = sampleOfferRequest();
+            offer.location = null;
+            assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @Override
     protected ParameterizedTypeReference<PageableResponse<MaterialAidOffer>> getResponseType() {
         return new ParameterizedTypeReference<>() {
@@ -115,6 +134,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         request.description = "some description";
         request.title = "some title";
         request.category = MaterialAidCategory.CLOTHING;
+        request.location = new Location("mazowieckie", "warszawa");
         return request;
     }
 
@@ -163,8 +183,8 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         MaterialAidOffer offer = new MaterialAidOffer();
         offer.title = Optional.ofNullable(title).orElse("some title");
         offer.description = Optional.ofNullable(description).orElse("some description");
-        offer.category = category;
-        offer.location = location;
+        offer.category = Optional.ofNullable(category).orElse(MaterialAidCategory.FOOD);
+        offer.location = Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa"));
         return offer;
     }
 }
