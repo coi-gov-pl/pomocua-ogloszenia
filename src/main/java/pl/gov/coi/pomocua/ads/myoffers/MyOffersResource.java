@@ -2,6 +2,7 @@ package pl.gov.coi.pomocua.ads.myoffers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,8 @@ public class MyOffersResource {
     @GetMapping("my-offers")
     public Page<BaseOffer> list(Pageable pageRequest) {
         UserId userId = currentUser.getCurrentUserId();
-        return repository.findAllByUserId(userId, pageRequest);
+        Page<BaseOffer> results = repository.findAllByUserId(userId, pageRequest);
+        return new PageImpl<>(results.getContent(), results.getPageable(), results.getTotalElements()) {};
     }
 
     @GetMapping("my-offers/{id}")

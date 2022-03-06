@@ -1,7 +1,10 @@
 create table material_aid_offer (
-    id              bigserial,
+    id          bigint,
+    user_id     text,
+    title       text,
+    description text,
     category        text,
     city            text,
     region          text,
-    CONSTRAINT fk_offer_id FOREIGN KEY(id) REFERENCES base_offer(id)
+    CONSTRAINT PK_MAO_ID PRIMARY KEY (ID)
 );

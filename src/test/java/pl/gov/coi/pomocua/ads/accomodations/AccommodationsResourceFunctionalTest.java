@@ -200,6 +200,7 @@ public class AccommodationsResourceFunctionalTest extends BaseResourceFunctional
   private String getBody() {
     return """
     {
+      "@type": "accommodation",
       "title": "testTitle",
       "description": "testDescription",
       "location": {

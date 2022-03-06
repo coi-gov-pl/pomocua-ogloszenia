@@ -59,18 +59,29 @@ class MyOffersResourceTest {
 
         UserId jobOfferUserId = new UserId("job offer user id");
         testCurrentUser.setCurrentUserId(jobOfferUserId);
-        JobOffer jobOffer = postOffer(JobsTestDataGenerator.sampleOffer(), "jobs", JobOffer.class);
+        postOffer(JobsTestDataGenerator.sampleOffer(), "jobs", JobOffer.class);
 
         testCurrentUser.setCurrentUserId(accommodationOfferUserId);
         BaseOffer[] offers = listOffers();
-        assertThat(offers).extracting("id").containsExactly(accOffer.id);
-        assertThat(offers).extracting("title").containsExactly(accOffer.title);
-        assertThat(offers).extracting("description").containsExactly(accOffer.description);
+        assertThat(offers).hasSize(1);
+        assertThat(offers[0]).isInstanceOf(AccommodationOffer.class);
+        assertThat(offers[0]).isEqualTo(accOffer);
+    }
+
+    @Test
+    void shouldReturnOfferForCurrentUser() {
+        UserId accommodationOfferUserId = new UserId("accommodation offer user id");
+        testCurrentUser.setCurrentUserId(accommodationOfferUserId);
+        AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
+
+        ResponseEntity<AccommodationOffer> response = restTemplate.getForEntity("/api/secure/my-offers/" + accOffer.id, AccommodationOffer.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(accOffer);
     }
 
     @Test
     void shouldReturnNotFoundWhenGettingOfferForOtherUser() {
-        UserId accommodationOfferUserId = new UserId("acommodation offer user id");
+        UserId accommodationOfferUserId = new UserId("accommodation offer user id");
         testCurrentUser.setCurrentUserId(accommodationOfferUserId);
         AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
 
@@ -81,8 +92,8 @@ class MyOffersResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-    private BaseOffer[] listOffers() {
-        ResponseEntity<PageableResponse<BaseOffer>> list = restTemplate.exchange(
+    private <T extends BaseOffer> T[] listOffers() {
+        ResponseEntity<PageableResponse<T>> list = restTemplate.exchange(
                 "/api/secure/my-offers", HttpMethod.GET, null, new ParameterizedTypeReference<>() {}
         );
         return list.getBody().content;

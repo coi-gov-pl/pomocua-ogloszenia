@@ -30,15 +30,15 @@ public class JobOffer extends BaseOffer {
     @Enumerated(STRING)
     public List<Language> language;
 
-    public enum Mode {
+    enum Mode {
         REMOTE
     }
 
-    public enum Type {
+    enum Type {
         TEMPORARY
     }
 
-    public enum Language {
+    enum Language {
         UA, PL
     }
 

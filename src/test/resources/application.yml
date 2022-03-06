@@ -1,2 +1,3 @@
 spring.datasource.url: jdbc:tc:postgresql:14.2:///postgres
 spring.profiles.active: dev
+logging.level.org.apache.http.wire: DEBUG

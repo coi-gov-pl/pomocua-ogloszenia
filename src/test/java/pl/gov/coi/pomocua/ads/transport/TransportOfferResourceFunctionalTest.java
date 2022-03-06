@@ -146,6 +146,7 @@ public class TransportOfferResourceFunctionalTest extends BaseResourceFunctional
   private String getBody() {
     return """
       {
+        "@type": "transport",
         "title": "testTitle",
         "description": "testDescription",
         "origin": {

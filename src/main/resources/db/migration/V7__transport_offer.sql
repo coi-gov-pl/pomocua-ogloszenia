@@ -1,11 +1,14 @@
 create table transport_offer
 (
-    id                      bigserial,
+    id          bigint,
+    user_id     text,
+    title       text,
+    description text,
     origin_region           text,
     origin_city             text,
     destination_region      text,
     destination_city        text,
     capacity                int,
     transport_date          date,
-    CONSTRAINT fk_offer_id FOREIGN KEY(id) REFERENCES base_offer(id)
+    CONSTRAINT PK_TRO_ID PRIMARY KEY (ID)
 );
