@@ -1,7 +1,9 @@
 package pl.gov.coi.pomocua.ads.translations;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.repository.CrudRepository;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.PageableResponse;
 
@@ -9,6 +11,8 @@ import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TranslationResourceTest extends BaseResourceTest<TranslationOffer> {
+    @Autowired
+    private TranslationOfferRepository repository;
 
     @Override
     protected String getOfferSuffix() {
@@ -37,5 +41,10 @@ class TranslationResourceTest extends BaseResourceTest<TranslationOffer> {
         request.language = List.of(TranslationOffer.Language.PL, TranslationOffer.Language.UA);
         request.description = "description";
         return request;
+    }
+
+    @Override
+    protected CrudRepository<TranslationOffer, Long> getRepository() {
+        return repository;
     }
 }

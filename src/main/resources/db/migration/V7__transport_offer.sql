@@ -9,5 +9,9 @@ create table transport_offer
     destination_region      text,
     destination_city        text,
     capacity                int,
-    transport_date          date
+    transport_date          date,
+    modified_date           timestamp not null
 );
+
+create index idx_transport_offer_modified_date
+ON transport_offer(modified_date);

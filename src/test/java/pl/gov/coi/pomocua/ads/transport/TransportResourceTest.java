@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,11 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         transportOffer.transportDate = LocalDate.of(2022, 4, 1);
         transportOffer.capacity = 28;
         return transportOffer;
+    }
+
+    @Override
+    protected CrudRepository<TransportOffer, Long> getRepository() {
+        return repository;
     }
 
     @Test
