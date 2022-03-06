@@ -16,7 +16,7 @@ create table material_aid_offer_language_AUD (
     REV         INTEGER NOT NULL,
     REVTYPE     SMALLINT,
     REVEND      INTEGER,
-    PRIMARY KEY ( language, REV ),
+    PRIMARY KEY ( language, material_offer_id, REV ),
     CONSTRAINT FK_material_offer_language_AUD_REV
         FOREIGN KEY(rev)
             REFERENCES revinfo(rev),

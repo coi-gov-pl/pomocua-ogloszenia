@@ -20,7 +20,7 @@ create table accommodation_offer_host_language_AUD (
     REV         INTEGER NOT NULL,
     REVTYPE     SMALLINT,
     REVEND      INTEGER,
-    PRIMARY KEY ( host_language, REV ),
+    PRIMARY KEY ( host_language, accommodation_offer_id, REV ),
     CONSTRAINT FK_accommodation_offer_host_language_AUD_REV
         FOREIGN KEY(rev)
             REFERENCES revinfo(rev),
