@@ -5,18 +5,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Embedded;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+@Entity
 @EqualsAndHashCode
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
-@MappedSuperclass
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class BaseOffer {
     protected static final String ALLOWED_TEXT = "^[^<>()%#@\"']*$";
 

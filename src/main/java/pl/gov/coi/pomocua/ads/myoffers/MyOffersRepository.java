@@ -1,0 +1,12 @@
+package pl.gov.coi.pomocua.ads.myoffers;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import pl.gov.coi.pomocua.ads.BaseOffer;
+import pl.gov.coi.pomocua.ads.UserId;
+
+public interface MyOffersRepository extends PagingAndSortingRepository<BaseOffer, Long> {
+
+    Page<BaseOffer> findAllByUserId(UserId userId, Pageable pageable);
+}

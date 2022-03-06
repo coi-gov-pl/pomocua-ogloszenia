@@ -1,10 +1,6 @@
 package pl.gov.coi.pomocua.ads.accomodations;
 
 import lombok.EqualsAndHashCode;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
 import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.Location;
 
@@ -32,7 +28,7 @@ public class AccommodationOffer extends BaseOffer {
     @Enumerated(STRING)
     public List<Language> hostLanguage;
 
-    enum LengthOfStay {
+    public enum LengthOfStay {
         WEEK_1,
         WEEK_2,
         MONTH_1,
