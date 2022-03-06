@@ -1,61 +1,42 @@
 package pl.gov.coi.pomocua.ads;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.auditing.AuditingHandler;
-import org.springframework.data.auditing.DateTimeProvider;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestConfiguration.class)
 public abstract class BaseResourceTest<T extends BaseOffer> {
 
-    @MockBean
-    private DateTimeProvider dateTimeProvider;
-
-    @SpyBean
-    private AuditingHandler handler;
-
-    @BeforeEach
-    void setUp() throws Exception {
-        MockitoAnnotations.openMocks(this);
-        handler.setDateTimeProvider(dateTimeProvider);
-        LocalDateTime createdDateTime = createLocalDateTime("2020-10-17 00:00");
-
-        when(dateTimeProvider.getNow()).thenReturn(Optional.of(createdDateTime));
-    }
-
     @Autowired
     protected TestRestTemplate restTemplate;
-
     @Autowired
     protected TestCurrentUser testCurrentUser;
+    @Autowired
+    private TestTimeProvider testTimeProvider;
 
     @AfterEach
     void tearDown() {
         testCurrentUser.setDefault();
+        testTimeProvider.reset();
     }
 
     @Test
@@ -76,6 +57,18 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         T created = postSampleOffer();
         T returned = restTemplate.getForObject("/api/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
         assertThat(returned).isEqualTo(created);
+    }
+
+    @Test
+    void shouldSetModifiedDateWhenOfferCreated() {
+        setCurrentTime(Instant.parse("2022-03-05T14:20:00Z"));
+
+        T created = postSampleOffer();
+
+        Optional<T> createdEntity = getRepository().findById(created.id);
+        assertThat(createdEntity)
+                .isNotEmpty()
+                .get().extracting(e -> e.modifiedDate).isEqualTo(Instant.parse("2022-03-05T14:20:00Z"));
     }
 
     @Test
@@ -154,6 +147,8 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
     protected abstract T sampleOfferRequest();
 
+    protected abstract CrudRepository<T, Long> getRepository();
+
     private T[] listOffers() {
         ResponseEntity<PageableResponse<T>> list = restTemplate.exchange("/api/" + getOfferSuffix(), HttpMethod.GET, null,
                 getResponseType());
@@ -174,7 +169,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         return entity;
     }
 
-    private LocalDateTime createLocalDateTime(String date) {
-        return LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    protected void setCurrentTime(Instant time) {
+        testTimeProvider.setClock(Clock.fixed(time, ZoneOffset.UTC));
     }
 }

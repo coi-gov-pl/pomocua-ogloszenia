@@ -10,8 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -40,6 +39,7 @@ public abstract class BaseOffer {
     @Pattern(regexp = ALLOWED_TEXT)
     public String description;
 
+    @JsonIgnore
     @LastModifiedDate
-    public LocalDateTime modifiedDate;
+    public Instant modifiedDate;
 }

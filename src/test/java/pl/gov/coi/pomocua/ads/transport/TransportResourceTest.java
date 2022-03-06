@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,6 @@ import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.PageableResponse;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,8 +59,12 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         transportOffer.origin = new Location("Pomorskie", "Pruszcz Gdański");
         transportOffer.transportDate = LocalDate.of(2022, 4, 1);
         transportOffer.capacity = 28;
-        transportOffer.modifiedDate = LocalDateTime.parse("2020-10-17T00:00");
         return transportOffer;
+    }
+
+    @Override
+    protected CrudRepository<TransportOffer, Long> getRepository() {
+        return repository;
     }
 
     @Test
@@ -277,7 +281,6 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         result.destination = destination;
         result.capacity = capacity;
         result.transportDate = transportDate;
-        result.modifiedDate = LocalDateTime.parse("2020-10-17T00:00");
         return result;
     }
 }
