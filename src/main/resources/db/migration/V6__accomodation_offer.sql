@@ -6,8 +6,12 @@ create table accommodation_offer (
     region          text,
     description     text,
     guests          integer,
-    length_of_stay  text
+    length_of_stay  text,
+    modified_date   timestamp not null
 );
+
+create index idx_accommodation_offer_modified_date
+ON accommodation_offer(modified_date);
 
 create table accommodation_offer_host_language (
     accommodation_offer_id bigint,

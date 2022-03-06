@@ -3,6 +3,7 @@ package pl.gov.coi.pomocua.ads.accomodations;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
@@ -120,5 +121,10 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
         request.lengthOfStay = AccommodationOffer.LengthOfStay.MONTH_2;
         request.guests = 5;
         return request;
+    }
+
+    @Override
+    protected CrudRepository<AccommodationOffer, Long> getRepository() {
+        return repository;
     }
 }

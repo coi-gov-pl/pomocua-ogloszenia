@@ -2,6 +2,7 @@ package pl.gov.coi.pomocua.ads.jobs;
 
 import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import pl.gov.coi.pomocua.ads.BaseOffer;
