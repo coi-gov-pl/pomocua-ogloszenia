@@ -1,11 +1,20 @@
 services:
-  database-postgres:
+  ads-postgres:
     profiles:
       - db-only
+      - app-db-only
       - all
+    environment:
+      - POSTGRES_APPLICATION_DATABASE
+      - POSTGRES_APPLICATION_USER
+      - POSTGRES_APPLICATION_USER_PASSWORD
+      - KEYCLOAK_DATABASE
+      - KEYCLOAK_DB_USER
+      - KEYCLOAK_DB_PASSWORD
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_HOST_AUTH_METHOD
     container_name: ads-postgres
-    env_file:
-    - ./docker/environment.env
     image: postgres:14.2-alpine
     ports:
     - mode: ingress
@@ -23,13 +32,15 @@ services:
   db-admin-pgadmin:
     profiles:
       - db-only
+      - app-db-only
       - all
+    environment:
+      - PGADMIN_DEFAULT_EMAIL
+      - PGADMIN_DEFAULT_PASSWORD
     container_name: ads-pgadmin
     depends_on:
-      database-postgres:
+      ads-postgres:
         condition: service_started
-    env_file:
-    - ./docker/environment.env
     image: dpage/pgadmin4:latest
     ports:
     - mode: ingress
@@ -46,15 +57,18 @@ services:
     - type: bind
       source: ./docker/pgpasswords
       target: /pgpasswords
-  application:
+  ads:
     profiles:
       - all
+      - app-db-only
+    environment:
+      - SPRING_DATASOURCE_URL
+      - POSTGRES_APPLICATION_USER
+      - POSTGRES_APPLICATION_USER_PASSWORD
     depends_on:
-      database-postgres:
+      ads-postgres:
         condition: service_started
     container_name: ads
-    env_file:
-    - ./docker/environment.env
     image: openjdk:17-jdk-bullseye
     command: ["java", "-jar", "/build/libs/ogloszenia-0.0.1-SNAPSHOT.jar"]
     ports:
@@ -66,6 +80,49 @@ services:
     - type: bind
       source: ./build
       target: /build
+  proxy:
+    profiles:
+      - all
+    build:
+      context: ./docker/proxy/
+    container_name: proxy
+    #TODO: you can link to gui dist folder to have FE
+    #volumes:
+    #  - ../gui-web-???/dist/gui-???:/usr/share/nginx/html
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - ads
+      - iam
+    restart: unless-stopped
+  iam:
+    profiles:
+      - all
+    image: pomocua-iam
+    build:
+      context: ./docker/iam
+    container_name: iam
+    environment:
+      - IAM_HOSTNAME
+      - DB_VENDOR=${KEYCLOAK_DB_VENDOR:-POSTGRES}
+      - DB_ADDR=${KEYCLOAK_DB_ADDR:-ads-postgres}
+      - DB_PORT=${KEYCLOAK_DB_PORT:-5432}
+      - DB_DATABASE=${KEYCLOAK_DATABASE:-iam}
+      - DB_USER=${KEYCLOAK_DB_USER:-iam}
+      - DB_SCHEMA=${KEYCLOAK_DB_SCHEMA:-public}
+      - DB_PASSWORD=${KEYCLOAK_DB_PASSWORD:-admin}
+      - KEYCLOAK_USER=${KEYCLOAK_USER:-admin}
+      - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD:-admin}
+      - KEYCLOAK_LOGLEVEL=${KEYCLOAK_LOGLEVEL:-INFO}
+      - ROOT_LOGLEVEL=${KEYCLOAK_LOGLEVEL:-INFO}
+      - REINIT_KEYCLOAK=${REINIT_KEYCLOAK:-0}
+      - EXPORT_KEYCLOAK=${EXPORT_KEYCLOAK:-0}
+    depends_on:
+      ads-postgres:
+        condition: service_started
+    restart: unless-stopped
+
 
 volumes:
   pgadmin: {}
