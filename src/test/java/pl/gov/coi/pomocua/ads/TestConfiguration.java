@@ -11,4 +11,10 @@ public class TestConfiguration {
     public TestCurrentUser testCurrentUser() {
         return new TestCurrentUser();
     }
+
+    @Bean
+    @Primary
+    public TestTimeProvider testTimeProvider() {
+        return new TestTimeProvider();
+    }
 }
