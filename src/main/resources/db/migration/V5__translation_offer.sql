@@ -1,12 +1,10 @@
 create table translation_offer (
     id          bigserial,
-    user_id     text,
-    title       text,
     mode        text,
     sworn       bool,
     city        text,
     region      text,
-    description text
+    CONSTRAINT fk_offer_id FOREIGN KEY(id) REFERENCES base_offer(id)
 );
 
 create table translation_offer_language (

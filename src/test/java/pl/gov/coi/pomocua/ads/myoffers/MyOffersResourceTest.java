@@ -33,8 +33,8 @@ class MyOffersResourceTest {
         UserId userId = new UserId("my-offer user id");
         testCurrentUser.setCurrentUserId(userId);
 
-        AccommodationOffer accOffer = postOffer(sampleAccommodationOfferRequest());
-        JobOffer jobOffer = postOffer(sampleJobOfferRequest());
+        AccommodationOffer accOffer = postOffer(sampleAccommodationOfferRequest(), AccommodationOffer.class);
+        JobOffer jobOffer = postOffer(sampleJobOfferRequest(), JobOffer.class);
 
         BaseOffer[] offers = listOffers();
         assertThat(offers).extracting("title").contains(accOffer.title, jobOffer.title);
@@ -47,19 +47,10 @@ class MyOffersResourceTest {
         return list.getBody().content;
     }
 
-    private AccommodationOffer postOffer(AccommodationOffer request) {
-        ResponseEntity<AccommodationOffer> response = restTemplate.postForEntity("/api/secure/accommodation", request, AccommodationOffer.class);
+    private <T extends BaseOffer> T postOffer(T request, Class<T> clazz) {
+        ResponseEntity<T> response = restTemplate.postForEntity("/api/secure/jobs", request, clazz);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        AccommodationOffer entity = response.getBody();
-        assertThat(entity.id).isNotNull();
-        assertThat(entity).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
-        return entity;
-    }
-
-    private JobOffer postOffer(JobOffer request) {
-        ResponseEntity<JobOffer> response = restTemplate.postForEntity("/api/secure/job", request, JobOffer.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        JobOffer entity = response.getBody();
+        T entity = response.getBody();
         assertThat(entity.id).isNotNull();
         assertThat(entity).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
         return entity;

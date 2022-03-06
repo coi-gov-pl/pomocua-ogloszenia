@@ -1,11 +1,9 @@
 create table job_offer (
     id          bigserial,
-    user_id     text,
-    title       text,
     mode        text,
     city        text,
     region      text,
-    description text
+    CONSTRAINT fk_offer_id FOREIGN KEY(id) REFERENCES base_offer(id)
 );
 
 create table job_offer_type(

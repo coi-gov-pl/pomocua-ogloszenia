@@ -1,12 +1,10 @@
 create table accommodation_offer (
     id              bigserial,
-    user_id         text,
-    title           text,
     city            text,
     region          text,
-    description     text,
     guests          integer,
-    length_of_stay  text
+    length_of_stay  text,
+    CONSTRAINT fk_offer_id FOREIGN KEY(id) REFERENCES base_offer(id)
 );
 
 create table accommodation_offer_host_language (
