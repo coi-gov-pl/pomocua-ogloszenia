@@ -155,14 +155,12 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
 
     @Builder
     private static MaterialAidOffer materialAidOfferBuilder(
-            UserId userId,
             String title,
             String description,
             MaterialAidCategory category,
             Location location
     ) {
         MaterialAidOffer offer = new MaterialAidOffer();
-        offer.userId = Optional.ofNullable(userId).orElse(new UserId("1"));
         offer.title = Optional.ofNullable(title).orElse("some title");
         offer.description = Optional.ofNullable(description).orElse("some description");
         offer.category = category;
