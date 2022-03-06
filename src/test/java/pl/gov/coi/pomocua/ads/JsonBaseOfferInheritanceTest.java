@@ -30,9 +30,7 @@ public class JsonBaseOfferInheritanceTest {
         var job = new JobOffer();
         job.title = "title";
         var json = mapper.writeValueAsString(job);
-        System.out.println(json);
         var o = mapper.readValue(json, BaseOffer.class);
-        System.out.println(o);
         assertThat(o).isEqualTo(job);
     }
 
@@ -42,9 +40,7 @@ public class JsonBaseOfferInheritanceTest {
         job.title = "title";
         Paged initial = new Paged(List.of(job));
         var json = mapper.writeValueAsString(initial);
-        System.out.println(json);
         var o = mapper.readValue(json, Paged.class);
-        System.out.println(o);
         assertThat(o).isEqualTo(initial);
     }
 

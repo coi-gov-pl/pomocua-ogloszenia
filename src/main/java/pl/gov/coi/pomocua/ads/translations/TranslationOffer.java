@@ -1,16 +1,13 @@
 package pl.gov.coi.pomocua.ads.translations;
 
 import lombok.EqualsAndHashCode;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import pl.gov.coi.pomocua.ads.BaseOffer;
+import pl.gov.coi.pomocua.ads.Location;
 
 import javax.persistence.*;
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
+import javax.validation.Valid;
 import java.util.List;
 
 import static javax.persistence.EnumType.STRING;
@@ -27,8 +24,10 @@ public class TranslationOffer extends BaseOffer {
     @Enumerated(STRING)
     public List<Language> language;
 
-    public String region;
-    public String city;
+    @Embedded
+    @Valid
+    public Location location;
+
     public boolean sworn;
 
     enum Mode {
