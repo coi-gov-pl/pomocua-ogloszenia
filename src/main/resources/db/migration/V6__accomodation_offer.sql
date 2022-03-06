@@ -7,7 +7,8 @@ create table accommodation_offer (
     description     text,
     guests          integer,
     length_of_stay  text,
-    modified_date   timestamp not null
+    modified_date   timestamp not null,
+    CONSTRAINT PK_AO_ID PRIMARY KEY (ID)
 );
 
 create table accommodation_offer_host_language (

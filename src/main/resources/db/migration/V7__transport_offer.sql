@@ -10,7 +10,8 @@ create table transport_offer
     destination_city        text,
     capacity                int,
     transport_date          date,
-    modified_date           timestamp not null
+    modified_date           timestamp not null,
+    CONSTRAINT PK_TRO_ID PRIMARY KEY (ID)
 );
 
 create index idx_transport_offer_modified_date

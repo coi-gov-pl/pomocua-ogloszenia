@@ -14,7 +14,7 @@ import static javax.persistence.EnumType.STRING;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-class JobOffer extends BaseOffer {
+public class JobOffer extends BaseOffer {
     @Enumerated(STRING)
     public Mode mode;
 

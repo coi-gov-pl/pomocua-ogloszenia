@@ -6,7 +6,8 @@ create table job_offer (
     city            text,
     region          text,
     description     text,
-    modified_date   timestamp not null
+    modified_date   timestamp not null,
+    CONSTRAINT PK_JO_ID PRIMARY KEY (ID)
 );
 
 create table job_offer_type(
