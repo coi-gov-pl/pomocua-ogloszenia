@@ -26,9 +26,11 @@ public class MaterialAidResource {
         return repository.save(materialAidOffer);
     }
 
+    @Operation(description = "Allows to search for material aid offers using different criteria (passes as query params). Each criteria is optional.")
     @GetMapping("material-aid")
-    public Page<MaterialAidOffer> list(Pageable pageRequest) {
-        return repository.findAll(pageRequest);
+    public Page<MaterialAidOffer> list(Pageable pageRequest, MaterialAidOfferSearchCriteria searchCriteria) {
+        Page<MaterialAidOffer> all = repository.findAll(MaterialAidOfferSpecifications.from(searchCriteria), pageRequest);
+        return all;
     }
 
     @GetMapping("material-aid/{id}")
