@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
 
 import javax.validation.Valid;
 
@@ -15,11 +16,13 @@ import javax.validation.Valid;
 @RequestMapping(value = "/api/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AccommodationsResource {
     private final AccommodationsRepository repository;
+    private final CurrentUser currentUser;
 
     @PostMapping("secure/accommodations")
     @ResponseStatus(HttpStatus.CREATED)
     public AccommodationOffer create(@Valid @RequestBody AccommodationOffer offer) {
         offer.id = null;
+        offer.userId = currentUser.getCurrentUserId();
         return repository.save(offer);
     }
 

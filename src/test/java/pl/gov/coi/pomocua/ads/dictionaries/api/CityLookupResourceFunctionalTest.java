@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import pl.gov.coi.pomocua.ads.BaseResourceFunctionalTest;
 
 import java.util.Collections;
 
@@ -15,8 +15,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CityLookupResourceFunctionalTest {
+public class CityLookupResourceFunctionalTest extends BaseResourceFunctionalTest {
 
   @LocalServerPort
   int port;
