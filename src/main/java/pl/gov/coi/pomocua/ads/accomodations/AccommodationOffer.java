@@ -22,10 +22,12 @@ public class AccommodationOffer extends BaseOffer {
 
     @Embedded
     @Valid
+    @NotNull
     public Location location;
 
     @Min(1)
-    public int guests;
+    @NotNull
+    public Integer guests;
 
     @Enumerated(STRING)
     @NotNull

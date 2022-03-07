@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.gov.coi.pomocua.ads.OfferNotFoundException;
 import pl.gov.coi.pomocua.ads.Offers;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
 
@@ -41,5 +42,16 @@ public class AccommodationsResource {
     @GetMapping("accommodations/{id}")
     public ResponseEntity<AccommodationOffer> get(@PathVariable Long id) {
         return ResponseEntity.of(repository.findById(id));
+    }
+
+    @PutMapping("secure/accommodations/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(@PathVariable Long id, @Valid @RequestBody UpdateAccommodationOfferJson update) {
+        AccommodationOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
+                .orElseThrow(OfferNotFoundException::new);
+
+        update.applyTo(offer);
+
+        repository.save(offer);
     }
 }
