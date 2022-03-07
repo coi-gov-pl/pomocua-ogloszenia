@@ -4,6 +4,7 @@ import pl.gov.coi.pomocua.ads.UserId;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class TestUsersRepository implements UsersRepository {
     private final Map<UserId, User> users = new HashMap<>();
@@ -16,7 +17,7 @@ public class TestUsersRepository implements UsersRepository {
         users.clear();
     }
     @Override
-    public User getById(UserId userId) {
-        return users.get(userId);
+    public Optional<User> getById(UserId userId) {
+        return Optional.ofNullable(users.get(userId));
     }
 }

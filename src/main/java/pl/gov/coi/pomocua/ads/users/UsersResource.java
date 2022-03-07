@@ -36,8 +36,8 @@ public class UsersResource {
             this.phoneNumber = phoneNumber;
         }
 
-        public static Optional<UserInfo> from(User user) {
-            return Optional.ofNullable(user).map(value -> new UserInfo(value.email(), value.phoneNumber()));
+        public static Optional<UserInfo> from(Optional<User> user) {
+            return user.map(value -> new UserInfo(value.email(), value.phoneNumber()));
         }
     }
 }

@@ -8,15 +8,14 @@ import pl.gov.coi.pomocua.ads.dev.FakeCurrentUser;
 import pl.gov.coi.pomocua.ads.dev.FakeUsersRepository;
 import pl.gov.coi.pomocua.ads.users.UsersRepository;
 
+@Profile("dev")
 @Configuration
-public class AuthenticationConfig {
-    @Profile("dev")
+public class DevAuthenticationConfig {
     @Bean
     public CurrentUser fakeCurrentUser() {
         return new FakeCurrentUser();
     }
 
-    @Profile("dev")
     @Bean
     public UsersRepository fakeUsersRepository(CurrentUser currentUser) {
         return new FakeUsersRepository(currentUser);
