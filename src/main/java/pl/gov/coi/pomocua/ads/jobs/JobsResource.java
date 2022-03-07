@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
 
 import javax.validation.Valid;
 
@@ -15,11 +16,13 @@ import javax.validation.Valid;
 @RequestMapping(value = "/api/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class JobsResource {
     private final JobsRepository repository;
+    private final CurrentUser currentUser;
 
     @PostMapping("secure/jobs")
     @ResponseStatus(HttpStatus.CREATED)
     public JobOffer create(@Valid @RequestBody JobOffer workOffer) {
         workOffer.id = null;
+        workOffer.userId = currentUser.getCurrentUserId();
         return repository.save(workOffer);
     }
 

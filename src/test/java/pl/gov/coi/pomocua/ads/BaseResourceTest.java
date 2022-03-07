@@ -109,7 +109,10 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     }
 
     protected void assertPostResponseStatus(T offer, HttpStatus status) {
-        ResponseEntity<T> response = restTemplate.postForEntity("/api/secure/" + getOfferSuffix(), offer, getClazz());
+        String url = "/api/secure/" + getOfferSuffix();
+        var response = status.is2xxSuccessful() ?
+                restTemplate.postForEntity(url, offer, getClazz()) :
+                restTemplate.postForEntity(url, offer, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(status);
     }
 
