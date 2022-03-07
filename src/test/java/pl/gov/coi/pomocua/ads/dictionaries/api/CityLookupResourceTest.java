@@ -7,6 +7,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.jdbc.Sql;
 import pl.gov.coi.pomocua.ads.TestConfiguration;
 import pl.gov.coi.pomocua.ads.dictionaries.domain.City;
 import pl.gov.coi.pomocua.ads.dictionaries.domain.CityRepository;
@@ -16,6 +17,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+@Sql(scripts = "classpath:cities_terc_import.sql")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestConfiguration.class)
 class CityLookupResourceTest {
@@ -58,6 +60,8 @@ class CityLookupResourceTest {
 
     @Test
     void shouldReturnCitiesLimitedAndSortedByCityName() {
+        givenFollowingCitiesExists();
+
         // when:
         ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity(URL + "/?query=biel", CityLookupResponse.class);
 
