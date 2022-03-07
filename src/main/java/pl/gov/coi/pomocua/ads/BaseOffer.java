@@ -3,6 +3,7 @@ package pl.gov.coi.pomocua.ads;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
+import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,6 +16,7 @@ import java.time.Instant;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity
+@Audited
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @EqualsAndHashCode
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)

@@ -1,6 +1,7 @@
 package pl.gov.coi.pomocua.ads.accomodations;
 
 import lombok.EqualsAndHashCode;
+import org.hibernate.envers.Audited;
 import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.Location;
 
@@ -16,6 +17,7 @@ import static javax.persistence.EnumType.STRING;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Audited
 public class AccommodationOffer extends BaseOffer {
 
     @Embedded
