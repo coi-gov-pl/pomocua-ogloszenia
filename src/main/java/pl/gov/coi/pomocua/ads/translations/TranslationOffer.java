@@ -9,11 +9,10 @@ import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.Location;
 
 import javax.persistence.*;
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static javax.persistence.EnumType.STRING;
@@ -24,11 +23,13 @@ import static javax.persistence.EnumType.STRING;
 public class TranslationOffer extends BaseOffer {
 
     @Enumerated(STRING)
+    @NotNull
     public Mode mode;
 
     @ElementCollection(targetClass = Language.class)
     @CollectionTable
     @Enumerated(STRING)
+    @NotEmpty
     public List<Language> language;
 
     @Embedded

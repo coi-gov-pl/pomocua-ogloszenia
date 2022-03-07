@@ -8,6 +8,9 @@ import pl.gov.coi.pomocua.ads.Location;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static javax.persistence.EnumType.STRING;
@@ -25,14 +28,16 @@ public class AccommodationOffer extends BaseOffer {
     public int guests;
 
     @Enumerated(STRING)
+    @NotNull
     public LengthOfStay lengthOfStay;
 
     @ElementCollection(targetClass = Language.class, fetch = FetchType.EAGER)
     @CollectionTable
     @Enumerated(STRING)
+    @NotEmpty
     public List<Language> hostLanguage;
 
-    enum LengthOfStay {
+    public enum LengthOfStay {
         WEEK_1,
         WEEK_2,
         MONTH_1,

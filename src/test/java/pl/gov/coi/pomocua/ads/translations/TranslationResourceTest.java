@@ -2,11 +2,9 @@ package pl.gov.coi.pomocua.ads.translations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.repository.CrudRepository;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
-import pl.gov.coi.pomocua.ads.PageableResponse;
 
 import java.util.List;
 
@@ -23,12 +21,6 @@ class TranslationResourceTest extends BaseResourceTest<TranslationOffer> {
     @Override
     protected Class<TranslationOffer> getClazz() {
         return TranslationOffer.class;
-    }
-
-    @Override
-    protected ParameterizedTypeReference<PageableResponse<TranslationOffer>> getResponseType() {
-        return new ParameterizedTypeReference<>() {
-        };
     }
 
     @Override
