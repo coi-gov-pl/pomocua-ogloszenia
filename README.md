@@ -39,7 +39,7 @@ After reiniting keycloak you can restart the containers without REINIT\_KEYCLOAK
 TODO: it would be good to add to nginx the FrontEnd code somehow? For now you
 can modify the docker-compose to have volume bind to the web dist folder..
 
-### Other modes:
+### Running API with database and Swagger (without keycloak):
 
 Execute `./start_server.sh` to run the server with running database, pgAdmin and Swagger documentation.
 
@@ -49,6 +49,11 @@ This command will setup:
 - Swagger documentation running on [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 - pgAdmin running on [http://localhost:8081](http://localhost:8081) (user: `admin@admin.pl`, pass: `admin`)
 - PostgreSQL 14.2-alpine running on `http://localhost:5432` (or `http://ads-postgres:5432` internally on docker network)
+
+**NOTE:** if you face some problems during server startup (and the server is not up in result), it may be related to some changes in SQL DDL scripts.
+To fix this, run `./cleanup_docker.sh` script, and then `./start_server.sh` again. This will remove Docker database containers (so all data in DB will be erased).
+
+### Running database only:
 
 Execute `./start_db.sh` to run only database with pgAdmin (without the server and Swagger).
 
@@ -72,6 +77,6 @@ login: znxtfetqfiqsds6wqzbdl6pb4eslbyxx
 password: test
 
 
-## API documentation
+## API Swagger documentation
 
 UI with API documentation will be available under `/swagger-ui.html` path. OpenAPI (v3) specification will be available under `/v3/api-docs` path.
