@@ -1,5 +1,6 @@
 package pl.gov.coi.pomocua.ads.accomodations;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
@@ -19,44 +20,57 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
     @Autowired
     private AccommodationsRepository repository;
 
-    @Test
-    void shouldReturnOffersByFullCriteria() {
-        AccommodationOffer response = postSampleOffer();
+    @Nested
+    class Searching {
+        @Test
+        void shouldReturnOffersByFullCriteria() {
+            AccommodationOffer response = postSampleOffer();
 
-        String requestParams = "/MAzowIEckie/waRszaWA?capacity=4";
-        var offers = listOffers(requestParams);
+            String requestParams = "/MAzowIEckie/waRszaWA?capacity=4";
+            var offers = listOffers(requestParams);
 
-        assertThat(offers).contains(response);
-    }
+            assertThat(offers).contains(response);
+        }
 
-    @Test
-    void shouldNotFindOffersForTooHighCapacity() {
-        postSampleOffer();
+        @Test
+        void shouldNotFindOffersForTooHighCapacity() {
+            postSampleOffer();
 
-        String requestParams = "/MAzowIEckie/waRszaWA?capacity=15";
-        var offers = listOffers(requestParams);
+            String requestParams = "/MAzowIEckie/waRszaWA?capacity=15";
+            var offers = listOffers(requestParams);
 
-        assertThat(offers).isEmpty();
-    }
+            assertThat(offers).isEmpty();
+        }
 
-    @Test
-    void shouldNotFindOffersForWrongLocation() {
-        postSampleOffer();
+        @Test
+        void shouldNotFindOffersForWrongLocation() {
+            postSampleOffer();
 
-        String requestParams = "/MAłopolskie/Kraków?capacity=1";
-        var offers = listOffers(requestParams);
+            String requestParams = "/MAłopolskie/Kraków?capacity=1";
+            var offers = listOffers(requestParams);
 
-        assertThat(offers).isEmpty();
-    }
+            assertThat(offers).isEmpty();
+        }
 
-    @Test
-    void shouldReturnOffersByCriteriaWithoutCapacity() {
-        AccommodationOffer response = postSampleOffer();
+        @Test
+        void shouldReturnOffersByCriteriaWithoutCapacity() {
+            AccommodationOffer response = postSampleOffer();
 
-        String requestParams = "/mazowIEckie/WARszaWA";
-        var offers = listOffers(requestParams);
+            String requestParams = "/mazowIEckie/WARszaWA";
+            var offers = listOffers(requestParams);
 
-        assertThat(offers).contains(response);
+            assertThat(offers).contains(response);
+        }
+
+        @Test
+        void shouldReturnOffersByCapacityOnly() {
+            AccommodationOffer response = postSampleOffer();
+
+            String requestParams = "?capacity=1";
+            var offers = listOffers(requestParams);
+
+            assertThat(offers).contains(response);
+        }
     }
 
     @Test
@@ -70,16 +84,6 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
 
         assertThat(storedOffer).isNotEmpty();
         assertThat(storedOffer.get().userId).isEqualTo(userId);
-    }
-
-    @Test
-    void shouldReturnOffersByCapacityOnly() {
-        AccommodationOffer response = postSampleOffer();
-
-        String requestParams = "?capacity=1";
-        var offers = listOffers(requestParams);
-
-        assertThat(offers).contains(response);
     }
 
     @Override
