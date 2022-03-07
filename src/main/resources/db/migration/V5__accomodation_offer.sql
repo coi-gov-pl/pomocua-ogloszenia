@@ -8,6 +8,7 @@ create table accommodation_offer (
     guests          integer,
     length_of_stay  text,
     modified_date   timestamp not null,
+    status          text not null default 'ACTIVE',
     CONSTRAINT PK_AO_ID PRIMARY KEY (ID)
 );
 
@@ -45,6 +46,7 @@ CREATE TABLE accommodation_offer_AUD
     guests          integer,
     length_of_stay  text,
     modified_date   timestamp,
+    status          text,
     REV             INTEGER NOT NULL,
     REVTYPE         SMALLINT,
     REVEND          INTEGER,

@@ -7,7 +7,7 @@ create table material_aid_offer (
     city            text,
     region          text,
     modified_date   timestamp not null,
-
+    status          text not null default 'ACTIVE',
     CONSTRAINT PK_MAO_ID PRIMARY KEY (ID)
 );
 
@@ -39,6 +39,7 @@ CREATE TABLE material_aid_offer_AUD
     city            text,
     region          text,
     modified_date   timestamp,
+    status          text,
     REV             INTEGER NOT NULL,
     REVTYPE         SMALLINT,
     REVEND           INTEGER,
