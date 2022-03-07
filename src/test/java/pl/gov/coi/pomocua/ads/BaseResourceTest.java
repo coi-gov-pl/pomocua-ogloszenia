@@ -1,6 +1,8 @@
 package pl.gov.coi.pomocua.ads;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -20,6 +22,7 @@ import java.net.URI;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,110 +50,110 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     void tearDown() {
         testCurrentUser.setDefault();
         testTimeProvider.reset();
-        getRepository().deleteAll();
     }
 
-    @Test
-    void shouldCreateOffer() {
-        assertPostResponseStatus(sampleOfferRequest(), HttpStatus.CREATED);
+    @Nested
+    class Creating {
+        @Test
+        void shouldCreateOffer() {
+            assertPostResponseStatus(sampleOfferRequest(), HttpStatus.CREATED);
+        }
+
+        @Test
+        void shouldReturnCreatedOfferOnList() {
+            T response = postSampleOffer();
+
+            var content = listOffers();
+            assertThat(content).contains(response);
+        }
+
+        @Test
+        void shouldReturnCreatedOffer() {
+            T created = postSampleOffer();
+            T returned = restTemplate.getForObject("/api/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
+            assertThat(returned).isEqualTo(created);
+        }
+
+        @Test
+        void shouldSetModifiedDateWhenOfferCreated() {
+            setCurrentTime(Instant.parse("2022-03-05T14:20:00Z"));
+
+            T created = postSampleOffer();
+
+            Optional<T> createdEntity = getRepository().findById(created.id);
+            assertThat(createdEntity)
+                    .isNotEmpty()
+                    .get().extracting(e -> e.modifiedDate).isEqualTo(Instant.parse("2022-03-05T14:20:00Z"));
+        }
+
+        @Test
+        void shouldIgnoreSuppliedIdOnCreate() {
+            T request = sampleOfferRequest();
+            request.id = 42L;
+            T response = restTemplate.postForObject("/api/secure/" + getOfferSuffix(), request, getClazz());
+            assertThat(response.id).isNotNull();
+            assertThat(response.id).isNotEqualTo(request.id);
+        }
+
+        @Nested
+        class Validation {
+            @Test
+            void shouldRejectBlankTitle() {
+                T offer = sampleOfferRequest();
+                offer.title = "       ";
+                assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+            }
+
+            @ParameterizedTest
+            @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
+            void shouldRejectIncorrectTitle(String notAllowedChar) {
+                T offer = sampleOfferRequest();
+                offer.title = "title" + notAllowedChar;
+                assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+            }
+
+            @Test
+            void shouldRejectTooLongTitle() {
+                T offer = sampleOfferRequest();
+                offer.title = "x".repeat(100);
+                assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+            }
+
+            @Test
+            void shouldRejectBlankDescription() {
+                T offer = sampleOfferRequest();
+                offer.description = "       ";
+                assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+            }
+
+            @ParameterizedTest
+            @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
+            void shouldRejectIncorrectDescription(String notAllowedChar) {
+                T offer = sampleOfferRequest();
+                offer.description = "description" + notAllowedChar;
+                assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+            }
+        }
     }
 
-    @Test
-    void shouldReturnCreatedOfferOnList() {
-        T response = postSampleOffer();
+    @Nested
+    class FetchingSingle {
+        @Test
+        void shouldReturnSingleOffer() {
+            T createdOffer = postSampleOffer();
 
-        var content = listOffers();
-        assertThat(content).contains(response);
-    }
+            ResponseEntity<T> response = restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), createdOffer.id), getClazz());
 
-    @Test
-    void shouldReturnCreatedOffer() {
-        T created = postSampleOffer();
-        T returned = restTemplate.getForObject("/api/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
-        assertThat(returned).isEqualTo(created);
-    }
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(createdOffer);
+        }
 
-    @Test
-    void shouldSetModifiedDateWhenOfferCreated() {
-        setCurrentTime(Instant.parse("2022-03-05T14:20:00Z"));
+        @Test
+        void shouldReturn404WhenSingleOfferNotFound() {
+            ResponseEntity<T> response = restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), 123L), getClazz());
 
-        T created = postSampleOffer();
-
-        Optional<T> createdEntity = getRepository().findById(created.id);
-        assertThat(createdEntity)
-                .isNotEmpty()
-                .get().extracting(e -> e.modifiedDate).isEqualTo(Instant.parse("2022-03-05T14:20:00Z"));
-    }
-
-    @Test
-    void shouldRejectBlankTitle() {
-        T offer = sampleOfferRequest();
-        offer.title = "       ";
-        assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
-    void shouldRejectIncorrectTitle(String notAllowedChar) {
-        T offer = sampleOfferRequest();
-        offer.title = "title" + notAllowedChar;
-        assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    void shouldRejectTooLongTitle() {
-        T offer = sampleOfferRequest();
-        offer.title = "x".repeat(100);
-        assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    void shouldRejectBlankDescription() {
-        T offer = sampleOfferRequest();
-        offer.description = "       ";
-        assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
-    void shouldRejectIncorrectDescription(String notAllowedChar) {
-        T offer = sampleOfferRequest();
-        offer.description = "description" + notAllowedChar;
-        assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
-    }
-
-    protected void assertPostResponseStatus(T offer, HttpStatus status) {
-        String url = "/api/secure/" + getOfferSuffix();
-        var response = status.is2xxSuccessful() ?
-                restTemplate.postForEntity(url, offer, getClazz()) :
-                restTemplate.postForEntity(url, offer, Object.class);
-        assertThat(response.getStatusCode()).isEqualTo(status);
-    }
-
-    @Test
-    void shouldIgnoreSuppliedIdOnCreate() {
-        T request = sampleOfferRequest();
-        request.id = 42L;
-        T response = restTemplate.postForObject("/api/secure/" + getOfferSuffix(), request, getClazz());
-        assertThat(response.id).isNotNull();
-        assertThat(response.id).isNotEqualTo(request.id);
-    }
-
-    @Test
-    void shouldReturnSingleOffer() {
-        T createdOffer = postSampleOffer();
-
-        ResponseEntity<T> response = restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), createdOffer.id), getClazz());
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(createdOffer);
-    }
-
-    @Test
-    void shouldReturn404WhenSingleOfferNotFound() {
-        ResponseEntity<T> response = restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), 123L), getClazz());
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
     }
 
     protected abstract Class<T> getClazz();
@@ -160,6 +163,14 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     protected abstract T sampleOfferRequest();
 
     protected abstract CrudRepository<T, Long> getRepository();
+
+    protected void assertPostResponseStatus(T offer, HttpStatus status) {
+        String url = "/api/secure/" + getOfferSuffix();
+        var response = status.is2xxSuccessful() ?
+                restTemplate.postForEntity(url, offer, getClazz()) :
+                restTemplate.postForEntity(url, offer, Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(status);
+    }
 
     protected Offers<T> listOffers(URI url) {
         var list = restTemplate.exchange(
