@@ -9,10 +9,14 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.Instant;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity
@@ -47,4 +51,12 @@ public abstract class BaseOffer {
     @LastModifiedDate
     public Instant modifiedDate;
 
+    @JsonIgnore
+    @Embedded
+    @Valid
+    public Status status;
+
+    public enum Status {
+        ACTIVE, INACTIVE
+    }
 }
