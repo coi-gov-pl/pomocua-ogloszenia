@@ -23,7 +23,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @JsonBaseOfferInheritance
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseOffer {
-    protected static final String ALLOWED_TEXT = "^[^<>()%#@\"']*$";
+    public static final String ALLOWED_TEXT = "^[^<>()%#@\"']*$";
 
     @Id
     @GeneratedValue(strategy = SEQUENCE)

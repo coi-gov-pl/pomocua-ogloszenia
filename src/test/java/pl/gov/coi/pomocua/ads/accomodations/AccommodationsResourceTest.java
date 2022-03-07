@@ -1,14 +1,28 @@
 package pl.gov.coi.pomocua.ads.accomodations;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
+import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.UserId;
+import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.Language;
+import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.LengthOfStay;
 import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,6 +33,11 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
 
     @Autowired
     private AccommodationsRepository repository;
+
+    @AfterEach
+    void tearDown() {
+        repository.deleteAll();
+    }
 
     @Nested
     class Searching {
@@ -71,6 +90,187 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
 
             assertThat(offers).contains(response);
         }
+    }
+
+    @Nested
+    class Updating {
+        @Test
+        void shouldUpdateOffer() {
+            AccommodationOffer offer = postSampleOffer();
+            var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+
+            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+            AccommodationOffer updatedOffer = getOfferFromRepository(offer.id);
+            assertThat(updatedOffer.title).isEqualTo("new title");
+            assertThat(updatedOffer.description).isEqualTo("new description");
+            assertThat(updatedOffer.location.region).isEqualTo("Pomorskie");
+            assertThat(updatedOffer.location.city).isEqualTo("Gdańsk");
+            assertThat(updatedOffer.guests).isEqualTo(14);
+            assertThat(updatedOffer.lengthOfStay).isEqualTo(LengthOfStay.MONTH_3);
+            assertThat(updatedOffer.hostLanguage).containsExactly(Language.UA);
+        }
+
+        @Test
+        public void shouldUpdateModifiedDate() {
+            setCurrentTime(Instant.parse("2022-03-07T15:23:22Z"));
+            AccommodationOffer offer = postSampleOffer();
+            var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+
+            setCurrentTime(Instant.parse("2022-04-01T12:00:00Z"));
+            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+            AccommodationOffer updatedOffer = getOfferFromRepository(offer.id);
+            assertThat(updatedOffer.modifiedDate).isEqualTo(Instant.parse("2022-04-01T12:00:00Z"));
+        }
+
+        @Test
+        void shouldReturn404WhenOfferDoesNotExist() {
+            var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+
+            ResponseEntity<Void> response = updateOffer(123L, updateJson);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        @Test
+        void shouldReturn404WhenOfferDoesNotBelongToCurrentUser() {
+            testCurrentUser.setCurrentUserId(new UserId("other-user-2"));
+            AccommodationOffer offer = postSampleOffer();
+            var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+
+            testCurrentUser.setCurrentUserId(new UserId("current-user-1"));
+            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        @Nested
+        class Validation {
+            @ParameterizedTest
+            @NullAndEmptySource
+            @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
+            void shouldRejectMissingOrInvalidTitle(String title) {
+                AccommodationOffer offer = postSampleOffer();
+                var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+                updateJson.title = title;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                AccommodationOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.title).isEqualTo(offer.title);
+            }
+
+            @Test
+            void shouldRejectTooLongTitle() {
+                AccommodationOffer offer = postSampleOffer();
+                var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+                updateJson.title = "a".repeat(81);
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                AccommodationOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.title).isEqualTo(offer.title);
+            }
+
+            @ParameterizedTest
+            @NullAndEmptySource
+            @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
+            void shouldRejectMissingOrInvalidDescription(String description) {
+                AccommodationOffer offer = postSampleOffer();
+                var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+                updateJson.description = description;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                AccommodationOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.description).isEqualTo(offer.description);
+            }
+
+            @Test
+            void shouldRejectTooLongDescription() {
+                AccommodationOffer offer = postSampleOffer();
+                var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+                updateJson.description = "a".repeat(81);
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                AccommodationOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.description).isEqualTo(offer.description);
+            }
+
+            @ParameterizedTest
+            @NullSource
+            @MethodSource("pl.gov.coi.pomocua.ads.accomodations.AccommodationsResourceTest#invalidLocations")
+            void shouldRejectMissingOrInvalidLocation(Location location) {
+                AccommodationOffer offer = postSampleOffer();
+                var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+                updateJson.location = location;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                AccommodationOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.location).isEqualTo(offer.location);
+            }
+
+            @ParameterizedTest
+            @NullSource
+            @ValueSource(ints = {-1, 0})
+            void shouldRejectMissingOrInvalidGuests(Integer guests) {
+                AccommodationOffer offer = postSampleOffer();
+                var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+                updateJson.guests = guests;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                AccommodationOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.guests).isEqualTo(offer.guests);
+            }
+
+            @Test
+            void shouldRejectMissingLengthOfStay() {
+                AccommodationOffer offer = postSampleOffer();
+                var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+                updateJson.lengthOfStay = null;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                AccommodationOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.lengthOfStay).isEqualTo(offer.lengthOfStay);
+            }
+
+            @ParameterizedTest
+            @NullAndEmptySource
+            void shouldRejectMissingHostLanguage(List<Language> hostLanguage) {
+                AccommodationOffer offer = postSampleOffer();
+                var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+                updateJson.hostLanguage = hostLanguage;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                AccommodationOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.hostLanguage).containsExactlyInAnyOrderElementsOf(offer.hostLanguage);
+            }
+        }
+    }
+
+    static Stream<Location> invalidLocations() {
+        return Stream.of(
+                new Location(null, "city"),
+                new Location("   ", "city"),
+                new Location("region", null),
+                new Location("region", "   ")
+        );
     }
 
     @Test

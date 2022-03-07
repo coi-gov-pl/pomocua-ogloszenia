@@ -15,4 +15,15 @@ public class AccommodationsTestDataGenerator {
         request.guests = 5;
         return request;
     }
+
+    public static UpdateAccommodationOfferJson sampleUpdateJson() {
+        var updateJson = new UpdateAccommodationOfferJson();
+        updateJson.title = "new title";
+        updateJson.description = "new description";
+        updateJson.location = new Location("Pomorskie", "Gdańsk");
+        updateJson.guests = 14;
+        updateJson.lengthOfStay = AccommodationOffer.LengthOfStay.MONTH_3;
+        updateJson.hostLanguage = List.of(AccommodationOffer.Language.UA);
+        return updateJson;
+    }
 }

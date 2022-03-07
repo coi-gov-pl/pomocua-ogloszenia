@@ -10,6 +10,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -152,7 +153,6 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
     protected abstract CrudRepository<T, Long> getRepository();
 
-
     protected Offers<T> listOffers(URI url) {
         var list = restTemplate.exchange(
                 url,
@@ -165,7 +165,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     }
 
     protected List<T> listOffers(String requestParams) {
-        return (List<T>) listOffers(URI.create("/api/" + getOfferSuffix() + requestParams)).content;
+        return listOffers(URI.create("/api/" + getOfferSuffix() + requestParams)).content;
     }
 
     protected List<T> listOffers() {
@@ -184,6 +184,21 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         assertThat(entity.id).isNotNull();
         assertThat(entity).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
         return entity;
+    }
+
+    protected <U> ResponseEntity<Void> updateOffer(Long id, U update) {
+        return restTemplate.exchange(
+                "/api/secure/%s/%d".formatted(getOfferSuffix(), id),
+                HttpMethod.PUT,
+                new HttpEntity<>(update),
+                Void.class
+        );
+    }
+
+    protected T getOfferFromRepository(Long id) {
+        Optional<T> foundEntity = getRepository().findById(id);
+        assertThat(foundEntity).isNotEmpty();
+        return foundEntity.get();
     }
 
     protected void setCurrentTime(Instant time) {
