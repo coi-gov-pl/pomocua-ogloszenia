@@ -23,10 +23,11 @@ public class AccommodationsResource {
 
     @PostMapping("secure/accommodations")
     @ResponseStatus(HttpStatus.CREATED)
-    public AccommodationOffer create(@Valid @RequestBody AccommodationOffer offer) {
-        offer.id = null;
-        offer.userId = currentUser.getCurrentUserId();
-        return repository.save(offer);
+    public AccommodationOffer create(@Valid @RequestBody AccommodationOfferDefinitionDTO offerDefinition) {
+        AccommodationOffer accommodationOffer = new AccommodationOffer();
+        offerDefinition.applyTo(accommodationOffer);
+        accommodationOffer.userId = currentUser.getCurrentUserId();
+        return repository.save(accommodationOffer);
     }
 
     @GetMapping("accommodations")
@@ -46,7 +47,7 @@ public class AccommodationsResource {
 
     @PutMapping("secure/accommodations/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable Long id, @Valid @RequestBody UpdateAccommodationOfferJson update) {
+    public void update(@PathVariable Long id, @Valid @RequestBody AccommodationOfferDefinitionDTO update) {
         AccommodationOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
                 .orElseThrow(OfferNotFoundException::new);
 
