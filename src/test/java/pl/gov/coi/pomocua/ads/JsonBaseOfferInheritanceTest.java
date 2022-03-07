@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.gov.coi.pomocua.ads.jobs.JobOffer;
+import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
 
 import java.util.List;
 
@@ -27,18 +27,18 @@ public class JsonBaseOfferInheritanceTest {
 
     @Test
     void one() throws Exception {
-        var job = new JobOffer();
-        job.title = "title";
-        var json = mapper.writeValueAsString(job);
+        var offer = new MaterialAidOffer();
+        offer.title = "title";
+        var json = mapper.writeValueAsString(offer);
         var o = mapper.readValue(json, BaseOffer.class);
-        assertThat(o).isEqualTo(job);
+        assertThat(o).isEqualTo(offer);
     }
 
     @Test
     void list() throws Exception {
-        var job = new JobOffer();
-        job.title = "title";
-        Paged initial = new Paged(List.of(job));
+        var offer = new MaterialAidOffer();
+        offer.title = "title";
+        Paged<MaterialAidOffer> initial = new Paged<>(List.of(offer));
         var json = mapper.writeValueAsString(initial);
         var o = mapper.readValue(json, Paged.class);
         assertThat(o).isEqualTo(initial);
@@ -51,14 +51,12 @@ public class JsonBaseOfferInheritanceTest {
                       "id": null,
                       "title": "title",
                       "description": null,
-                      "type": null,
-                      "mode": null,
-                      "location": null,
-                      "language": null
+                      "category": null,
+                      "location": null
                     }
                 """;
-        var job = mapper.readValue(json, JobOffer.class);
-        assertThat(job.title).isEqualTo("title");
+        var offer = mapper.readValue(json, MaterialAidOffer.class);
+        assertThat(offer.title).isEqualTo("title");
     }
 
     @NoArgsConstructor
