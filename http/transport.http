@@ -1,0 +1,17 @@
+POST {{baseUrl}}/api/secure/transport
+Content-Type: application/json
+
+{
+  "title": "New transport offer!",
+  "description": "very good",
+  "origin": {
+    "region": "Pomorskie",
+    "city": "Gdańsk"
+  },
+  "destination": {
+    "region": "Mazowieckie",
+    "city": "Warszawa"
+  },
+  "capacity": 4,
+  "transportDate": "2022-03-07"
+}
