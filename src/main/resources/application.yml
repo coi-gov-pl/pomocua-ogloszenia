@@ -6,6 +6,11 @@ spring.data.web.pageable.max-page-size: 1000
 springdoc.api-docs.enabled: false
 springdoc.swagger-ui.enabled: false
 
+spring:
+  jackson:
+    mapper:
+      USE_BASE_TYPE_AS_DEFAULT_IMPL: true
+
 app:
   keycloak:
     server-url: ${KEYCLOAK_URL:https://local.pomagamukrainie.gov.pl/auth}
@@ -33,4 +38,3 @@ keycloak:
         - name: PERMIT ALL
           patterns:
             - /*
-

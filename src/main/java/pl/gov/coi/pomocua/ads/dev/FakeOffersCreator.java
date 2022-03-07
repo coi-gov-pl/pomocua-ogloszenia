@@ -51,6 +51,7 @@ public class FakeOffersCreator {
         o1.location = new Location("podkarpackie", "Rzeszów");
         o1.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
         o1.guests = 2;
+        o1.lengthOfStay = AccommodationOffer.LengthOfStay.MONTH_2;
 
         AccommodationOffer o2 = new AccommodationOffer();
         o2.title = "Mieszkanie w bloku, 4 osoby - Międzygórze, woj. podlaskie";
@@ -59,6 +60,7 @@ public class FakeOffersCreator {
         o2.location = new Location("podlaskie", "Międzygórze");
         o2.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
         o2.guests = 4;
+        o2.lengthOfStay = AccommodationOffer.LengthOfStay.LONGER;
 
         accommodationsRepository.save(o1);
         accommodationsRepository.save(o2);

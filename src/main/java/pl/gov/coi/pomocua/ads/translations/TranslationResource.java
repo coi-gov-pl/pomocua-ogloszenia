@@ -1,15 +1,17 @@
 package pl.gov.coi.pomocua.ads.translations;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.gov.coi.pomocua.ads.Offers;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
 
 import javax.validation.Valid;
+
+import static pl.gov.coi.pomocua.ads.Offers.page;
 
 @RestController
 @RequestMapping(value = "/api/", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,8 +30,8 @@ public class TranslationResource {
     }
 
     @GetMapping("translations")
-    public Page<TranslationOffer> list(Pageable pageRequest) {
-        return repository.findAll(pageRequest);
+    public Offers<TranslationOffer> list(Pageable pageRequest) {
+        return page(repository.findAll(pageRequest));
     }
 
     @GetMapping("translations/{id}")
