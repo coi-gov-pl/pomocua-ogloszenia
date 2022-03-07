@@ -2,12 +2,8 @@ package pl.gov.coi.pomocua.ads.accomodations;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
-import pl.gov.coi.pomocua.ads.PageableResponse;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
 
@@ -28,7 +24,7 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
         AccommodationOffer response = postSampleOffer();
 
         String requestParams = "/MAzowIEckie/waRszaWA?capacity=4";
-        AccommodationOffer[] offers = listOffers(requestParams);
+        var offers = listOffers(requestParams);
 
         assertThat(offers).contains(response);
     }
@@ -38,7 +34,7 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
         postSampleOffer();
 
         String requestParams = "/MAzowIEckie/waRszaWA?capacity=15";
-        AccommodationOffer[] offers = listOffers(requestParams);
+        var offers = listOffers(requestParams);
 
         assertThat(offers).isEmpty();
     }
@@ -48,7 +44,7 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
         postSampleOffer();
 
         String requestParams = "/MAłopolskie/Kraków?capacity=1";
-        AccommodationOffer[] offers = listOffers(requestParams);
+        var offers = listOffers(requestParams);
 
         assertThat(offers).isEmpty();
     }
@@ -58,7 +54,7 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
         AccommodationOffer response = postSampleOffer();
 
         String requestParams = "/mazowIEckie/WARszaWA";
-        AccommodationOffer[] offers = listOffers(requestParams);
+        var offers = listOffers(requestParams);
 
         assertThat(offers).contains(response);
     }
@@ -81,16 +77,9 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
         AccommodationOffer response = postSampleOffer();
 
         String requestParams = "?capacity=1";
-        AccommodationOffer[] offers = listOffers(requestParams);
+        var offers = listOffers(requestParams);
 
         assertThat(offers).contains(response);
-    }
-
-    private AccommodationOffer[] listOffers(String requestParams) {
-        ResponseEntity<PageableResponse<AccommodationOffer>> list = restTemplate.exchange(
-                "/api/" + getOfferSuffix() + requestParams, HttpMethod.GET, null, getResponseType()
-        );
-        return list.getBody().content;
     }
 
     @Override
@@ -101,12 +90,6 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
     @Override
     protected String getOfferSuffix() {
         return "accommodations";
-    }
-
-    @Override
-    protected ParameterizedTypeReference<PageableResponse<AccommodationOffer>> getResponseType() {
-        return new ParameterizedTypeReference<>() {
-        };
     }
 
     @Override

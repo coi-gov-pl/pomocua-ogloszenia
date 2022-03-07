@@ -5,17 +5,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
-import pl.gov.coi.pomocua.ads.PageableResponse;
+import pl.gov.coi.pomocua.ads.Offers;
 
+import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,7 +62,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
 
         MaterialAidOfferSearchCriteria searchCriteria = new MaterialAidOfferSearchCriteria();
         searchCriteria.setLocation(new Location("Mazowieckie", "Warszawa"));
-        MaterialAidOffer[] results = searchOffers(searchCriteria);
+        var results = searchOffers(searchCriteria);
 
         assertThat(results).hasSize(1).contains(offer1);
     }
@@ -87,7 +86,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
 
         MaterialAidOfferSearchCriteria searchCriteria = new MaterialAidOfferSearchCriteria();
         searchCriteria.setCategory(MaterialAidCategory.FOOD);
-        MaterialAidOffer[] results = searchOffers(searchCriteria);
+        var results = searchOffers(searchCriteria);
 
         assertThat(results).hasSize(2).contains(offer2, offer3);
     }
@@ -102,7 +101,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         postOffer(aMaterialAidOffer().title("f").build());
 
         PageRequest page = PageRequest.of(1, 2);
-        PageableResponse<MaterialAidOffer> results = searchOffers(page);
+        var results = searchOffers(page);
 
         assertThat(results.totalElements).isEqualTo(6);
         assertThat(results.content)
@@ -129,12 +128,6 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
     }
 
     @Override
-    protected ParameterizedTypeReference<PageableResponse<MaterialAidOffer>> getResponseType() {
-        return new ParameterizedTypeReference<>() {
-        };
-    }
-
-    @Override
     protected MaterialAidOffer sampleOfferRequest() {
         MaterialAidOffer request = new MaterialAidOffer();
         request.description = "some description";
@@ -144,7 +137,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         return request;
     }
 
-    private MaterialAidOffer[] searchOffers(MaterialAidOfferSearchCriteria searchCriteria) {
+    private List<MaterialAidOffer> searchOffers(MaterialAidOfferSearchCriteria searchCriteria) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         if (searchCriteria.getLocation() != null) {
             builder
@@ -155,17 +148,10 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
             builder.queryParam("category", searchCriteria.getCategory());
         }
         String url = builder.encode().toUriString();
-
-        ResponseEntity<PageableResponse<MaterialAidOffer>> list = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                null,
-                getResponseType()
-        );
-        return list.getBody().content;
+        return listOffers(URI.create(url)).content;
     }
 
-    private PageableResponse<MaterialAidOffer> searchOffers(PageRequest pageRequest) {
+    private Offers<MaterialAidOffer> searchOffers(PageRequest pageRequest) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         builder.queryParam("page", pageRequest.getPageNumber());
         builder.queryParam("size", pageRequest.getPageSize());
@@ -174,9 +160,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         });
         String url = builder.encode().toUriString();
 
-        ResponseEntity<PageableResponse<MaterialAidOffer>> list = restTemplate
-                .exchange(url, HttpMethod.GET, null, getResponseType());
-        return list.getBody();
+        return listOffers(URI.create(url));
     }
 
     @Builder

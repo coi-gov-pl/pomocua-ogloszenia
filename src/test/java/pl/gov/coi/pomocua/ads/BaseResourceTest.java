@@ -15,9 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
 
+import java.net.URI;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,7 +50,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     void shouldReturnCreatedOfferOnList() {
         T response = postSampleOffer();
 
-        T[] content = listOffers();
+        var content = listOffers();
         assertThat(content).contains(response);
     }
 
@@ -146,16 +148,28 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
     protected abstract String getOfferSuffix();
 
-    protected abstract ParameterizedTypeReference<PageableResponse<T>> getResponseType();
-
     protected abstract T sampleOfferRequest();
 
     protected abstract CrudRepository<T, Long> getRepository();
 
-    private T[] listOffers() {
-        ResponseEntity<PageableResponse<T>> list = restTemplate.exchange("/api/" + getOfferSuffix(), HttpMethod.GET, null,
-                getResponseType());
-        return list.getBody().content;
+
+    protected Offers<T> listOffers(URI url) {
+        var list = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<Offers<BaseOffer>>() {
+                });
+        return (Offers<T>) list.getBody();
+
+    }
+
+    protected List<T> listOffers(String requestParams) {
+        return (List<T>) listOffers(URI.create("/api/" + getOfferSuffix() + requestParams)).content;
+    }
+
+    protected List<T> listOffers() {
+        return listOffers("");
     }
 
     protected T postSampleOffer() {
