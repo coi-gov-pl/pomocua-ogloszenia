@@ -2,7 +2,9 @@ package pl.gov.coi.pomocua.ads.users;
 
 import pl.gov.coi.pomocua.ads.UserId;
 
+import java.util.Optional;
+
 public interface UsersRepository {
 
-    User getById(UserId userId);
+    Optional<User> getById(UserId userId);
 }
