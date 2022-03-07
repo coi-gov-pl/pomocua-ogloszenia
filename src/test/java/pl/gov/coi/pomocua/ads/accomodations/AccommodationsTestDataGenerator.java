@@ -16,8 +16,8 @@ public class AccommodationsTestDataGenerator {
         return request;
     }
 
-    public static UpdateAccommodationOfferJson sampleUpdateJson() {
-        var updateJson = new UpdateAccommodationOfferJson();
+    public static AccommodationOfferDefinitionDTO sampleUpdateJson() {
+        var updateJson = new AccommodationOfferDefinitionDTO();
         updateJson.title = "new title";
         updateJson.description = "new description";
         updateJson.location = new Location("Pomorskie", "Gdańsk");

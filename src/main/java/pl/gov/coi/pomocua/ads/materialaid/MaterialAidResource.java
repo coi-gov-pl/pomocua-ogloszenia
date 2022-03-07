@@ -25,8 +25,9 @@ public class MaterialAidResource {
     @PostMapping(value = "secure/material-aid")
     @ResponseStatus(HttpStatus.CREATED)
     public MaterialAidOffer postMaterialAidOffer(
-            @Valid @RequestBody final MaterialAidOffer materialAidOffer) {
-        materialAidOffer.id = null;
+            @Valid @RequestBody final MaterialAidOfferDefinitionDTO materialAidOfferDefinition) {
+        MaterialAidOffer materialAidOffer = new MaterialAidOffer();
+        materialAidOfferDefinition.applyTo(materialAidOffer);
         materialAidOffer.userId = currentUser.getCurrentUserId();
         return repository.save(materialAidOffer);
     }

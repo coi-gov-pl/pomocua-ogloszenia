@@ -12,7 +12,7 @@ import java.util.List;
 
 import static pl.gov.coi.pomocua.ads.BaseOffer.ALLOWED_TEXT;
 
-public class UpdateAccommodationOfferJson {
+public class AccommodationOfferDefinitionDTO {
     @NotBlank
     @Length(max = 80)
     @Pattern(regexp = ALLOWED_TEXT)
