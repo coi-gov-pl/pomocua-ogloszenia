@@ -262,6 +262,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
                 .capacity(1)
                 .origin(new Location("mazowieckie", "warszawa"))
                 .destination(new Location("pomorskie", "gdańsk"))
+                .transportDate(LocalDate.now())
                 ;
     }
 

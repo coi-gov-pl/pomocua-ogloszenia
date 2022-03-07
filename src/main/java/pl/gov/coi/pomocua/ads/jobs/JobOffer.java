@@ -9,6 +9,8 @@ import pl.gov.coi.pomocua.ads.Location;
 
 import javax.persistence.*;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static javax.persistence.EnumType.STRING;
@@ -17,6 +19,7 @@ import static javax.persistence.EnumType.STRING;
 @Entity
 public class JobOffer extends BaseOffer {
     @Enumerated(STRING)
+    @NotNull
     public Mode mode;
 
     @Embedded
@@ -26,11 +29,13 @@ public class JobOffer extends BaseOffer {
     @ElementCollection(targetClass = Type.class)
     @CollectionTable
     @Enumerated(STRING)
+    @NotEmpty
     public List<Type> type;
 
     @ElementCollection(targetClass = Language.class)
     @CollectionTable
     @Enumerated(STRING)
+    @NotEmpty
     public List<Language> language;
 
     enum Mode {

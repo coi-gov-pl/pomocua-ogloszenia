@@ -42,6 +42,7 @@ public class TransportOffer extends BaseOffer {
     @Max(99)
     public Integer capacity;
 
+    @NotNull
     public LocalDate transportDate;
 
     public static TransportOffer of(String title, String description, UserId user, Location origin, Location destination, Integer capacity) {
@@ -55,5 +56,4 @@ public class TransportOffer extends BaseOffer {
         transportOffer.transportDate = LocalDate.now();
         return transportOffer;
     }
-
 }
