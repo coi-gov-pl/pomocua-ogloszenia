@@ -31,6 +31,7 @@ ext {
 	set('testcontainersVersion', "1.16.2")
 	set('springdocVersion', "1.6.6")
 	set('keycloakVersion', "15.0.2")
+	set('hibernateEnversVersion', '5.6.5.Final')
 }
 
 dependencies {
@@ -40,7 +41,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.flywaydb:flyway-core'
 	implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
-	implementation group: 'org.hibernate', name: 'hibernate-envers', version: '5.6.5.Final'
+	implementation "org.hibernate:hibernate-envers:${hibernateEnversVersion}"
 	implementation "org.keycloak:keycloak-spring-boot-starter:${keycloakVersion}"
 	implementation "org.keycloak:keycloak-admin-client:${keycloakVersion}"
 
