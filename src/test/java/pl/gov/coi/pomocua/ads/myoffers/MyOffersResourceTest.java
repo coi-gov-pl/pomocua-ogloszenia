@@ -92,6 +92,17 @@ class MyOffersResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
+    @Test
+    void shouldReturnInactiveOffers() {
+        UserId accommodationOfferUserId = new UserId("accommodation offer user id");
+        testCurrentUser.setCurrentUserId(accommodationOfferUserId);
+        AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
+        deleteOffer("accommodations", AccommodationOffer.class, accOffer.id);
+        ResponseEntity<BaseOffer> response = restTemplate.getForEntity("/api/secure/my-offers/" + accOffer.id, BaseOffer.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().status).isEqualTo(BaseOffer.Status.INACTIVE.toString());
+    }
+
     private <T extends BaseOffer> T[] listOffers() {
         ResponseEntity<PageableResponse<T>> list = restTemplate.exchange(
                 "/api/secure/my-offers", HttpMethod.GET, null, new ParameterizedTypeReference<>() {}
@@ -106,5 +117,9 @@ class MyOffersResourceTest {
         assertThat(entity.id).isNotNull();
         assertThat(entity).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
         return entity;
+    }
+
+    private <T extends BaseOffer>  void deleteOffer(String urlSuffix, Class<T> clazz, Long id) {
+        restTemplate.delete("/api/secure/" + urlSuffix + "/{id}", clazz, id);
     }
 }
