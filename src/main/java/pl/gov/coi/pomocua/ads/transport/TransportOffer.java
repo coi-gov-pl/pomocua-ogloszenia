@@ -9,6 +9,7 @@ import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.UserId;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -26,6 +27,7 @@ public class TransportOffer extends BaseOffer {
             @AttributeOverride(name = "region", column = @Column(name = "origin_region")),
             @AttributeOverride(name = "city", column = @Column(name = "origin_city"))
     })
+    @Valid
     public Location origin;
 
     @NotNull
@@ -34,6 +36,7 @@ public class TransportOffer extends BaseOffer {
             @AttributeOverride(name = "region", column = @Column(name = "destination_region")),
             @AttributeOverride(name = "city", column = @Column(name = "destination_city"))
     })
+    @Valid
     public Location destination;
 
     @NotNull

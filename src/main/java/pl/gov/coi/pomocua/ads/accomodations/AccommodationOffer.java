@@ -2,15 +2,11 @@ package pl.gov.coi.pomocua.ads.accomodations;
 
 import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
 import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.Location;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
 
@@ -22,6 +18,7 @@ import static javax.persistence.EnumType.STRING;
 public class AccommodationOffer extends BaseOffer {
 
     @Embedded
+    @Valid
     public Location location;
 
     @Min(1)

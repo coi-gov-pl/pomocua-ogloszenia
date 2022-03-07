@@ -3,6 +3,7 @@ package pl.gov.coi.pomocua.ads.dictionaries.domain;
 import pl.gov.coi.pomocua.ads.Location;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 
 @Entity
 public class City {
@@ -13,6 +14,7 @@ public class City {
     private Long id;
 
     @Embedded
+    @Valid
     private Location location;
 
     protected City() {

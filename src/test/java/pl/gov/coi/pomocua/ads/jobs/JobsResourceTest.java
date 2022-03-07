@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.repository.CrudRepository;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
-import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.PageableResponse;
-
-import java.util.List;
 
 class JobsResourceTest extends BaseResourceTest<JobOffer> {
 
@@ -32,14 +29,7 @@ class JobsResourceTest extends BaseResourceTest<JobOffer> {
 
     @Override
     protected JobOffer sampleOfferRequest() {
-        JobOffer request = new JobOffer();
-        request.title = "sample work";
-        request.mode = JobOffer.Mode.REMOTE;
-        request.location = new Location("Mazowieckie", "Warszawa");
-        request.type = List.of(JobOffer.Type.TEMPORARY);
-        request.language = List.of(JobOffer.Language.PL, JobOffer.Language.UA);
-        request.description = "description";
-        return request;
+        return JobsTestDataGenerator.sampleOffer();
     }
 
     @Override
