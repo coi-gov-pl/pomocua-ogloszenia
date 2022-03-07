@@ -6,10 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.Offers;
+import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
 
 import javax.validation.Valid;
+
+import java.util.Optional;
 
 import static pl.gov.coi.pomocua.ads.Offers.page;
 
@@ -26,6 +30,16 @@ public class JobsResource {
         workOffer.id = null;
         workOffer.userId = currentUser.getCurrentUserId();
         return repository.save(workOffer);
+    }
+
+    @DeleteMapping("secure/jobs/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        Optional<JobOffer> jobOffer = repository.findById(id);
+        jobOffer.ifPresent(offer -> {
+            offer.status = BaseOffer.Status.INACTIVE;
+            repository.save(offer);
+        });
     }
 
     @GetMapping("jobs")
