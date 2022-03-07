@@ -9,12 +9,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.PageableResponse;
 import pl.gov.coi.pomocua.ads.TestConfiguration;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer;
+import pl.gov.coi.pomocua.ads.accomodations.AccommodationsResource;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationsTestDataGenerator;
 import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
 import pl.gov.coi.pomocua.ads.jobs.JobOffer;
@@ -49,6 +51,7 @@ class MyOffersResourceTest {
         assertThat(offers).extracting("id").containsExactly(accOffer.id, jobOffer.id);
         assertThat(offers).extracting("title").containsExactly(accOffer.title, jobOffer.title);
         assertThat(offers).extracting("description").containsExactly(accOffer.description, jobOffer.description);
+        assertThat(offers).extracting("status").doesNotContain(BaseOffer.Status.INACTIVE);
     }
 
     @Test
@@ -64,6 +67,7 @@ class MyOffersResourceTest {
         testCurrentUser.setCurrentUserId(accommodationOfferUserId);
         BaseOffer[] offers = listOffers();
         assertThat(offers).hasSize(1);
+        assertThat(offers).extracting("status").doesNotContain(BaseOffer.Status.INACTIVE);
         assertThat(offers[0]).isInstanceOf(AccommodationOffer.class);
         assertThat(offers[0]).isEqualTo(accOffer);
     }
@@ -100,7 +104,7 @@ class MyOffersResourceTest {
         deleteOffer("accommodations", AccommodationOffer.class, accOffer.id);
         ResponseEntity<BaseOffer> response = restTemplate.getForEntity("/api/secure/my-offers/" + accOffer.id, BaseOffer.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().status).isEqualTo(BaseOffer.Status.INACTIVE.toString());
+        assertThat(response.getBody().status).isEqualTo(BaseOffer.Status.INACTIVE);
     }
 
     private <T extends BaseOffer> T[] listOffers() {
@@ -119,7 +123,9 @@ class MyOffersResourceTest {
         return entity;
     }
 
-    private <T extends BaseOffer>  void deleteOffer(String urlSuffix, Class<T> clazz, Long id) {
-        restTemplate.delete("/api/secure/" + urlSuffix + "/{id}", clazz, id);
+    private <T extends BaseOffer> void deleteOffer(String urlSuffix, Class<T> clazz, Long id) {
+        ParameterizedTypeReference<AccommodationsResource> accommodationsResource = new ParameterizedTypeReference<AccommodationsResource>() {};
+        ResponseEntity<AccommodationsResource> responseDelete = restTemplate.exchange("/api/secure/" + urlSuffix + "/" + id, HttpMethod.DELETE, null, accommodationsResource, clazz);
+        assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 }

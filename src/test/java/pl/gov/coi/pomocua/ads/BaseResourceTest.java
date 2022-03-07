@@ -159,7 +159,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     @Test
     void shouldReturn404OnGetDeletedOffer() {
         T created = postSampleOffer();
-        restTemplate.delete("/api/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
+        restTemplate.delete("/api/secure/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
         ResponseEntity<T> response = restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), 123L), getClazz());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -173,7 +173,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
                 .isNotEmpty()
                 .get().extracting(e -> e.status).isEqualTo(BaseOffer.Status.ACTIVE);
 
-        restTemplate.delete("/api/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
+        restTemplate.delete("/api/secure/" + getOfferSuffix() + "/" + created.id, getClazz());
 
         createdEntity = getRepository().findById(created.id);
         assertThat(createdEntity)
@@ -185,9 +185,9 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     @Test
     void shouldReturn204OnDoubleDeletedOffer() {
         T created = postSampleOffer();
-        restTemplate.delete("/api/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
+        restTemplate.delete("/api/secure/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
 
-        restTemplate.delete("/api/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
+        restTemplate.delete("/api/secure/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
 
 
     }

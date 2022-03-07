@@ -9,7 +9,7 @@ create table translation_offer
     region        text,
     description   text,
     modified_date timestamp not null,
-    status        text not null default 'ACTIVE',
+    status        text,
     CONSTRAINT PK_TO_ID PRIMARY KEY (ID)
 );
 

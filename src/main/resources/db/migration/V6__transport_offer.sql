@@ -11,7 +11,7 @@ create table transport_offer
     capacity           int,
     transport_date     date,
     modified_date      timestamp not null,
-    status             text not null default 'ACTIVE',
+    status             text,
     CONSTRAINT PK_TRO_ID PRIMARY KEY (ID)
 );
 

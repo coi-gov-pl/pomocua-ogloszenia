@@ -8,7 +8,7 @@ create table job_offer
     region        text,
     description   text,
     modified_date timestamp not null,
-    status        text not null default 'ACTIVE',
+    status        text,
     CONSTRAINT PK_JO_ID PRIMARY KEY (ID)
 );
 
