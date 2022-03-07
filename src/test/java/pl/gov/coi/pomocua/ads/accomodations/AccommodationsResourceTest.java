@@ -1,6 +1,5 @@
 package pl.gov.coi.pomocua.ads.accomodations;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,6 +32,46 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
 
     @Autowired
     private AccommodationsRepository repository;
+
+    @Nested
+    class CreatingValidation {
+        @ParameterizedTest
+        @NullSource
+        @MethodSource("pl.gov.coi.pomocua.ads.accomodations.AccommodationsResourceTest#invalidLocations")
+        void shouldRejectMissingOrInvalidLocation(Location location) {
+            AccommodationOffer offer = sampleOfferRequest();
+            offer.location = location;
+
+            assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+        }
+
+        @ParameterizedTest
+        @NullSource
+        @ValueSource(ints = {-1, 0})
+        void shouldRejectMissingOrInvalidGuests(Integer guests) {
+            AccommodationOffer offer = sampleOfferRequest();
+            offer.guests = guests;
+
+            assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        void shouldRejectMissingLengthOfStay() {
+            AccommodationOffer offer = sampleOfferRequest();
+            offer.lengthOfStay = null;
+
+            assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        void shouldRejectMissingHostLanguage(List<Language> hostLanguage) {
+            AccommodationOffer offer = sampleOfferRequest();
+            offer.hostLanguage = hostLanguage;
+
+            assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @Nested
     class Searching {
