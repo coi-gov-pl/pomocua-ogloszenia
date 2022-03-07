@@ -3,25 +3,33 @@ package pl.gov.coi.pomocua.ads;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
+import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Embedded;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.ws.rs.DefaultValue;
+import java.time.Instant;
 
-import static javax.persistence.GenerationType.IDENTITY;
+import static javax.persistence.GenerationType.SEQUENCE;
 
+@Entity
+@Audited
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @EqualsAndHashCode
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
-@MappedSuperclass
+@JsonBaseOfferInheritance
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseOffer {
-    protected static final String ALLOWED_TEXT = "^[^<>()%#@\"']*$";
+    public static final String ALLOWED_TEXT = "^[^<>()%#@\"']*$";
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = SEQUENCE)
     public Long id;
 
     @Embedded
@@ -37,4 +45,15 @@ public abstract class BaseOffer {
     @Length(max = 1000)
     @Pattern(regexp = ALLOWED_TEXT)
     public String description;
+
+    @JsonIgnore
+    @LastModifiedDate
+    public Instant modifiedDate;
+
+    @NotNull
+    public Status status = Status.ACTIVE;
+
+    public enum Status {
+        ACTIVE, INACTIVE
+    }
 }

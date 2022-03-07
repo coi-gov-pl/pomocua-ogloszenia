@@ -6,8 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import pl.gov.coi.pomocua.ads.BaseResourceFunctionalTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.jdbc.Sql;
+import pl.gov.coi.pomocua.ads.TestConfiguration;
 
 import java.util.Collections;
 
@@ -15,7 +18,10 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
-public class CityLookupResourceFunctionalTest extends BaseResourceFunctionalTest {
+@Sql(scripts = "classpath:cities_terc_import.sql")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(TestConfiguration.class)
+public class CityLookupResourceFunctionalTest {
 
   @LocalServerPort
   int port;
