@@ -44,6 +44,7 @@ CREATE TABLE accommodation_offer_AUD
     description     text,
     guests          integer,
     length_of_stay  text,
+    modified_date   timestamp,
     REV             INTEGER NOT NULL,
     REVTYPE         SMALLINT,
     REVEND          INTEGER,

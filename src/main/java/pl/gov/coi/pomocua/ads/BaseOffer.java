@@ -16,6 +16,7 @@ import java.time.Instant;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity
+@Audited
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @EqualsAndHashCode
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)

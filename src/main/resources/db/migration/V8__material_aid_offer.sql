@@ -38,6 +38,7 @@ CREATE TABLE material_aid_offer_AUD
     category        text,
     city            text,
     region          text,
+    modified_date   timestamp,
     REV             INTEGER NOT NULL,
     REVTYPE         SMALLINT,
     REVEND           INTEGER,
