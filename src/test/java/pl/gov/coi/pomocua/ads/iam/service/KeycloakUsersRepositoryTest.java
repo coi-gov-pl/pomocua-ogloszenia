@@ -7,15 +7,14 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.UserRepresentation;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.iam.KeycloakUsersRepository;
-import pl.gov.coi.pomocua.ads.iam.UserNotFoundException;
 import pl.gov.coi.pomocua.ads.users.User;
 import pl.gov.coi.pomocua.ads.users.UsersRepository;
 
 import javax.ws.rs.NotFoundException;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -35,7 +34,7 @@ class KeycloakUsersRepositoryTest {
     }
 
     @Test
-    void getUserDetails_whenUserExists_expectUserDetails() {
+    void getUserDetails_whenUserExists_expectUserDetailsIsPresent() {
 
         //given
         String id = UUID.randomUUID().toString();
@@ -51,18 +50,19 @@ class KeycloakUsersRepositoryTest {
         when(userResource.toRepresentation()).thenReturn(userRepresentation);
 
         //when
-        User user = usersRepository.getById(userId);
+        Optional<User> userOpt = usersRepository.getById(userId);
 
         //then
         assertAll(
-                () -> assertThat(user).extracting(User::id, User::email, User::phoneNumber).containsExactly(userId, email, null),
+                () -> assertThat(userOpt).isPresent()
+                        .get().extracting(User::id, User::email, User::phoneNumber).containsExactly(userId, email, null),
                 () -> verify(keycloakUsersResource, times(1)).get(id),
                 () -> verify(userResource, times(1)).toRepresentation()
         );
     }
 
     @Test
-    void getUserDetails_whenUserNotFound_expectUserNotFoundException() {
+    void getUserDetails_whenUserNotFound_expectOptionalEmpty() {
 
         //given
         String id = UUID.randomUUID().toString();
@@ -72,10 +72,12 @@ class KeycloakUsersRepositoryTest {
         when(keycloakUsersResource.get(id)).thenReturn(userResource);
         when(userResource.toRepresentation()).thenThrow(new NotFoundException());
 
+        //when
+        Optional<User> userOpt = usersRepository.getById(userId);
+
         //then
         assertAll(
-                () -> assertThatThrownBy(() -> usersRepository.getById(userId))
-                        .isInstanceOf(UserNotFoundException.class),
+                () -> assertThat(userOpt).isEmpty(),
                 () -> verify(keycloakUsersResource, times(1)).get(id),
                 () -> verify(userResource, times(1)).toRepresentation()
         );

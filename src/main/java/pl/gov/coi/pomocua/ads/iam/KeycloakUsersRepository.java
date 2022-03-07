@@ -8,6 +8,7 @@ import pl.gov.coi.pomocua.ads.users.User;
 import pl.gov.coi.pomocua.ads.users.UsersRepository;
 
 import javax.ws.rs.NotFoundException;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class KeycloakUsersRepository implements UsersRepository {
@@ -15,12 +16,12 @@ public class KeycloakUsersRepository implements UsersRepository {
     private final UsersResource usersResource;
 
     @Override
-    public User getById(UserId userId) {
+    public Optional<User> getById(UserId userId) {
         try {
             UserRepresentation userRepresentation = usersResource.get(userId.value).toRepresentation();
-            return new User(userId, userRepresentation.getEmail());
+            return Optional.of(new User(userId, userRepresentation.getEmail()));
         } catch (NotFoundException e) {
-            throw new UserNotFoundException();
+            return Optional.empty();
         }
     }
 }

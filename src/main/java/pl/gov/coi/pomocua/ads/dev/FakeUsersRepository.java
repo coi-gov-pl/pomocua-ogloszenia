@@ -5,6 +5,8 @@ import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
 import pl.gov.coi.pomocua.ads.users.User;
 import pl.gov.coi.pomocua.ads.users.UsersRepository;
 
+import java.util.Optional;
+
 public class FakeUsersRepository implements UsersRepository {
 
     private final CurrentUser currentUser;
@@ -14,7 +16,7 @@ public class FakeUsersRepository implements UsersRepository {
     }
 
     @Override
-    public User getById(UserId userId) {
-        return new User(currentUser.getCurrentUserId(), "fake@email.invalid");
+    public Optional<User> getById(UserId userId) {
+        return Optional.of(new User(currentUser.getCurrentUserId(), "fake@email.invalid"));
     }
 }

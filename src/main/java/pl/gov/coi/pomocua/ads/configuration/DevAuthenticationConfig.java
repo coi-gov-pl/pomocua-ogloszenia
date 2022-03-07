@@ -10,7 +10,7 @@ import pl.gov.coi.pomocua.ads.users.UsersRepository;
 
 @Profile("dev")
 @Configuration
-public class AuthenticationConfig {
+public class DevAuthenticationConfig {
     @Bean
     public CurrentUser fakeCurrentUser() {
         return new FakeCurrentUser();

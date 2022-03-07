@@ -19,7 +19,7 @@ public class KeycloakAuthenticationConfig {
     }
 
     @Bean
-    public UsersRepository fakeUsersRepository(UsersResource keycloakUsersResource) {
+    public UsersRepository keycloakUsersRepository(UsersResource keycloakUsersResource) {
         return new KeycloakUsersRepository(keycloakUsersResource);
     }
 }
