@@ -35,11 +35,19 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     protected TestCurrentUser testCurrentUser;
     @Autowired
     private TestTimeProvider testTimeProvider;
+    @Autowired
+    private Collection<CrudRepository<?, ?>> repositories;
+
+    @BeforeEach
+    void clearDatabase() {
+        repositories.forEach(CrudRepository::deleteAll);
+    }
 
     @AfterEach
     void tearDown() {
         testCurrentUser.setDefault();
         testTimeProvider.reset();
+        getRepository().deleteAll();
     }
 
     @Test

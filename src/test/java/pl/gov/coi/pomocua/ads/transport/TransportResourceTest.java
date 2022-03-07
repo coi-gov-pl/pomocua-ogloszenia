@@ -38,11 +38,6 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         return "transport";
     }
 
-    @BeforeEach
-    public void clearDatabase() {
-        repository.deleteAll();
-    }
-
     @Override
     protected TransportOffer sampleOfferRequest() {
         TransportOffer transportOffer = new TransportOffer();

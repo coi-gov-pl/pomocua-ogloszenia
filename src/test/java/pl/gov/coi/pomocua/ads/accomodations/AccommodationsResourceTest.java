@@ -34,11 +34,6 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
     @Autowired
     private AccommodationsRepository repository;
 
-    @AfterEach
-    void tearDown() {
-        repository.deleteAll();
-    }
-
     @Nested
     class Searching {
         @Test

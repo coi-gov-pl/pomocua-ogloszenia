@@ -43,11 +43,6 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         return repository;
     }
 
-    @BeforeEach
-    public void clearDatabase() {
-        repository.deleteAll();
-    }
-
     @Test
     void shouldSearchByLocation() {
         MaterialAidOffer offer1 = postOffer(aMaterialAidOffer()
