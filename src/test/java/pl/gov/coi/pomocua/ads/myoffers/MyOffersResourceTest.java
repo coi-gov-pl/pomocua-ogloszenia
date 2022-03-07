@@ -104,7 +104,7 @@ class MyOffersResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         T entity = response.getBody();
         assertThat(entity.id).isNotNull();
-        assertThat(entity).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
+        assertThat(entity).usingRecursiveComparison().ignoringFields("id", "modifiedDate").isEqualTo(request);
         return entity;
     }
 }

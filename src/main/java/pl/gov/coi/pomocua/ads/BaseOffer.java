@@ -1,6 +1,7 @@
 package pl.gov.coi.pomocua.ads;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
@@ -43,8 +44,8 @@ public abstract class BaseOffer {
     @Pattern(regexp = ALLOWED_TEXT)
     public String description;
 
-    @JsonIgnore
     @LastModifiedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     public Instant modifiedDate;
 
 }

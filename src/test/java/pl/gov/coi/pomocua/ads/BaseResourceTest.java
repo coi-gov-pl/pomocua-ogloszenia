@@ -19,9 +19,7 @@ import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
 
 import java.net.URI;
-import java.time.Clock;
 import java.time.Instant;
-import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +35,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     @Autowired
     protected TestCurrentUser testCurrentUser;
     @Autowired
-    private TestTimeProvider testTimeProvider;
+    protected TestTimeProvider testTimeProvider;
     @Autowired
     private Collection<CrudRepository<?, ?>> repositories;
 
@@ -76,7 +74,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
         @Test
         void shouldSetModifiedDateWhenOfferCreated() {
-            setCurrentTime(Instant.parse("2022-03-05T14:20:00Z"));
+            testTimeProvider.setCurrentTime(Instant.parse("2022-03-05T14:20:00Z"));
 
             T created = postSampleOffer();
 
@@ -201,7 +199,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         T entity = response.getBody();
         assertThat(entity.id).isNotNull();
-        assertThat(entity).usingRecursiveComparison().ignoringFields("id").isEqualTo(request);
+        assertThat(entity).usingRecursiveComparison().ignoringFields("id", "modifiedDate").isEqualTo(request);
         return entity;
     }
 
@@ -220,7 +218,4 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         return foundEntity.get();
     }
 
-    protected void setCurrentTime(Instant time) {
-        testTimeProvider.setClock(Clock.fixed(time, ZoneOffset.UTC));
-    }
 }
