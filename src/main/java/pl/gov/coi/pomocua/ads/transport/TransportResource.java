@@ -23,8 +23,9 @@ public class TransportResource {
 
     @PostMapping("secure/transport")
     @ResponseStatus(HttpStatus.CREATED)
-    public TransportOffer create(@Valid @RequestBody TransportOffer offer) {
-        offer.id = null;
+    public TransportOffer create(@Valid @RequestBody TransportOfferDefinitionDTO offerDefinition) {
+        TransportOffer offer = new TransportOffer();
+        offerDefinition.applyTo(offer);
         offer.userId = currentUser.getCurrentUserId();
         return repository.save(offer);
     }
