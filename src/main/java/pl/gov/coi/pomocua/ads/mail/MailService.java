@@ -25,13 +25,14 @@ public class MailService {
 
     private final JavaMailSender mailSender;
 
-    public boolean sendMail(String to, String subject, String htmlContent) {
+    public boolean sendMail(String to, String replyTo, String subject, String htmlContent) {
         MimeMessage message = mailSender.createMimeMessage();
 
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, CharEncoding.UTF_8);
             helper.setFrom(sendFrom);
             helper.setTo(to);
+            helper.setReplyTo(replyTo);
             helper.setSubject(subject);
             helper.setText(htmlContent, true);
             mailSender.send(message);
@@ -43,8 +44,8 @@ public class MailService {
     }
 
     @Async
-    public Future<Boolean> sendMailAsync(String to, String subject, String htmlContent) {
-        boolean result = sendMail(to, subject, htmlContent);
+    public Future<Boolean> sendMailAsync(String to, String replyTo, String subject, String htmlContent) {
+        boolean result = sendMail(to, replyTo, subject, htmlContent);
         return new AsyncResult<>(result);
     }
 }

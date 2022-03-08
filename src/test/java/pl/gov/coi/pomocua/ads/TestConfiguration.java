@@ -33,10 +33,4 @@ public class TestConfiguration {
     public TestUser testUser(TestCurrentUser testCurrentUser, TestUsersRepository testUsersRepository) {
         return new TestUser(testCurrentUser, testUsersRepository);
     }
-
-    @Bean
-    @Primary
-    public JavaMailSender mailSender() {
-        return new JavaMailSenderImpl();
-    }
 }
