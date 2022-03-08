@@ -43,66 +43,69 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         return repository;
     }
 
-    @Test
-    void shouldSearchByLocation() {
-        MaterialAidOffer offer1 = postOffer(aMaterialAidOffer()
-                .location(new Location("Mazowieckie", "Warszawa"))
-                .category(MaterialAidCategory.CLOTHING)
-                .build());
+    @Nested
+    class Searching {
+        @Test
+        void shouldSearchByLocation() {
+            MaterialAidOffer offer1 = postOffer(aMaterialAidOffer()
+                    .location(new Location("Mazowieckie", "Warszawa"))
+                    .category(MaterialAidCategory.CLOTHING)
+                    .build());
 
-        postOffer(aMaterialAidOffer()
-                .location(new Location("Pomorskie", "Gdańsk"))
-                .category(MaterialAidCategory.CLOTHING)
-                .build());
+            postOffer(aMaterialAidOffer()
+                    .location(new Location("Pomorskie", "Gdańsk"))
+                    .category(MaterialAidCategory.CLOTHING)
+                    .build());
 
-        MaterialAidOfferSearchCriteria searchCriteria = new MaterialAidOfferSearchCriteria();
-        searchCriteria.setLocation(new Location("Mazowieckie", "Warszawa"));
-        var results = searchOffers(searchCriteria);
+            MaterialAidOfferSearchCriteria searchCriteria = new MaterialAidOfferSearchCriteria();
+            searchCriteria.setLocation(new Location("Mazowieckie", "Warszawa"));
+            var results = searchOffers(searchCriteria);
 
-        assertThat(results).hasSize(1).contains(offer1);
-    }
+            assertThat(results).hasSize(1).contains(offer1);
+        }
 
-    @Test
-    void shouldSearchByCategory() {
-        postOffer(aMaterialAidOffer()
-                .location(new Location("Mazowieckie", "Warszawa"))
-                .category(MaterialAidCategory.CLOTHING)
-                .build());
+        @Test
+        void shouldSearchByCategory() {
+            postOffer(aMaterialAidOffer()
+                    .location(new Location("Mazowieckie", "Warszawa"))
+                    .category(MaterialAidCategory.CLOTHING)
+                    .build());
 
-        MaterialAidOffer offer2 = postOffer(aMaterialAidOffer()
-                .location(new Location("Pomorskie", "Gdańsk"))
-                .category(MaterialAidCategory.FOOD)
-                .build());
+            MaterialAidOffer offer2 = postOffer(aMaterialAidOffer()
+                    .location(new Location("Pomorskie", "Gdańsk"))
+                    .category(MaterialAidCategory.FOOD)
+                    .build());
 
-        MaterialAidOffer offer3 = postOffer(aMaterialAidOffer()
-                .location(new Location("Pomorskie", "Gdynia"))
-                .category(MaterialAidCategory.FOOD)
-                .build());
+            MaterialAidOffer offer3 = postOffer(aMaterialAidOffer()
+                    .location(new Location("Pomorskie", "Gdynia"))
+                    .category(MaterialAidCategory.FOOD)
+                    .build());
 
-        MaterialAidOfferSearchCriteria searchCriteria = new MaterialAidOfferSearchCriteria();
-        searchCriteria.setCategory(MaterialAidCategory.FOOD);
-        var results = searchOffers(searchCriteria);
+            MaterialAidOfferSearchCriteria searchCriteria = new MaterialAidOfferSearchCriteria();
+            searchCriteria.setCategory(MaterialAidCategory.FOOD);
+            var results = searchOffers(searchCriteria);
 
-        assertThat(results).hasSize(2).contains(offer2, offer3);
-    }
+            assertThat(results).hasSize(2).contains(offer2, offer3);
+        }
 
-    @Test
-    void shouldReturnPageOfData() {
-        postOffer(aMaterialAidOffer().title("a").build());
-        postOffer(aMaterialAidOffer().title("b").build());
-        postOffer(aMaterialAidOffer().title("c").build());
-        postOffer(aMaterialAidOffer().title("d").build());
-        postOffer(aMaterialAidOffer().title("e").build());
-        postOffer(aMaterialAidOffer().title("f").build());
+        @Test
+        void shouldReturnPageOfData() {
+            postOffer(aMaterialAidOffer().title("a").build());
+            postOffer(aMaterialAidOffer().title("b").build());
+            postOffer(aMaterialAidOffer().title("c").build());
+            postOffer(aMaterialAidOffer().title("d").build());
+            postOffer(aMaterialAidOffer().title("e").build());
+            postOffer(aMaterialAidOffer().title("f").build());
 
-        PageRequest page = PageRequest.of(1, 2);
-        var results = searchOffers(page);
+            PageRequest page = PageRequest.of(1, 2);
+            var results = searchOffers(page);
 
-        assertThat(results.totalElements).isEqualTo(6);
-        assertThat(results.content)
-                .hasSize(2)
-                .extracting(r -> r.title)
-                .containsExactly("c", "d");
+            assertThat(results.totalElements).isEqualTo(6);
+            assertThat(results.content)
+                    .hasSize(2)
+                    .extracting(r -> r.title)
+                    .containsExactly("c", "d");
+        }
     }
 
     @Nested
