@@ -33,6 +33,7 @@ public class FakeOffersCreator {
         o1.description = "Witam, mam busa 8 osobowego jestem wstanie pomóż w transporcie. " +
                         "Mogę też przewieź rzeczy pod granice.";
         o1.userId = new UserId("1");
+        o1.userFirstName = "Marta";
         o1.origin = new Location("Pomorskie", "Gdynia");
         o1.destination = new Location("Pomorskie", "Gdynia");
         o1.capacity = 11;
@@ -43,6 +44,7 @@ public class FakeOffersCreator {
         o2.description = "Darmowy transport z Ostrowa i okolic na granicę z Ukraniną i z granicy " +
                         "mam 4 miejsca mam foteliki dla dzieci najleipiej w weekend";
         o2.userId = new UserId("2");
+        o2.userFirstName = "Mariusz";
         o2.origin = new Location("Pomorskie", "Gdańsk");
         o2.destination = new Location("Mazowieckie", "Warszawa");
         o2.capacity = 10;
@@ -58,6 +60,7 @@ public class FakeOffersCreator {
         o1.title = "Mieszkanie w bloku, 2 osoby - Rzeszów, woj. podkarpackie";
         o1.description = "nocleg noclegmazowieckie transport Dolnośląskie, miejscowość Wrocław - ok. 5 km od Dworca głównego. Kawalerka na wyłączność pomieści 2 osoby + zwierzęta są mile widziane. Okres: 2 miesiące, Bezpłatnie....";
         o1.userId = new UserId("1");
+        o1.userFirstName = "Basia";
         o1.location = new Location("podkarpackie", "Rzeszów");
         o1.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
         o1.guests = 2;
@@ -67,6 +70,7 @@ public class FakeOffersCreator {
         o2.title = "Mieszkanie w bloku, 4 osoby - Międzygórze, woj. podlaskie";
         o2.description = "Kawalerka na wyłączność pomieści 2 osoby + zwierzęta są mile widziane. Okres: 2 miesiące, Bezpłatnie....";
         o2.userId = new UserId("2");
+        o2.userFirstName = "Piotr";
         o2.location = new Location("podlaskie", "Międzygórze");
         o2.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
         o2.guests = 4;
@@ -82,6 +86,7 @@ public class FakeOffersCreator {
         o1.title = "Oddam materac dwuosobowy";
         o1.description = "Materac w bardzo dobrym stanie, do odbioru w Gdańsku";
         o1.userId = new UserId("3");
+        o1.userFirstName = "Krystyna";
         o1.category = MaterialAidCategory.HOUSEHOLD_GOODS;
         o1.location = new Location("Pomorskie", "Gdańsk");
 
@@ -89,6 +94,7 @@ public class FakeOffersCreator {
         o2.title = "Mam do oddania zabawki dziecięce";
         o2.description = "worek zabawek do oddania, wszystkie w dobrym stanie, dla dziecka w wieku 5-10 lat";
         o2.userId = new UserId("1");
+        o2.userFirstName = "Maria";
         o2.category = MaterialAidCategory.FOR_CHILDREN;
         o2.location = new Location("Mazowieckie", "Warszawa");
 
