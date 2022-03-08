@@ -55,110 +55,113 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         return repository;
     }
 
-    @Test
-    void shouldFindByOrigin() {
-        TransportOffer transportOffer1 = postOffer(aTransportOffer()
-                .origin(new Location("mazowieckie", "warszawa"))
-                .build());
-        postOffer(aTransportOffer()
-                .origin(new Location("Pomorskie", "Wejherowo"))
-                .build());
-        postOffer(aTransportOffer()
-                .origin(new Location("Wielkopolskie", "Warszawa"))
-                .build());
+    @Nested
+    class Searching {
+        @Test
+        void shouldFindByOrigin() {
+            TransportOffer transportOffer1 = postOffer(aTransportOffer()
+                    .origin(new Location("mazowieckie", "warszawa"))
+                    .build());
+            postOffer(aTransportOffer()
+                    .origin(new Location("Pomorskie", "Wejherowo"))
+                    .build());
+            postOffer(aTransportOffer()
+                    .origin(new Location("Wielkopolskie", "Warszawa"))
+                    .build());
 
-        TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
-        searchCriteria.setOrigin(new Location("Mazowieckie", "Warszawa"));
-        var results = searchOffers(searchCriteria);
+            TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
+            searchCriteria.setOrigin(new Location("Mazowieckie", "Warszawa"));
+            var results = searchOffers(searchCriteria);
 
-        assertThat(results).hasSize(1);
-        assertThat(results).first().isEqualTo(transportOffer1);
-    }
+            assertThat(results).hasSize(1);
+            assertThat(results).first().isEqualTo(transportOffer1);
+        }
 
-    @Test
-    void shouldFindByDestination() {
-        TransportOffer transportOffer1 = postOffer(aTransportOffer()
-                .destination(new Location("pomorskie", "GdyniA"))
-                .build());
-        postOffer(aTransportOffer()
-                .destination(new Location("Pomorskie", "Wejherowo"))
-                .build());
+        @Test
+        void shouldFindByDestination() {
+            TransportOffer transportOffer1 = postOffer(aTransportOffer()
+                    .destination(new Location("pomorskie", "GdyniA"))
+                    .build());
+            postOffer(aTransportOffer()
+                    .destination(new Location("Pomorskie", "Wejherowo"))
+                    .build());
 
-        TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
-        searchCriteria.setDestination(new Location("Pomorskie", "Gdynia"));
-        var results = searchOffers(searchCriteria);
+            TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
+            searchCriteria.setDestination(new Location("Pomorskie", "Gdynia"));
+            var results = searchOffers(searchCriteria);
 
-        assertThat(results).hasSize(1);
-        assertThat(results).first().isEqualTo(transportOffer1);
-    }
+            assertThat(results).hasSize(1);
+            assertThat(results).first().isEqualTo(transportOffer1);
+        }
 
-    @Test
-    void shouldFindByCapacity() {
-        TransportOffer transportOffer1 = postOffer(aTransportOffer()
-                .capacity(10)
-                .build());
-        TransportOffer transportOffer2 = postOffer(aTransportOffer()
-                .capacity(11)
-                .build());
-        postOffer(aTransportOffer()
-                .capacity(1)
-                .build());
+        @Test
+        void shouldFindByCapacity() {
+            TransportOffer transportOffer1 = postOffer(aTransportOffer()
+                    .capacity(10)
+                    .build());
+            TransportOffer transportOffer2 = postOffer(aTransportOffer()
+                    .capacity(11)
+                    .build());
+            postOffer(aTransportOffer()
+                    .capacity(1)
+                    .build());
 
-        TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
-        searchCriteria.setCapacity(10);
-        var results = searchOffers(searchCriteria);
-        assertThat(results).containsExactly(transportOffer1,transportOffer2);
-    }
+            TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
+            searchCriteria.setCapacity(10);
+            var results = searchOffers(searchCriteria);
+            assertThat(results).containsExactly(transportOffer1,transportOffer2);
+        }
 
-    @Test
-    void shouldFindByTransportDate() {
-        TransportOffer transportOffer1 = postOffer(aTransportOffer()
-                .transportDate(LocalDate.of(2022, 3, 21))
-                .build());
-        postOffer(aTransportOffer()
-                .transportDate(LocalDate.of(2022, 3, 22))
-                .build());
+        @Test
+        void shouldFindByTransportDate() {
+            TransportOffer transportOffer1 = postOffer(aTransportOffer()
+                    .transportDate(LocalDate.of(2022, 3, 21))
+                    .build());
+            postOffer(aTransportOffer()
+                    .transportDate(LocalDate.of(2022, 3, 22))
+                    .build());
 
-        TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
-        searchCriteria.setTransportDate(LocalDate.of(2022, 3, 21));
-        var results = searchOffers(searchCriteria);
-        assertThat(results).containsExactly(transportOffer1);
-    }
+            TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
+            searchCriteria.setTransportDate(LocalDate.of(2022, 3, 21));
+            var results = searchOffers(searchCriteria);
+            assertThat(results).containsExactly(transportOffer1);
+        }
 
-    @Test
-    void shouldReturnPageOfData() {
-        postOffer(aTransportOffer().title("a").build());
-        postOffer(aTransportOffer().title("b").build());
-        postOffer(aTransportOffer().title("c").build());
-        postOffer(aTransportOffer().title("d").build());
-        postOffer(aTransportOffer().title("e").build());
-        postOffer(aTransportOffer().title("f").build());
+        @Test
+        void shouldReturnPageOfData() {
+            postOffer(aTransportOffer().title("a").build());
+            postOffer(aTransportOffer().title("b").build());
+            postOffer(aTransportOffer().title("c").build());
+            postOffer(aTransportOffer().title("d").build());
+            postOffer(aTransportOffer().title("e").build());
+            postOffer(aTransportOffer().title("f").build());
 
-        PageRequest page = PageRequest.of(1, 2);
-        var results = searchOffers(page);
+            PageRequest page = PageRequest.of(1, 2);
+            var results = searchOffers(page);
 
-        assertThat(results.totalElements).isEqualTo(6);
-        assertThat(results.content)
-                .hasSize(2)
-                .extracting(r -> r.title)
-                .containsExactly("c", "d");
-    }
+            assertThat(results.totalElements).isEqualTo(6);
+            assertThat(results.content)
+                    .hasSize(2)
+                    .extracting(r -> r.title)
+                    .containsExactly("c", "d");
+        }
 
-    @Test
-    void shouldSortResults() {
-        postOffer(aTransportOffer().title("a").build());
-        postOffer(aTransportOffer().title("bb").build());
-        postOffer(aTransportOffer().title("bą").build());
-        postOffer(aTransportOffer().title("c").build());
-        postOffer(aTransportOffer().title("ć").build());
-        postOffer(aTransportOffer().title("d").build());
+        @Test
+        void shouldSortResults() {
+            postOffer(aTransportOffer().title("a").build());
+            postOffer(aTransportOffer().title("bb").build());
+            postOffer(aTransportOffer().title("bą").build());
+            postOffer(aTransportOffer().title("c").build());
+            postOffer(aTransportOffer().title("ć").build());
+            postOffer(aTransportOffer().title("d").build());
 
-        PageRequest page = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "title"));
-        var results = searchOffers(page);
+            PageRequest page = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "title"));
+            var results = searchOffers(page);
 
-        assertThat(results.content)
-                .extracting(r -> r.title)
-                .containsExactly("d", "ć", "c", "bb", "bą", "a");
+            assertThat(results.content)
+                    .extracting(r -> r.title)
+                    .containsExactly("d", "ć", "c", "bb", "bą", "a");
+        }
     }
 
     @Nested
