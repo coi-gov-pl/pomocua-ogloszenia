@@ -16,7 +16,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
+import pl.gov.coi.pomocua.ads.users.TestUser;
+import pl.gov.coi.pomocua.ads.users.User;
 
 import java.net.URI;
 import java.time.Instant;
@@ -33,9 +34,10 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     @Autowired
     protected TestRestTemplate restTemplate;
     @Autowired
-    protected TestCurrentUser testCurrentUser;
-    @Autowired
     protected TestTimeProvider testTimeProvider;
+    @Autowired
+    protected TestUser testUser;
+
     @Autowired
     private Collection<CrudRepository<?, ?>> repositories;
 
@@ -46,7 +48,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
     @AfterEach
     void tearDown() {
-        testCurrentUser.setDefault();
+        testUser.setDefault();
         testTimeProvider.reset();
     }
 
@@ -55,6 +57,18 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         @Test
         void shouldCreateOffer() {
             assertPostResponseStatus(sampleOfferRequest(), HttpStatus.CREATED);
+        }
+
+        @Test
+        void shouldSaveUserData() {
+            UserId userId = new UserId("some-current-id");
+            testUser.setCurrentUser(new User(userId, "some@email.com", "John"));
+
+            T response = postSampleOffer();
+
+            T createdOffer = getOfferFromRepository(response.id);
+            assertThat(createdOffer.userId).isEqualTo(userId);
+            assertThat(createdOffer.userFirstName).isEqualTo("John");
         }
 
         @Test
@@ -199,7 +213,9 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         T entity = response.getBody();
         assertThat(entity.id).isNotNull();
-        assertThat(entity).usingRecursiveComparison().ignoringFields("id", "modifiedDate").isEqualTo(request);
+        assertThat(entity).usingRecursiveComparison()
+                .ignoringFields("id", "modifiedDate", "userFirstName")
+                .isEqualTo(request);
         return entity;
     }
 

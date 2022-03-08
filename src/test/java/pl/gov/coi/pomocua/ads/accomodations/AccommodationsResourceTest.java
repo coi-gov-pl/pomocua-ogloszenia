@@ -16,19 +16,14 @@ import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.Language;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.LengthOfStay;
-import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
-
-    @Autowired
-    private TestCurrentUser testCurrentUser;
 
     @Autowired
     private AccommodationsRepository repository;
@@ -171,11 +166,11 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
 
         @Test
         void shouldReturn404WhenOfferDoesNotBelongToCurrentUser() {
-            testCurrentUser.setCurrentUserId(new UserId("other-user-2"));
+            testUser.setCurrentUserWithId(new UserId("other-user-2"));
             AccommodationOffer offer = postSampleOffer();
             var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
 
-            testCurrentUser.setCurrentUserId(new UserId("current-user-1"));
+            testUser.setCurrentUserWithId(new UserId("current-user-1"));
             ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -305,19 +300,6 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
                 new Location("region", null),
                 new Location("region", "   ")
         );
-    }
-
-    @Test
-    void shouldSetUserIdWhenStoreOfferInDB() {
-        UserId userId = new UserId("user with accommodation offer");
-        testCurrentUser.setCurrentUserId(userId);
-
-        AccommodationOffer postedOffer = postSampleOffer();
-
-        Optional<AccommodationOffer> storedOffer = repository.findById(postedOffer.id);
-
-        assertThat(storedOffer).isNotEmpty();
-        assertThat(storedOffer.get().userId).isEqualTo(userId);
     }
 
     @Override

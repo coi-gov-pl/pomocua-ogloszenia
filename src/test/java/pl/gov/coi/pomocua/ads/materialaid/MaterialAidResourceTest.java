@@ -176,11 +176,11 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
 
         @Test
         void shouldReturn404WhenOfferDoesNotBelongToCurrentUser() {
-            testCurrentUser.setCurrentUserId(new UserId("other-user-2"));
+            testUser.setCurrentUserWithId(new UserId("other-user-2"));
             MaterialAidOffer offer = postSampleOffer();
             var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
 
-            testCurrentUser.setCurrentUserId(new UserId("current-user-1"));
+            testUser.setCurrentUserWithId(new UserId("current-user-1"));
             ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
