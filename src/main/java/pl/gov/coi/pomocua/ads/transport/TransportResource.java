@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.gov.coi.pomocua.ads.OfferNotFoundException;
 import pl.gov.coi.pomocua.ads.Offers;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
 import pl.gov.coi.pomocua.ads.users.User;
@@ -45,5 +46,16 @@ public class TransportResource {
     @GetMapping("transport/{id}")
     public ResponseEntity<TransportOffer> get(@PathVariable Long id) {
         return ResponseEntity.of(repository.findById(id));
+    }
+
+    @PutMapping("secure/transport/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(@PathVariable Long id, @Valid @RequestBody TransportOfferDefinitionDTO update) {
+        TransportOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
+                .orElseThrow(OfferNotFoundException::new);
+
+        update.applyTo(offer);
+
+        repository.save(offer);
     }
 }
