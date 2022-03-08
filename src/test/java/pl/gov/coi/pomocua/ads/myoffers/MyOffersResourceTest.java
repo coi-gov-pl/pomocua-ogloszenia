@@ -16,9 +16,9 @@ import pl.gov.coi.pomocua.ads.TestConfiguration;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationsTestDataGenerator;
-import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidTestDataGenerator;
+import pl.gov.coi.pomocua.ads.users.TestUser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,17 +30,16 @@ class MyOffersResourceTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private TestCurrentUser testCurrentUser;
+    private TestUser testUser;
 
     @AfterEach
     void tearDown() {
-        testCurrentUser.setDefault();
+        testUser.setDefault();
     }
 
     @Test
     void shouldReturnDifferentOffersForUser() {
-        UserId userId = new UserId("my-offer user id");
-        testCurrentUser.setCurrentUserId(userId);
+        testUser.setCurrentUserWithId(new UserId("my-offer user id"));
 
         AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
         MaterialAidOffer materialAidOffer = postOffer(MaterialAidTestDataGenerator.sampleOffer(), "material-aid", MaterialAidOffer.class);
@@ -54,14 +53,14 @@ class MyOffersResourceTest {
     @Test
     void shouldReturnOffersOnlyForLoggedUser() {
         UserId accommodationOfferUserId = new UserId("acommodation offer user id");
-        testCurrentUser.setCurrentUserId(accommodationOfferUserId);
+        testUser.setCurrentUserWithId(accommodationOfferUserId);
         AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
 
         UserId materialAidOfferUserId = new UserId("job offer user id");
-        testCurrentUser.setCurrentUserId(materialAidOfferUserId);
+        testUser.setCurrentUserWithId(materialAidOfferUserId);
         postOffer(MaterialAidTestDataGenerator.sampleOffer(), "material-aid", MaterialAidOffer.class);
 
-        testCurrentUser.setCurrentUserId(accommodationOfferUserId);
+        testUser.setCurrentUserWithId(accommodationOfferUserId);
         BaseOffer[] offers = listOffers();
         assertThat(offers).hasSize(1);
         assertThat(offers[0]).isInstanceOf(AccommodationOffer.class);
@@ -70,8 +69,7 @@ class MyOffersResourceTest {
 
     @Test
     void shouldReturnOfferForCurrentUser() {
-        UserId accommodationOfferUserId = new UserId("accommodation offer user id");
-        testCurrentUser.setCurrentUserId(accommodationOfferUserId);
+        testUser.setCurrentUserWithId(new UserId("accommodation offer user id"));
         AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
 
         ResponseEntity<AccommodationOffer> response = restTemplate.getForEntity("/api/secure/my-offers/" + accOffer.id, AccommodationOffer.class);
@@ -81,12 +79,10 @@ class MyOffersResourceTest {
 
     @Test
     void shouldReturnNotFoundWhenGettingOfferForOtherUser() {
-        UserId accommodationOfferUserId = new UserId("accommodation offer user id");
-        testCurrentUser.setCurrentUserId(accommodationOfferUserId);
+        testUser.setCurrentUserWithId(new UserId("accommodation offer user id"));
         AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
 
-        UserId differentUserId = new UserId("different user id");
-        testCurrentUser.setCurrentUserId(differentUserId);
+        testUser.setCurrentUserWithId(new UserId("different user id"));
 
         ResponseEntity<BaseOffer> response = restTemplate.getForEntity("/api/secure/my-offers/" + accOffer.id, BaseOffer.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -104,7 +100,9 @@ class MyOffersResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         T entity = response.getBody();
         assertThat(entity.id).isNotNull();
-        assertThat(entity).usingRecursiveComparison().ignoringFields("id", "modifiedDate").isEqualTo(request);
+        assertThat(entity).usingRecursiveComparison()
+                .ignoringFields("id", "modifiedDate", "userFirstName")
+                .isEqualTo(request);
         return entity;
     }
 }
