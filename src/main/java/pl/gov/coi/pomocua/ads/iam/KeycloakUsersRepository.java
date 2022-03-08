@@ -19,7 +19,7 @@ public class KeycloakUsersRepository implements UsersRepository {
     public Optional<User> getById(UserId userId) {
         try {
             UserRepresentation userRepresentation = usersResource.get(userId.value).toRepresentation();
-            return Optional.of(new User(userId, userRepresentation.getEmail()));
+            return Optional.of(new User(userId, userRepresentation.getEmail(), userRepresentation.getFirstName()));
         } catch (NotFoundException e) {
             return Optional.empty();
         }

@@ -1,27 +1,33 @@
 package pl.gov.coi.pomocua.ads.transport;
 
-import lombok.Builder;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.Offers;
+import pl.gov.coi.pomocua.ads.UserId;
+import pl.gov.coi.pomocua.ads.accomodations.AccommodationsTestDataGenerator;
 
 import java.net.URI;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.gov.coi.pomocua.ads.transport.TransportTestDataGenerator.aTransportOffer;
 
 class TransportResourceTest extends BaseResourceTest<TransportOffer> {
 
@@ -40,14 +46,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
 
     @Override
     protected TransportOffer sampleOfferRequest() {
-        TransportOffer transportOffer = new TransportOffer();
-        transportOffer.title = "jade do Pcimia";
-        transportOffer.description = "moge zabrac 20 osob";
-        transportOffer.destination = new Location("Pomorskie", "Gdańsk");
-        transportOffer.origin = new Location("Pomorskie", "Pruszcz Gdański");
-        transportOffer.transportDate = LocalDate.of(2022, 4, 1);
-        transportOffer.capacity = 28;
-        return transportOffer;
+        return aTransportOffer().build();
     }
 
     @Override
@@ -55,110 +54,113 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         return repository;
     }
 
-    @Test
-    void shouldFindByOrigin() {
-        TransportOffer transportOffer1 = postOffer(aTransportOffer()
-                .origin(new Location("mazowieckie", "warszawa"))
-                .build());
-        postOffer(aTransportOffer()
-                .origin(new Location("Pomorskie", "Wejherowo"))
-                .build());
-        postOffer(aTransportOffer()
-                .origin(new Location("Wielkopolskie", "Warszawa"))
-                .build());
+    @Nested
+    class Searching {
+        @Test
+        void shouldFindByOrigin() {
+            TransportOffer transportOffer1 = postOffer(aTransportOffer()
+                    .origin(new Location("mazowieckie", "warszawa"))
+                    .build());
+            postOffer(aTransportOffer()
+                    .origin(new Location("Pomorskie", "Wejherowo"))
+                    .build());
+            postOffer(aTransportOffer()
+                    .origin(new Location("Wielkopolskie", "Warszawa"))
+                    .build());
 
-        TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
-        searchCriteria.setOrigin(new Location("Mazowieckie", "Warszawa"));
-        var results = searchOffers(searchCriteria);
+            TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
+            searchCriteria.setOrigin(new Location("Mazowieckie", "Warszawa"));
+            var results = searchOffers(searchCriteria);
 
-        assertThat(results).hasSize(1);
-        assertThat(results).first().isEqualTo(transportOffer1);
-    }
+            assertThat(results).hasSize(1);
+            assertThat(results).first().isEqualTo(transportOffer1);
+        }
 
-    @Test
-    void shouldFindByDestination() {
-        TransportOffer transportOffer1 = postOffer(aTransportOffer()
-                .destination(new Location("pomorskie", "GdyniA"))
-                .build());
-        postOffer(aTransportOffer()
-                .destination(new Location("Pomorskie", "Wejherowo"))
-                .build());
+        @Test
+        void shouldFindByDestination() {
+            TransportOffer transportOffer1 = postOffer(aTransportOffer()
+                    .destination(new Location("pomorskie", "GdyniA"))
+                    .build());
+            postOffer(aTransportOffer()
+                    .destination(new Location("Pomorskie", "Wejherowo"))
+                    .build());
 
-        TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
-        searchCriteria.setDestination(new Location("Pomorskie", "Gdynia"));
-        var results = searchOffers(searchCriteria);
+            TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
+            searchCriteria.setDestination(new Location("Pomorskie", "Gdynia"));
+            var results = searchOffers(searchCriteria);
 
-        assertThat(results).hasSize(1);
-        assertThat(results).first().isEqualTo(transportOffer1);
-    }
+            assertThat(results).hasSize(1);
+            assertThat(results).first().isEqualTo(transportOffer1);
+        }
 
-    @Test
-    void shouldFindByCapacity() {
-        TransportOffer transportOffer1 = postOffer(aTransportOffer()
-                .capacity(10)
-                .build());
-        TransportOffer transportOffer2 = postOffer(aTransportOffer()
-                .capacity(11)
-                .build());
-        postOffer(aTransportOffer()
-                .capacity(1)
-                .build());
+        @Test
+        void shouldFindByCapacity() {
+            TransportOffer transportOffer1 = postOffer(aTransportOffer()
+                    .capacity(10)
+                    .build());
+            TransportOffer transportOffer2 = postOffer(aTransportOffer()
+                    .capacity(11)
+                    .build());
+            postOffer(aTransportOffer()
+                    .capacity(1)
+                    .build());
 
-        TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
-        searchCriteria.setCapacity(10);
-        var results = searchOffers(searchCriteria);
-        assertThat(results).containsExactly(transportOffer1,transportOffer2);
-    }
+            TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
+            searchCriteria.setCapacity(10);
+            var results = searchOffers(searchCriteria);
+            assertThat(results).containsExactly(transportOffer1,transportOffer2);
+        }
 
-    @Test
-    void shouldFindByTransportDate() {
-        TransportOffer transportOffer1 = postOffer(aTransportOffer()
-                .transportDate(LocalDate.of(2022, 3, 21))
-                .build());
-        postOffer(aTransportOffer()
-                .transportDate(LocalDate.of(2022, 3, 22))
-                .build());
+        @Test
+        void shouldFindByTransportDate() {
+            TransportOffer transportOffer1 = postOffer(aTransportOffer()
+                    .transportDate(LocalDate.of(2022, 3, 21))
+                    .build());
+            postOffer(aTransportOffer()
+                    .transportDate(LocalDate.of(2022, 3, 22))
+                    .build());
 
-        TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
-        searchCriteria.setTransportDate(LocalDate.of(2022, 3, 21));
-        var results = searchOffers(searchCriteria);
-        assertThat(results).containsExactly(transportOffer1);
-    }
+            TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
+            searchCriteria.setTransportDate(LocalDate.of(2022, 3, 21));
+            var results = searchOffers(searchCriteria);
+            assertThat(results).containsExactly(transportOffer1);
+        }
 
-    @Test
-    void shouldReturnPageOfData() {
-        postOffer(aTransportOffer().title("a").build());
-        postOffer(aTransportOffer().title("b").build());
-        postOffer(aTransportOffer().title("c").build());
-        postOffer(aTransportOffer().title("d").build());
-        postOffer(aTransportOffer().title("e").build());
-        postOffer(aTransportOffer().title("f").build());
+        @Test
+        void shouldReturnPageOfData() {
+            postOffer(aTransportOffer().title("a").build());
+            postOffer(aTransportOffer().title("b").build());
+            postOffer(aTransportOffer().title("c").build());
+            postOffer(aTransportOffer().title("d").build());
+            postOffer(aTransportOffer().title("e").build());
+            postOffer(aTransportOffer().title("f").build());
 
-        PageRequest page = PageRequest.of(1, 2);
-        var results = searchOffers(page);
+            PageRequest page = PageRequest.of(1, 2);
+            var results = searchOffers(page);
 
-        assertThat(results.totalElements).isEqualTo(6);
-        assertThat(results.content)
-                .hasSize(2)
-                .extracting(r -> r.title)
-                .containsExactly("c", "d");
-    }
+            assertThat(results.totalElements).isEqualTo(6);
+            assertThat(results.content)
+                    .hasSize(2)
+                    .extracting(r -> r.title)
+                    .containsExactly("c", "d");
+        }
 
-    @Test
-    void shouldSortResults() {
-        postOffer(aTransportOffer().title("a").build());
-        postOffer(aTransportOffer().title("bb").build());
-        postOffer(aTransportOffer().title("bą").build());
-        postOffer(aTransportOffer().title("c").build());
-        postOffer(aTransportOffer().title("ć").build());
-        postOffer(aTransportOffer().title("d").build());
+        @Test
+        void shouldSortResults() {
+            postOffer(aTransportOffer().title("a").build());
+            postOffer(aTransportOffer().title("bb").build());
+            postOffer(aTransportOffer().title("bą").build());
+            postOffer(aTransportOffer().title("c").build());
+            postOffer(aTransportOffer().title("ć").build());
+            postOffer(aTransportOffer().title("d").build());
 
-        PageRequest page = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "title"));
-        var results = searchOffers(page);
+            PageRequest page = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "title"));
+            var results = searchOffers(page);
 
-        assertThat(results.content)
-                .extracting(r -> r.title)
-                .containsExactly("d", "ć", "c", "bb", "bą", "a");
+            assertThat(results.content)
+                    .extracting(r -> r.title)
+                    .containsExactly("d", "ć", "c", "bb", "bą", "a");
+        }
     }
 
     @Nested
@@ -192,7 +194,189 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
             offer.destination = null;
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
+    }
 
+    @Nested
+    class Updating {
+        @Test
+        void shouldUpdateOffer() {
+            TransportOffer offer = postSampleOffer();
+            var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+
+            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+            TransportOffer updatedOffer = getOfferFromRepository(offer.id);
+            assertThat(updatedOffer.title).isEqualTo("new title");
+            assertThat(updatedOffer.description).isEqualTo("new description");
+            assertThat(updatedOffer.origin.region).isEqualTo("dolnośląskie");
+            assertThat(updatedOffer.origin.city).isEqualTo("Wrocław");
+            assertThat(updatedOffer.destination.region).isEqualTo("podlaskie");
+            assertThat(updatedOffer.destination.city).isEqualTo("Białystok");
+            assertThat(updatedOffer.capacity).isEqualTo(35);
+            assertThat(updatedOffer.transportDate).isEqualTo(LocalDate.of(2022, 3, 8));
+        }
+
+        @Test
+        public void shouldUpdateModifiedDate() {
+            testTimeProvider.setCurrentTime(Instant.parse("2022-03-07T15:23:22Z"));
+            TransportOffer offer = postSampleOffer();
+            var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+
+            testTimeProvider.setCurrentTime(Instant.parse("2022-04-01T12:00:00Z"));
+            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+            TransportOffer updatedOffer = getOfferFromRepository(offer.id);
+            assertThat(updatedOffer.modifiedDate).isEqualTo(Instant.parse("2022-04-01T12:00:00Z"));
+        }
+
+        @Test
+        void shouldReturn404WhenOfferDoesNotExist() {
+            var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+
+            ResponseEntity<Void> response = updateOffer(123L, updateJson);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        @Test
+        void shouldReturn404WhenOfferDoesNotBelongToCurrentUser() {
+            testUser.setCurrentUserWithId(new UserId("other-user-2"));
+            TransportOffer offer = postSampleOffer();
+            var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+
+            testUser.setCurrentUserWithId(new UserId("current-user-1"));
+            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        @Nested
+        class Validation {
+            @ParameterizedTest
+            @NullAndEmptySource
+            @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
+            void shouldRejectMissingOrInvalidTitle(String title) {
+                TransportOffer offer = postSampleOffer();
+                var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+                updateJson.title = title;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                TransportOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.title).isEqualTo(offer.title);
+            }
+
+            @Test
+            void shouldRejectTooLongTitle() {
+                TransportOffer offer = postSampleOffer();
+                var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+                updateJson.title = "a".repeat(81);
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                TransportOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.title).isEqualTo(offer.title);
+            }
+
+            @ParameterizedTest
+            @NullAndEmptySource
+            @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
+            void shouldRejectMissingOrInvalidDescription(String description) {
+                TransportOffer offer = postSampleOffer();
+                var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+                updateJson.description = description;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                TransportOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.description).isEqualTo(offer.description);
+            }
+
+            @Test
+            void shouldRejectTooLongDescription() {
+                TransportOffer offer = postSampleOffer();
+                var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+                updateJson.description = "a".repeat(81);
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                TransportOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.description).isEqualTo(offer.description);
+            }
+
+            @ParameterizedTest
+            @NullSource
+            @MethodSource("pl.gov.coi.pomocua.ads.transport.TransportResourceTest#invalidLocations")
+            void shouldRejectMissingOrInvalidOrigin(Location location) {
+                TransportOffer offer = postSampleOffer();
+                var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+                updateJson.origin = location;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                TransportOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.origin).isEqualTo(offer.origin);
+            }
+
+            @ParameterizedTest
+            @NullSource
+            @MethodSource("pl.gov.coi.pomocua.ads.transport.TransportResourceTest#invalidLocations")
+            void shouldRejectMissingOrInvalidDestination(Location location) {
+                TransportOffer offer = postSampleOffer();
+                var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+                updateJson.destination = location;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                TransportOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.destination).isEqualTo(offer.destination);
+            }
+
+            @ParameterizedTest
+            @NullSource
+            @ValueSource(ints = {-1, 0, 100, 101})
+            void shouldRejectMissingOrInvalidCapacity(Integer capacity) {
+                TransportOffer offer = postSampleOffer();
+                var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+                updateJson.capacity = capacity;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                TransportOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.capacity).isEqualTo(offer.capacity);
+            }
+
+            @Test
+            void shouldRejectMissingTransportDate() {
+                TransportOffer offer = postSampleOffer();
+                var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+                updateJson.transportDate = null;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                TransportOffer notUpdatedOffer = getOfferFromRepository(offer.id);
+                assertThat(notUpdatedOffer.transportDate).isEqualTo(offer.transportDate);
+            }
+        }
+    }
+
+    static Stream<Location> invalidLocations() {
+        return Stream.of(
+                new Location(null, "city"),
+                new Location("   ", "city"),
+                new Location("region", null),
+                new Location("region", "   ")
+        );
     }
 
     private List<TransportOffer> searchOffers(TransportOfferSearchCriteria searchCriteria) {
@@ -228,35 +412,5 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         String url = builder.encode().toUriString();
 
         return listOffers(URI.create(url));
-    }
-
-    private TransportOfferBuilder aTransportOffer() {
-        return TransportResourceTest.builder()
-                .title("some title")
-                .description("some description")
-                .capacity(1)
-                .origin(new Location("mazowieckie", "warszawa"))
-                .destination(new Location("pomorskie", "gdańsk"))
-                .transportDate(LocalDate.now())
-                ;
-    }
-
-    @Builder
-    private static TransportOffer transportOfferBuilder(
-            String title,
-            String description,
-            Location origin,
-            Location destination,
-            Integer capacity,
-            LocalDate transportDate
-    ) {
-        TransportOffer result = new TransportOffer();
-        result.title = Optional.ofNullable(title).orElse("some title");
-        result.description = Optional.ofNullable(description).orElse("some description");
-        result.origin = origin;
-        result.destination = destination;
-        result.capacity = capacity;
-        result.transportDate = transportDate;
-        return result;
     }
 }

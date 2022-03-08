@@ -19,12 +19,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(TestConfiguration.class)
 public class UserResourceTest {
     @Autowired
-    protected TestRestTemplate restTemplate;
-
+    private TestRestTemplate restTemplate;
     @Autowired
-    protected TestCurrentUser testCurrentUser;
-
-    @Autowired TestUsersRepository testUsersRepository;
+    private TestCurrentUser testCurrentUser;
+    @Autowired
+    private TestUsersRepository testUsersRepository;
 
     @AfterEach
     void clear() {
@@ -33,7 +32,7 @@ public class UserResourceTest {
 
     @Test
     void shouldReturnCurrentUserData() {
-        User user = new User(new UserId("some-current-id"), "some@email.invalid", "600000000");
+        User user = new User(new UserId("some-current-id"), "some@email.invalid", "John", "600000000");
         testUsersRepository.saveUser(user);
         testCurrentUser.setCurrentUserId(user.id());
 
@@ -41,14 +40,14 @@ public class UserResourceTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().email).isEqualTo("some@email.invalid");
+        assertThat(response.getBody().firstName).isEqualTo("John");
         assertThat(response.getBody().phoneNumber).isEqualTo("600000000");
     }
 
     @Test
     void handleMissingUser() {
-        User user = new User(new UserId("some-current-id"), "some@email.invalid", "600000000");
         testUsersRepository.clear();
-        testCurrentUser.setCurrentUserId(user.id());
+        testCurrentUser.setCurrentUserId(new UserId("some-current-id"));
 
         ResponseEntity<UserInfo> response = restTemplate.getForEntity("/api/secure/me", UserInfo.class);
 

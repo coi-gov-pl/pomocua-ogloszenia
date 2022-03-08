@@ -7,8 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.gov.coi.pomocua.ads.OfferNotFoundException;
 import pl.gov.coi.pomocua.ads.Offers;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
+import pl.gov.coi.pomocua.ads.users.User;
+import pl.gov.coi.pomocua.ads.users.UsersService;
 
 import javax.validation.Valid;
 
@@ -20,15 +23,18 @@ import static pl.gov.coi.pomocua.ads.Offers.page;
 public class MaterialAidResource {
     private final MaterialAidOfferRepository repository;
     private final CurrentUser currentUser;
+    private final UsersService usersService;
 
     @Operation(description = "Creates material aid offer")
     @PostMapping(value = "secure/material-aid")
     @ResponseStatus(HttpStatus.CREATED)
-    public MaterialAidOffer postMaterialAidOffer(
-            @Valid @RequestBody final MaterialAidOfferDefinitionDTO materialAidOfferDefinition) {
+    public MaterialAidOffer postMaterialAidOffer(@Valid @RequestBody MaterialAidOfferDefinitionDTO offerDefinition) {
         MaterialAidOffer materialAidOffer = new MaterialAidOffer();
-        materialAidOfferDefinition.applyTo(materialAidOffer);
-        materialAidOffer.userId = currentUser.getCurrentUserId();
+        offerDefinition.applyTo(materialAidOffer);
+
+        User currentUser = usersService.getCurrentUser();
+        materialAidOffer.attachTo(currentUser);
+
         return repository.save(materialAidOffer);
     }
 
@@ -41,5 +47,16 @@ public class MaterialAidResource {
     @GetMapping("material-aid/{id}")
     public ResponseEntity<MaterialAidOffer> get(@PathVariable Long id) {
         return ResponseEntity.of(repository.findById(id));
+    }
+
+    @PutMapping("secure/material-aid/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(@PathVariable Long id, @Valid @RequestBody MaterialAidOfferDefinitionDTO update) {
+        MaterialAidOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
+                .orElseThrow(OfferNotFoundException::new);
+
+        update.applyTo(offer);
+
+        repository.save(offer);
     }
 }
