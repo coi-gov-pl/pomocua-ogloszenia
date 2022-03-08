@@ -14,13 +14,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UsersResource {
-
-    private final CurrentUser currentUser;
-    private final UsersRepository usersRepository;
+    private final UsersService usersService;
 
     @GetMapping("secure/me")
     public ResponseEntity<UserInfo> me() {
-        return ResponseEntity.ok(UserInfo.from(usersRepository.getById(currentUser.getCurrentUserId())).orElseThrow(UnauthorizedException::new));
+        return ResponseEntity.ok(UserInfo.from(usersService.getCurrentUser()));
     }
 
     @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
@@ -35,12 +33,12 @@ public class UsersResource {
             this.phoneNumber = phoneNumber;
         }
 
-        public static Optional<UserInfo> from(Optional<User> user) {
-            return user.map(value -> new UserInfo(
-                    value.email(),
-                    value.firstName(),
-                    value.phoneNumber()
-            ));
+        public static UserInfo from(User user) {
+            return new UserInfo(
+                user.email(),
+                user.firstName(),
+                user.phoneNumber()
+            );
         }
     }
 }
