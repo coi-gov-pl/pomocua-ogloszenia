@@ -11,4 +11,13 @@ public class MaterialAidTestDataGenerator {
         request.description = "description";
         return request;
     }
+
+    public static MaterialAidOfferDefinitionDTO sampleUpdateJson() {
+        var updateJson = new MaterialAidOfferDefinitionDTO();
+        updateJson.title = "new title";
+        updateJson.description = "new description";
+        updateJson.location = new Location("Pomorskie", "Gdańsk");
+        updateJson.category = MaterialAidCategory.FOR_CHILDREN;
+        return updateJson;
+    }
 }

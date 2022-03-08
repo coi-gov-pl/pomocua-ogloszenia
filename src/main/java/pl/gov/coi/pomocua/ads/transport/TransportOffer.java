@@ -19,22 +19,22 @@ import java.time.LocalDate;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
 public class TransportOffer extends BaseOffer {
 
-    @NotNull
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "region", column = @Column(name = "origin_region")),
             @AttributeOverride(name = "city", column = @Column(name = "origin_city"))
     })
     @Valid
+    @NotNull
     public Location origin;
 
-    @NotNull
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "region", column = @Column(name = "destination_region")),
             @AttributeOverride(name = "city", column = @Column(name = "destination_city"))
     })
     @Valid
+    @NotNull
     public Location destination;
 
     @NotNull
