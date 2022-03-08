@@ -1,7 +1,5 @@
 package pl.gov.coi.pomocua.ads.transport;
 
-import lombok.Builder;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,9 +17,9 @@ import pl.gov.coi.pomocua.ads.Offers;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.gov.coi.pomocua.ads.transport.TransportTestDataGenerator.aTransportOffer;
 
 class TransportResourceTest extends BaseResourceTest<TransportOffer> {
 
@@ -40,14 +38,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
 
     @Override
     protected TransportOffer sampleOfferRequest() {
-        TransportOffer transportOffer = new TransportOffer();
-        transportOffer.title = "jade do Pcimia";
-        transportOffer.description = "moge zabrac 20 osob";
-        transportOffer.destination = new Location("Pomorskie", "Gdańsk");
-        transportOffer.origin = new Location("Pomorskie", "Pruszcz Gdański");
-        transportOffer.transportDate = LocalDate.of(2022, 4, 1);
-        transportOffer.capacity = 28;
-        return transportOffer;
+        return aTransportOffer().build();
     }
 
     @Override
@@ -231,35 +222,5 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         String url = builder.encode().toUriString();
 
         return listOffers(URI.create(url));
-    }
-
-    private TransportOfferBuilder aTransportOffer() {
-        return TransportResourceTest.builder()
-                .title("some title")
-                .description("some description")
-                .capacity(1)
-                .origin(new Location("mazowieckie", "warszawa"))
-                .destination(new Location("pomorskie", "gdańsk"))
-                .transportDate(LocalDate.now())
-                ;
-    }
-
-    @Builder
-    private static TransportOffer transportOfferBuilder(
-            String title,
-            String description,
-            Location origin,
-            Location destination,
-            Integer capacity,
-            LocalDate transportDate
-    ) {
-        TransportOffer result = new TransportOffer();
-        result.title = Optional.ofNullable(title).orElse("some title");
-        result.description = Optional.ofNullable(description).orElse("some description");
-        result.origin = origin;
-        result.destination = destination;
-        result.capacity = capacity;
-        result.transportDate = transportDate;
-        return result;
     }
 }
