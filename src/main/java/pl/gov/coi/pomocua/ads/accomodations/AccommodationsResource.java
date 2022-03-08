@@ -42,7 +42,7 @@ public class AccommodationsResource {
     @DeleteMapping("secure/accommodations/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        Optional<AccommodationOffer> accommodationOffer = repository.findById(id);
+        Optional<AccommodationOffer> accommodationOffer = repository.findByIdAndUserIdAndStatus(id, currentUser.getCurrentUserId(), BaseOffer.Status.ACTIVE);
         accommodationOffer.ifPresent(offer -> {
             offer.status = BaseOffer.Status.INACTIVE;
             repository.save(offer);

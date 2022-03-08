@@ -21,6 +21,8 @@ import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidTestDataGenerator;
 import pl.gov.coi.pomocua.ads.users.TestUser;
 
+import java.util.Collection;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -98,6 +100,18 @@ class MyOffersResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
+    @Test
+    void shouldReturnNotFoundWhenDeletingOfferForOtherUser() {
+        UserId accommodationOfferUserId = new UserId("accommodation offer user id");
+        testCurrentUser.setCurrentUserId(accommodationOfferUserId);
+        AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
+
+        UserId differentUserId = new UserId("different user id");
+        testCurrentUser.setCurrentUserId(differentUserId);
+
+        deleteOffer("/api/secure/accommodations/", BaseOffer.class,  accOffer.id);
+    }
+
     private <T extends BaseOffer> T[] listOffers() {
         ResponseEntity<PageableResponse<T>> list = restTemplate.exchange(
                 "/api/secure/my-offers", HttpMethod.GET, null, new ParameterizedTypeReference<>() {}
@@ -118,7 +132,8 @@ class MyOffersResourceTest {
 
     private <T extends BaseOffer> void deleteOffer(String urlSuffix, Class<T> clazz, Long id) {
         ParameterizedTypeReference<AccommodationsResource> accommodationsResource = new ParameterizedTypeReference<AccommodationsResource>() {};
-        ResponseEntity<AccommodationsResource> responseDelete = restTemplate.exchange("/api/secure/" + urlSuffix + "/" + id, HttpMethod.DELETE, null, accommodationsResource, clazz);
+
+        ResponseEntity<AccommodationsResource> responseDelete = restTemplate.exchange("/api/secure/{urlSuffix}/{id}", HttpMethod.DELETE, null, accommodationsResource, clazz, urlSuffix, id);
         assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 }

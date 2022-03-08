@@ -44,7 +44,7 @@ public class MaterialAidResource {
     @DeleteMapping("secure/material-aid/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        Optional<MaterialAidOffer> materialAidOffer = repository.findById(id);
+        Optional<MaterialAidOffer> materialAidOffer = repository.findByIdAndUserIdAndStatus(id, currentUser.getCurrentUserId(), BaseOffer.Status.ACTIVE);
         materialAidOffer.ifPresent(offer -> {
             offer.status = BaseOffer.Status.INACTIVE;
             repository.save(offer);

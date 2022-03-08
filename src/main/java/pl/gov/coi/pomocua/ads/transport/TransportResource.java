@@ -43,7 +43,7 @@ public class TransportResource {
     @DeleteMapping("secure/transport/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        Optional<TransportOffer> transportOffer = repository.findById(id);
+        Optional<TransportOffer> transportOffer = repository.findByIdAndUserIdAndStatus(id, currentUser.getCurrentUserId(), BaseOffer.Status.ACTIVE);;
         transportOffer.ifPresent(offer -> {
             offer.status = BaseOffer.Status.INACTIVE;
             repository.save(offer);

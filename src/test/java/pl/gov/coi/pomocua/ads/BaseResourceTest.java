@@ -187,11 +187,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
         restTemplate.delete("/api/secure/" + getOfferSuffix() + "/" + created.id, getClazz());
 
-        createdEntity = getRepository().findById(created.id);
-        assertThat(createdEntity)
-                .isNotEmpty()
-                .get().extracting(e -> e.status).isEqualTo(BaseOffer.Status.INACTIVE);
-
+        assertThat(getRepository().findById(created.id).get().status).isEqualTo(BaseOffer.Status.INACTIVE);
     }
 
     @Test
