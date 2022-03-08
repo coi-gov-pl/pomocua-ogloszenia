@@ -10,6 +10,16 @@ spring:
   jackson:
     mapper:
       USE_BASE_TYPE_AS_DEFAULT_IMPL: true
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_USERNAME:}
+    properties:
+      mail:
+        transport.protocol: ${MAIL_TRANSPORT_PROTOCOL:smtp}
+        smtp.starttls.enable: ${MAIL_STARTTLS_ENABLE:true}
+
 
 app:
   keycloak:

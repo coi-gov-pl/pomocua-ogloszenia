@@ -66,6 +66,7 @@ services:
       - SPRING_PROFILES_ACTIVE
       - POSTGRES_APPLICATION_USER
       - POSTGRES_APPLICATION_USER_PASSWORD
+      - MAIL_HOST
     depends_on:
       ads-postgres:
         condition: service_started
@@ -122,6 +123,17 @@ services:
     depends_on:
       ads-postgres:
         condition: service_started
+    restart: unless-stopped
+  mailhog:
+    profiles:
+      - all
+      - mail-only
+    image: mailhog/mailhog:v1.0.1
+    logging:
+      driver: 'none'
+    ports:
+      - 1025:1025
+      - 8025:8025
     restart: unless-stopped
 
 
