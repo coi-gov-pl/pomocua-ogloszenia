@@ -14,6 +14,7 @@ import pl.gov.coi.pomocua.ads.transport.TransportOffer;
 import pl.gov.coi.pomocua.ads.transport.TransportOfferRepository;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -27,23 +28,28 @@ public class FakeOffersCreator {
 
     @PostConstruct
     public void transport() {
-        TransportOffer t1 = TransportOffer.of(
-                "Transport busem 8osobowy",
-                "Witam, mam busa 8 osobowego jestem wstanie pomóż w transporcie. " +
-                        "Mogę też przewieź rzeczy pod granice.",
-                new UserId("1"),
-                new Location("Pomorskie", "Gdynia"), new Location("Pomorskie", "Gdynia"), 11
-        );
-        TransportOffer t2 = TransportOffer.of(
-                "Darmowy transport na granicę i z granicy z Ostrowa i okolic",
-                "Darmowy transport z Ostrowa i okolic na granicę z Ukraniną i z granicy " +
-                        "mam 4 miejsca mam foteliki dla dzieci najleipiej w weekend",
-                new UserId("2"),
-                new Location("Pomorskie", "Gdańsk"), new Location("Mazowieckie", "Warszawa"), 10
-        );
+        TransportOffer o1 = new TransportOffer();
+        o1.title = "Transport busem 8osobowy";
+        o1.description = "Witam, mam busa 8 osobowego jestem wstanie pomóż w transporcie. " +
+                        "Mogę też przewieź rzeczy pod granice.";
+        o1.userId = new UserId("1");
+        o1.origin = new Location("Pomorskie", "Gdynia");
+        o1.destination = new Location("Pomorskie", "Gdynia");
+        o1.capacity = 11;
+        o1.transportDate = LocalDate.now();
 
-        transportOfferRepository.save(t1);
-        transportOfferRepository.save(t2);
+        TransportOffer o2 = new TransportOffer();
+        o2.title = "Darmowy transport na granicę i z granicy z Ostrowa i okolic";
+        o2.description = "Darmowy transport z Ostrowa i okolic na granicę z Ukraniną i z granicy " +
+                        "mam 4 miejsca mam foteliki dla dzieci najleipiej w weekend";
+        o2.userId = new UserId("2");
+        o2.origin = new Location("Pomorskie", "Gdańsk");
+        o2.destination = new Location("Mazowieckie", "Warszawa");
+        o2.capacity = 10;
+        o2.transportDate = LocalDate.now();
+
+        transportOfferRepository.save(o1);
+        transportOfferRepository.save(o2);
     }
 
     @PostConstruct
