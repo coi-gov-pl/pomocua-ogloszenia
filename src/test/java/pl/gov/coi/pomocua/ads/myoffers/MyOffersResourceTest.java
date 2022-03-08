@@ -65,7 +65,6 @@ class MyOffersResourceTest {
         testUser.setCurrentUserWithId(accommodationOfferUserId);
         BaseOffer[] offers = listOffers();
         assertThat(offers).hasSize(1);
-        assertThat(offers).extracting("status").doesNotContain(BaseOffer.Status.INACTIVE);
         assertThat(offers[0]).isInstanceOf(AccommodationOffer.class);
         assertThat(offers[0]).isEqualTo(accOffer);
     }
@@ -97,7 +96,6 @@ class MyOffersResourceTest {
         deleteOffer("accommodations", AccommodationOffer.class, accOffer.id);
         ResponseEntity<BaseOffer> response = restTemplate.getForEntity("/api/secure/my-offers/" + accOffer.id, BaseOffer.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().status).isEqualTo(BaseOffer.Status.INACTIVE);
     }
 
     private <T extends BaseOffer> T[] listOffers() {

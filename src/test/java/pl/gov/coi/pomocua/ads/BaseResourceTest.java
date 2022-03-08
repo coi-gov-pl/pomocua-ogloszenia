@@ -200,8 +200,6 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         restTemplate.delete("/api/secure/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
 
         restTemplate.delete("/api/secure/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
-
-
     }
 
     protected abstract Class<T> getClazz();
