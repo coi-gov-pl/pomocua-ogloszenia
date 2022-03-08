@@ -12,10 +12,21 @@ public class TransportTestDataGenerator {
                 .title("some title")
                 .description("some description")
                 .capacity(1)
-                .origin(new Location("mazowieckie", "warszawa"))
-                .destination(new Location("pomorskie", "gdańsk"))
-                .transportDate(LocalDate.now())
+                .origin(new Location("mazowieckie", "Warszawa"))
+                .destination(new Location("pomorskie", "Gdańsk"))
+                .transportDate(LocalDate.of(2022, 2, 25))
                 ;
+    }
+
+    public static TransportOfferDefinitionDTO sampleUpdateJson() {
+        var updateJson = new TransportOfferDefinitionDTO();
+        updateJson.title = "new title";
+        updateJson.description = "new description";
+        updateJson.origin = new Location("dolnośląskie", "Wrocław");
+        updateJson.destination = new Location("podlaskie", "Białystok");
+        updateJson.capacity = 35;
+        updateJson.transportDate = LocalDate.of(2022, 3, 8);
+        return updateJson;
     }
 
     @Builder
