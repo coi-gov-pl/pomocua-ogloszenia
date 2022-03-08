@@ -7,6 +7,9 @@ import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationsRepository;
+import pl.gov.coi.pomocua.ads.materialaid.MaterialAidCategory;
+import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
+import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOfferRepository;
 import pl.gov.coi.pomocua.ads.transport.TransportOffer;
 import pl.gov.coi.pomocua.ads.transport.TransportOfferRepository;
 
@@ -20,6 +23,7 @@ public class FakeOffersCreator {
 
     private final TransportOfferRepository transportOfferRepository;
     private final AccommodationsRepository accommodationsRepository;
+    private final MaterialAidOfferRepository materialAidOfferRepository;
 
     @PostConstruct
     public void transport() {
@@ -66,4 +70,23 @@ public class FakeOffersCreator {
         accommodationsRepository.save(o2);
     }
 
+    @PostConstruct
+    public void materialAid() {
+        MaterialAidOffer o1 = new MaterialAidOffer();
+        o1.title = "Oddam materac dwuosobowy";
+        o1.description = "Materac w bardzo dobrym stanie, do odbioru w Gdańsku";
+        o1.userId = new UserId("3");
+        o1.category = MaterialAidCategory.HOUSEHOLD_GOODS;
+        o1.location = new Location("Pomorskie", "Gdańsk");
+
+        MaterialAidOffer o2 = new MaterialAidOffer();
+        o2.title = "Mam do oddania zabawki dziecięce";
+        o2.description = "worek zabawek do oddania, wszystkie w dobrym stanie, dla dziecka w wieku 5-10 lat";
+        o2.userId = new UserId("1");
+        o2.category = MaterialAidCategory.FOR_CHILDREN;
+        o2.location = new Location("Mazowieckie", "Warszawa");
+
+        materialAidOfferRepository.save(o1);
+        materialAidOfferRepository.save(o2);
+    }
 }
