@@ -16,6 +16,7 @@ public class TestUsersRepository implements UsersRepository {
     public void clear() {
         users.clear();
     }
+
     @Override
     public Optional<User> getById(UserId userId) {
         return Optional.ofNullable(users.get(userId));

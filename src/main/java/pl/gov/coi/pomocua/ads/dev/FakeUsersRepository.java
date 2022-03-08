@@ -17,6 +17,6 @@ public class FakeUsersRepository implements UsersRepository {
 
     @Override
     public Optional<User> getById(UserId userId) {
-        return Optional.of(new User(currentUser.getCurrentUserId(), "fake@email.invalid"));
+        return Optional.of(new User(currentUser.getCurrentUserId(), "fake@email.invalid", "John Doe"));
     }
 }

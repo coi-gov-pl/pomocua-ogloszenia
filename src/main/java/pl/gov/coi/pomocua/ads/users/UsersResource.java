@@ -26,18 +26,21 @@ public class UsersResource {
     @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
     public static final class UserInfo {
         public String email;
+        public String firstName;
         public String phoneNumber;
 
-        public UserInfo() {
-        }
-
-        public UserInfo(String email, String phoneNumber) {
+        public UserInfo(String email, String firstName, String phoneNumber) {
             this.email = email;
+            this.firstName = firstName;
             this.phoneNumber = phoneNumber;
         }
 
         public static Optional<UserInfo> from(Optional<User> user) {
-            return user.map(value -> new UserInfo(value.email(), value.phoneNumber()));
+            return user.map(value -> new UserInfo(
+                    value.email(),
+                    value.firstName(),
+                    value.phoneNumber()
+            ));
         }
     }
 }
