@@ -8,7 +8,6 @@ create table job_offer
     region        text,
     description   text,
     modified_date timestamp not null,
-    status        text,
     CONSTRAINT PK_JO_ID PRIMARY KEY (ID)
 );
 
@@ -69,7 +68,6 @@ CREATE TABLE job_offer_AUD
     region        text,
     description   text,
     modified_date timestamp,
-    status        text,
     REV           INTEGER NOT NULL,
     REVTYPE       SMALLINT,
     REVEND        INTEGER,
