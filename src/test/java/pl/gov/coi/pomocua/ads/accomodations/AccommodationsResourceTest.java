@@ -148,11 +148,11 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
 
         @Test
         public void shouldUpdateModifiedDate() {
-            setCurrentTime(Instant.parse("2022-03-07T15:23:22Z"));
+            testTimeProvider.setCurrentTime(Instant.parse("2022-03-07T15:23:22Z"));
             AccommodationOffer offer = postSampleOffer();
             var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
 
-            setCurrentTime(Instant.parse("2022-04-01T12:00:00Z"));
+            testTimeProvider.setCurrentTime(Instant.parse("2022-04-01T12:00:00Z"));
             ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);

@@ -2,11 +2,17 @@ package pl.gov.coi.pomocua.ads;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
 import javax.transaction.Transactional;
+
+import java.time.Instant;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -16,12 +22,20 @@ import static org.hamcrest.Matchers.hasSize;
 @Import(TestConfiguration.class)
 public abstract class BaseResourceFunctionalTest {
 
+  @Autowired
+  TestTimeProvider timeProvider;
+
   protected abstract String getUrl();
   protected abstract String postUrl();
   protected abstract String getBody();
   protected abstract void assertResponseBody(ValidatableResponse response);
   protected abstract void assertFirstElement(ValidatableResponse response);
   protected abstract void assertOfferIsSavedInDb(Long id);
+
+  @AfterEach
+  public void cleanUp() {
+    timeProvider.reset();
+  }
 
   @Test
   @Transactional
@@ -32,6 +46,15 @@ public abstract class BaseResourceFunctionalTest {
     assertResponseBody(response);
     //and
     assertOfferIsSavedInDb(getId(response));
+  }
+  @Test
+  @Transactional
+  void shouldSaveModifiedDateOnOfferCreation() {
+    timeProvider.setCurrentTime(Instant.parse("2022-03-07T15:23:22Z"));
+    //when
+    ValidatableResponse response = postOffer(getBody(), postUrl());
+    //then
+    response.body("modifiedDate", equalTo("2022-03-07T15:23:22Z")).assertThat();
   }
 
   @Test
