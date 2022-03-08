@@ -7,10 +7,14 @@ import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationsRepository;
+import pl.gov.coi.pomocua.ads.materialaid.MaterialAidCategory;
+import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
+import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOfferRepository;
 import pl.gov.coi.pomocua.ads.transport.TransportOffer;
 import pl.gov.coi.pomocua.ads.transport.TransportOfferRepository;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -20,26 +24,32 @@ public class FakeOffersCreator {
 
     private final TransportOfferRepository transportOfferRepository;
     private final AccommodationsRepository accommodationsRepository;
+    private final MaterialAidOfferRepository materialAidOfferRepository;
 
     @PostConstruct
     public void transport() {
-        TransportOffer t1 = TransportOffer.of(
-                "Transport busem 8osobowy",
-                "Witam, mam busa 8 osobowego jestem wstanie pomóż w transporcie. " +
-                        "Mogę też przewieź rzeczy pod granice.",
-                new UserId("1"),
-                new Location("Pomorskie", "Gdynia"), new Location("Pomorskie", "Gdynia"), 11
-        );
-        TransportOffer t2 = TransportOffer.of(
-                "Darmowy transport na granicę i z granicy z Ostrowa i okolic",
-                "Darmowy transport z Ostrowa i okolic na granicę z Ukraniną i z granicy " +
-                        "mam 4 miejsca mam foteliki dla dzieci najleipiej w weekend",
-                new UserId("2"),
-                new Location("Pomorskie", "Gdańsk"), new Location("Mazowieckie", "Warszawa"), 10
-        );
+        TransportOffer o1 = new TransportOffer();
+        o1.title = "Transport busem 8osobowy";
+        o1.description = "Witam, mam busa 8 osobowego jestem wstanie pomóż w transporcie. " +
+                        "Mogę też przewieź rzeczy pod granice.";
+        o1.userId = new UserId("1");
+        o1.origin = new Location("Pomorskie", "Gdynia");
+        o1.destination = new Location("Pomorskie", "Gdynia");
+        o1.capacity = 11;
+        o1.transportDate = LocalDate.now();
 
-        transportOfferRepository.save(t1);
-        transportOfferRepository.save(t2);
+        TransportOffer o2 = new TransportOffer();
+        o2.title = "Darmowy transport na granicę i z granicy z Ostrowa i okolic";
+        o2.description = "Darmowy transport z Ostrowa i okolic na granicę z Ukraniną i z granicy " +
+                        "mam 4 miejsca mam foteliki dla dzieci najleipiej w weekend";
+        o2.userId = new UserId("2");
+        o2.origin = new Location("Pomorskie", "Gdańsk");
+        o2.destination = new Location("Mazowieckie", "Warszawa");
+        o2.capacity = 10;
+        o2.transportDate = LocalDate.now();
+
+        transportOfferRepository.save(o1);
+        transportOfferRepository.save(o2);
     }
 
     @PostConstruct
@@ -66,4 +76,23 @@ public class FakeOffersCreator {
         accommodationsRepository.save(o2);
     }
 
+    @PostConstruct
+    public void materialAid() {
+        MaterialAidOffer o1 = new MaterialAidOffer();
+        o1.title = "Oddam materac dwuosobowy";
+        o1.description = "Materac w bardzo dobrym stanie, do odbioru w Gdańsku";
+        o1.userId = new UserId("3");
+        o1.category = MaterialAidCategory.HOUSEHOLD_GOODS;
+        o1.location = new Location("Pomorskie", "Gdańsk");
+
+        MaterialAidOffer o2 = new MaterialAidOffer();
+        o2.title = "Mam do oddania zabawki dziecięce";
+        o2.description = "worek zabawek do oddania, wszystkie w dobrym stanie, dla dziecka w wieku 5-10 lat";
+        o2.userId = new UserId("1");
+        o2.category = MaterialAidCategory.FOR_CHILDREN;
+        o2.location = new Location("Mazowieckie", "Warszawa");
+
+        materialAidOfferRepository.save(o1);
+        materialAidOfferRepository.save(o2);
+    }
 }
