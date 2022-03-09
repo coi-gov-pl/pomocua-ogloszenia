@@ -10,18 +10,16 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import pl.gov.coi.pomocua.ads.BaseOffer;
-import pl.gov.coi.pomocua.ads.PageableResponse;
-import pl.gov.coi.pomocua.ads.TestConfiguration;
-import pl.gov.coi.pomocua.ads.UserId;
+import pl.gov.coi.pomocua.ads.*;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer;
+import pl.gov.coi.pomocua.ads.accomodations.AccommodationsRepository;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationsResource;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationsTestDataGenerator;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidTestDataGenerator;
 import pl.gov.coi.pomocua.ads.users.TestUser;
 
-import java.util.Collection;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -93,23 +91,31 @@ class MyOffersResourceTest {
     }
 
     @Test
-    void shouldReturnInactiveOffers() {
+    void shouldReturnNotInactiveOffers() {
+        UserId accommodationOfferUserId = new UserId("accommodation offer user id");
+        testUser.setCurrentUserWithId(accommodationOfferUserId);
         AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
-        deleteOffer("accommodations", AccommodationOffer.class, accOffer.id);
+        deleteOffer("/api/secure/accommodations/" + accOffer.id, AccommodationOffer.class);
         ResponseEntity<BaseOffer> response = restTemplate.getForEntity("/api/secure/my-offers/" + accOffer.id, BaseOffer.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    void shouldReturnNotFoundWhenDeletingOfferForOtherUser() {
+    void shouldHaveNoImpactWhenDeletingOfferForOtherUser() {
         UserId accommodationOfferUserId = new UserId("accommodation offer user id");
-        testCurrentUser.setCurrentUserId(accommodationOfferUserId);
+        testUser.setCurrentUserWithId(accommodationOfferUserId);
         AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
 
         UserId differentUserId = new UserId("different user id");
-        testCurrentUser.setCurrentUserId(differentUserId);
+        testUser.setCurrentUserWithId(differentUserId);
 
-        deleteOffer("/api/secure/accommodations/", BaseOffer.class,  accOffer.id);
+        deleteOffer("/api/secure/accommodations/" + accOffer.id, BaseOffer.class);
+
+        Offers<BaseOffer> offers = listAccommodationsOffers();
+        assertThat(offers.content).contains(accOffer);
+
+        ResponseEntity<BaseOffer> responseOne = restTemplate.getForEntity("/api/accommodations/" + accOffer.id, BaseOffer.class);
+        assertThat(responseOne.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     private <T extends BaseOffer> T[] listOffers() {
@@ -117,6 +123,14 @@ class MyOffersResourceTest {
                 "/api/secure/my-offers", HttpMethod.GET, null, new ParameterizedTypeReference<>() {}
         );
         return list.getBody().content;
+    }
+
+    Offers<BaseOffer> listAccommodationsOffers() {
+        var listResponse = restTemplate.exchange(
+                "/api/accommodations", HttpMethod.GET, null, new ParameterizedTypeReference<Offers<BaseOffer>>() {}
+        );
+        assertThat(listResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        return listResponse.getBody();
     }
 
     private <T extends BaseOffer> T postOffer(T request, String urlSuffix, Class<T> clazz) {
@@ -130,10 +144,10 @@ class MyOffersResourceTest {
         return entity;
     }
 
-    private <T extends BaseOffer> void deleteOffer(String urlSuffix, Class<T> clazz, Long id) {
+    private <T extends BaseOffer> void deleteOffer(String urlSuffix, Class<T> clazz) {
         ParameterizedTypeReference<AccommodationsResource> accommodationsResource = new ParameterizedTypeReference<AccommodationsResource>() {};
+        ResponseEntity responseDelete = restTemplate.exchange(urlSuffix, HttpMethod.DELETE, null, accommodationsResource, clazz);
 
-        ResponseEntity<AccommodationsResource> responseDelete = restTemplate.exchange("/api/secure/{urlSuffix}/{id}", HttpMethod.DELETE, null, accommodationsResource, clazz, urlSuffix, id);
         assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 }

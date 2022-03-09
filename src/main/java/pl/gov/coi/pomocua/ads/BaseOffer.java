@@ -57,6 +57,7 @@ public abstract class BaseOffer {
 
     @JsonIgnore
     @NotNull
+    @Enumerated(EnumType.STRING)
     public Status status = Status.ACTIVE;
 
     public enum Status {
