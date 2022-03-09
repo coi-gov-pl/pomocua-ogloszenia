@@ -1,6 +1,7 @@
 package pl.gov.coi.pomocua.ads.myoffers;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,66 +39,72 @@ class MyOffersResourceTest {
         testUser.setDefault();
     }
 
-    @Test
-    void shouldReturnDifferentOffersForUser() {
-        testUser.setCurrentUserWithId(new UserId("my-offer user id"));
+    @Nested
+    class GettingList {
+        @Test
+        void shouldReturnDifferentOffersForUser() {
+            testUser.setCurrentUserWithId(new UserId("my-offer user id"));
 
-        AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
-        MaterialAidOffer materialAidOffer = postOffer(MaterialAidTestDataGenerator.sampleOffer(), "material-aid", MaterialAidOffer.class);
+            AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
+            MaterialAidOffer materialAidOffer = postOffer(MaterialAidTestDataGenerator.sampleOffer(), "material-aid", MaterialAidOffer.class);
 
-        BaseOffer[] offers = listOffers();
-        assertThat(offers).extracting("id").containsExactly(accOffer.id, materialAidOffer.id);
-        assertThat(offers).extracting("title").containsExactly(accOffer.title, materialAidOffer.title);
-        assertThat(offers).extracting("description").containsExactly(accOffer.description, materialAidOffer.description);
-        assertThat(offers).extracting("status").doesNotContain(BaseOffer.Status.INACTIVE);
+            BaseOffer[] offers = listOffers();
+            assertThat(offers).extracting("id").containsExactly(accOffer.id, materialAidOffer.id);
+            assertThat(offers).extracting("title").containsExactly(accOffer.title, materialAidOffer.title);
+            assertThat(offers).extracting("description").containsExactly(accOffer.description, materialAidOffer.description);
+            assertThat(offers).extracting("status").doesNotContain(BaseOffer.Status.INACTIVE);
+        }
+
+        @Test
+        void shouldReturnOffersOnlyForLoggedUser() {
+            UserId accommodationOfferUserId = new UserId("acommodation offer user id");
+            testUser.setCurrentUserWithId(accommodationOfferUserId);
+            AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
+
+            UserId materialAidOfferUserId = new UserId("job offer user id");
+            testUser.setCurrentUserWithId(materialAidOfferUserId);
+            postOffer(MaterialAidTestDataGenerator.sampleOffer(), "material-aid", MaterialAidOffer.class);
+
+            testUser.setCurrentUserWithId(accommodationOfferUserId);
+            BaseOffer[] offers = listOffers();
+            assertThat(offers).hasSize(1);
+            assertThat(offers[0]).isInstanceOf(AccommodationOffer.class);
+            assertThat(offers[0]).isEqualTo(accOffer);
+        }
     }
 
-    @Test
-    void shouldReturnOffersOnlyForLoggedUser() {
-        UserId accommodationOfferUserId = new UserId("acommodation offer user id");
-        testUser.setCurrentUserWithId(accommodationOfferUserId);
-        AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
+    @Nested
+    class GettingSingle {
+        @Test
+        void shouldReturnOfferForCurrentUser() {
+            testUser.setCurrentUserWithId(new UserId("accommodation offer user id"));
+            AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
 
-        UserId materialAidOfferUserId = new UserId("job offer user id");
-        testUser.setCurrentUserWithId(materialAidOfferUserId);
-        postOffer(MaterialAidTestDataGenerator.sampleOffer(), "material-aid", MaterialAidOffer.class);
+            ResponseEntity<AccommodationOffer> response = restTemplate.getForEntity("/api/secure/my-offers/" + accOffer.id, AccommodationOffer.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isEqualTo(accOffer);
+        }
 
-        testUser.setCurrentUserWithId(accommodationOfferUserId);
-        BaseOffer[] offers = listOffers();
-        assertThat(offers).hasSize(1);
-        assertThat(offers[0]).isInstanceOf(AccommodationOffer.class);
-        assertThat(offers[0]).isEqualTo(accOffer);
-    }
+        @Test
+        void shouldReturnNotFoundWhenGettingOfferForOtherUser() {
+            testUser.setCurrentUserWithId(new UserId("accommodation offer user id"));
+            AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
 
-    @Test
-    void shouldReturnOfferForCurrentUser() {
-        testUser.setCurrentUserWithId(new UserId("accommodation offer user id"));
-        AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
+            testUser.setCurrentUserWithId(new UserId("different user id"));
 
-        ResponseEntity<AccommodationOffer> response = restTemplate.getForEntity("/api/secure/my-offers/" + accOffer.id, AccommodationOffer.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(accOffer);
-    }
+            ResponseEntity<BaseOffer> response = restTemplate.getForEntity("/api/secure/my-offers/" + accOffer.id, BaseOffer.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
 
-    @Test
-    void shouldReturnNotFoundWhenGettingOfferForOtherUser() {
-        testUser.setCurrentUserWithId(new UserId("accommodation offer user id"));
-        AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
-
-        testUser.setCurrentUserWithId(new UserId("different user id"));
-
-        ResponseEntity<BaseOffer> response = restTemplate.getForEntity("/api/secure/my-offers/" + accOffer.id, BaseOffer.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
-    @Test
-    void shouldReturnNotInactiveOffers() {
-        UserId accommodationOfferUserId = new UserId("accommodation offer user id");
-        testUser.setCurrentUserWithId(accommodationOfferUserId);
-        AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
-        deleteOffer("/api/secure/accommodations/" + accOffer.id, AccommodationOffer.class);
-        ResponseEntity<BaseOffer> response = restTemplate.getForEntity("/api/secure/my-offers/" + accOffer.id, BaseOffer.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        @Test
+        void shouldReturnNotInactiveOffers() {
+            UserId accommodationOfferUserId = new UserId("accommodation offer user id");
+            testUser.setCurrentUserWithId(accommodationOfferUserId);
+            AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
+            deleteOffer("/api/secure/accommodations/" + accOffer.id, AccommodationOffer.class);
+            ResponseEntity<BaseOffer> response = restTemplate.getForEntity("/api/secure/my-offers/" + accOffer.id, BaseOffer.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        }
     }
 
     private <T extends BaseOffer> T[] listOffers() {
