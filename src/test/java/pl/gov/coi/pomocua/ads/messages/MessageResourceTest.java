@@ -97,6 +97,34 @@ class MessageResourceTest  {
     }
 
     @Test
+    void shouldFailWhenEmailPrefixIsIncorrect() {
+        MaterialAidOffer offer = anOffer();
+
+        ResponseEntity<Void> response = restTemplate.postForEntity("/api/message", new SendMessageDTO(
+            offer.id,
+            "message body",
+            ".email@message@text.test",
+            true
+        ), Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldFailWhenEmailSuffixIsIncorrect() {
+        MaterialAidOffer offer = anOffer();
+
+        ResponseEntity<Void> response = restTemplate.postForEntity("/api/message", new SendMessageDTO(
+            offer.id,
+            "message body",
+            "email@invalid",
+            true
+        ), Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
     void shouldFailWithoutAcceptingToS() {
         MaterialAidOffer offer = anOffer();
 
