@@ -115,6 +115,18 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
                     .extracting(r -> r.title)
                     .containsExactly("c", "d");
         }
+
+        @Test
+        void shouldIgnoreDeactivatedOffer() {
+            MaterialAidOffer offer = postOffer(aMaterialAidOffer().build());
+            deleteOffer(offer.id);
+
+            PageRequest page = PageRequest.of(0, 10);
+            var results = searchOffers(page);
+
+            assertThat(results.totalElements).isEqualTo(0);
+            assertThat(results.content).isEmpty();
+        }
     }
 
     @Nested

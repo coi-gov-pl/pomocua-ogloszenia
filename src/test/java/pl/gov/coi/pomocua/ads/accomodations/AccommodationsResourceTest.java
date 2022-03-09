@@ -112,6 +112,17 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
         }
 
         @Test
+        void shouldIgnoreDeactivatedOffer() {
+            AccommodationOffer offer = postSampleOffer();
+            deleteOffer(offer.id);
+
+            String requestParams = "/mazowIEckie/WARszaWA";
+            var offers = listOffers(requestParams);
+
+            assertThat(offers).isEmpty();
+        }
+
+        @Test
         void shouldReturnOffersByCapacityOnly() {
             AccommodationOffer response = postSampleOffer();
 
@@ -119,6 +130,17 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
             var offers = listOffers(requestParams);
 
             assertThat(offers).contains(response);
+        }
+
+        @Test
+        void shouldIgnoreDeactivatedOfferByCapacityOnly() {
+            AccommodationOffer offer = postSampleOffer();
+            deleteOffer(offer.id);
+
+            String requestParams = "?capacity=1";
+            var offers = listOffers(requestParams);
+
+            assertThat(offers).isEmpty();
         }
     }
 

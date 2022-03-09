@@ -15,8 +15,6 @@ import pl.gov.coi.pomocua.ads.users.UsersService;
 
 import javax.validation.Valid;
 
-import java.util.Optional;
-
 import static pl.gov.coi.pomocua.ads.Offers.page;
 
 @RestController
@@ -52,13 +50,31 @@ public class AccommodationsResource {
     }
 
     @GetMapping("accommodations")
-    public Offers<AccommodationOffer> list(@RequestParam(required = false, defaultValue = "1") Integer capacity, Pageable pageRequest) {
-        return page(repository.findAllByGuestsIsGreaterThanEqual(capacity, pageRequest));
+    public Offers<AccommodationOffer> list(
+            @RequestParam(required = false, defaultValue = "1") Integer capacity,
+            Pageable pageRequest
+    ) {
+        return page(repository.findAllByGuestsIsGreaterThanEqualAndStatus(
+                capacity,
+                BaseOffer.Status.ACTIVE,
+                pageRequest
+        ));
     }
 
     @GetMapping("accommodations/{region}/{city}")
-    public Offers<AccommodationOffer> listByLocation(@PathVariable String region, @PathVariable String city, @RequestParam(defaultValue = "1") Integer capacity, Pageable pageRequest) {
-        return page(repository.findAllByLocation_RegionIgnoreCaseAndLocation_CityIgnoreCaseAndGuestsIsGreaterThanEqual(region, city, capacity, pageRequest));
+    public Offers<AccommodationOffer> listByLocation(
+            @PathVariable String region,
+            @PathVariable String city,
+            @RequestParam(defaultValue = "1") Integer capacity,
+            Pageable pageRequest
+    ) {
+        return page(repository.findAllByLocation_RegionIgnoreCaseAndLocation_CityIgnoreCaseAndGuestsIsGreaterThanEqualAndStatus(
+                region,
+                city,
+                capacity,
+                BaseOffer.Status.ACTIVE,
+                pageRequest
+        ));
     }
 
     @GetMapping("accommodations/{id}")

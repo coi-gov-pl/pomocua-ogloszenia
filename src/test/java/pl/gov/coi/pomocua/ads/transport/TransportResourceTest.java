@@ -18,7 +18,6 @@ import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.Offers;
 import pl.gov.coi.pomocua.ads.UserId;
-import pl.gov.coi.pomocua.ads.accomodations.AccommodationsTestDataGenerator;
 
 import java.net.URI;
 import java.time.Instant;
@@ -160,6 +159,18 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
             assertThat(results.content)
                     .extracting(r -> r.title)
                     .containsExactly("d", "ć", "c", "bb", "bą", "a");
+        }
+
+        @Test
+        void shouldIgnoreDeactivatedOffer() {
+            TransportOffer offer = postOffer(aTransportOffer().build());
+            deleteOffer(offer.id);
+
+            PageRequest page = PageRequest.of(0, 10);
+            var results = searchOffers(page);
+
+            assertThat(results.totalElements).isEqualTo(0);
+            assertThat(results.content).isEmpty();
         }
     }
 
