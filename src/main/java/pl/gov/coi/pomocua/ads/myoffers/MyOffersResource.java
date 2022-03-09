@@ -24,12 +24,12 @@ public class MyOffersResource {
     @GetMapping("my-offers")
     public Offers<BaseOffer> list(Pageable pageRequest) {
         UserId userId = currentUser.getCurrentUserId();
-        return page(repository.findAllByUserId(userId, pageRequest));
+        return page(repository.findAllByUserIdAndStatus(userId, BaseOffer.Status.ACTIVE, pageRequest));
     }
 
     @GetMapping("my-offers/{id}")
     public ResponseEntity<BaseOffer> get(@PathVariable Long id) {
         UserId userId = currentUser.getCurrentUserId();
-        return ResponseEntity.of(repository.findByIdAndUserId(id, userId));
+        return ResponseEntity.of(repository.findByIdAndUserId(id, userId).filter(BaseOffer::isActive));
     }
 }

@@ -1,6 +1,7 @@
 package pl.gov.coi.pomocua.ads.transport;
 
 import lombok.Builder;
+import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.Location;
 
 import java.time.LocalDate;
@@ -36,7 +37,8 @@ public class TransportTestDataGenerator {
             Location origin,
             Location destination,
             Integer capacity,
-            LocalDate transportDate
+            LocalDate transportDate,
+            BaseOffer.Status status
     ) {
         TransportOffer result = new TransportOffer();
         result.title = Optional.ofNullable(title).orElse("some title");
@@ -45,6 +47,7 @@ public class TransportTestDataGenerator {
         result.destination = destination;
         result.capacity = capacity;
         result.transportDate = transportDate;
+        result.status = Optional.ofNullable(status).orElse(BaseOffer.Status.ACTIVE);
         return result;
     }
 }
