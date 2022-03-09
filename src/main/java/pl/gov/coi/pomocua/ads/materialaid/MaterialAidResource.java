@@ -44,11 +44,11 @@ public class MaterialAidResource {
     @DeleteMapping("secure/material-aid/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        Optional<MaterialAidOffer> materialAidOffer = repository.findByIdAndUserIdAndStatus(id, currentUser.getCurrentUserId(), BaseOffer.Status.ACTIVE);
-        materialAidOffer.ifPresent(offer -> {
-            offer.status = BaseOffer.Status.INACTIVE;
-            repository.save(offer);
-        });
+        repository.findByIdAndUserIdAndStatus(id, currentUser.getCurrentUserId(), BaseOffer.Status.ACTIVE)
+                .ifPresent(offer -> {
+                    offer.status = BaseOffer.Status.INACTIVE;
+                    repository.save(offer);
+                });
     }
 
     @Operation(description = "Allows to search for material aid offers using different criteria (passes as query params). Each criteria is optional.")
@@ -59,7 +59,7 @@ public class MaterialAidResource {
 
     @GetMapping("material-aid/{id}")
     public ResponseEntity<MaterialAidOffer> get(@PathVariable Long id) {
-        return ResponseEntity.of(repository.findById(id));
+        return ResponseEntity.of(repository.findById(id).filter(BaseOffer::isActive));
     }
 
     @PutMapping("secure/material-aid/{id}")

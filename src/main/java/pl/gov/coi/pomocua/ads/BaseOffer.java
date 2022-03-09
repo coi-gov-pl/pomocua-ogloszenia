@@ -68,4 +68,9 @@ public abstract class BaseOffer {
         this.userId = user.id();
         this.userFirstName = user.firstName();
     }
+
+    @JsonIgnore
+    public boolean isActive() {
+        return status == Status.ACTIVE;
+    }
 }

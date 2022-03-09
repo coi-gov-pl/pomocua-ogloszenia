@@ -72,6 +72,14 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         }
 
         @Test
+        void shouldSetActiveStatus() {
+            T created = postSampleOffer();
+
+            T createdEntity = getOfferFromRepository(created.id);
+            assertThat(createdEntity.status).isEqualTo(BaseOffer.Status.ACTIVE);
+        }
+
+        @Test
         void shouldReturnCreatedOfferOnList() {
             T response = postSampleOffer();
 
@@ -154,7 +162,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         void shouldReturnSingleOffer() {
             T createdOffer = postSampleOffer();
 
-            ResponseEntity<T> response = restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), createdOffer.id), getClazz());
+            ResponseEntity<T> response = fetchOffer(createdOffer.id);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(createdOffer);
@@ -162,42 +170,46 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
         @Test
         void shouldReturn404WhenSingleOfferNotFound() {
-            ResponseEntity<T> response = restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), 123L), getClazz());
+            ResponseEntity<T> response = fetchOffer(123L);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        @Test
+        void shouldReturn404WhenOfferDeactivated() {
+            T offer = postSampleOffer();
+            deleteOffer(offer.id);
+
+            ResponseEntity<T> response = fetchOffer(offer.id);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        private ResponseEntity<T> fetchOffer(Long id) {
+            return restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), id), getClazz());
         }
     }
 
     @Nested
-    class Deleting {
+    class Deactivating {
         @Test
-        void shouldReturn404OnGetDeletedOffer() {
-            T created = postSampleOffer();
-            restTemplate.delete("/api/secure/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
-            ResponseEntity<T> response = restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), 123L), getClazz());
+        void shouldDeactivateOffer() {
+            T offer = postSampleOffer();
 
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+            deleteOffer(offer.id);
+
+            T deactivatedOffer = getOfferFromRepository(offer.id);
+            assertThat(deactivatedOffer.status).isEqualTo(BaseOffer.Status.INACTIVE);
         }
 
         @Test
-        void shouldDeactivateOfferButNotDelete() {
+        void deactivatingIsIdempotent() {
             T created = postSampleOffer();
-            Optional<T> createdEntity = getRepository().findById(created.id);
-            assertThat(createdEntity)
-                    .isNotEmpty()
-                    .get().extracting(e -> e.status).isEqualTo(BaseOffer.Status.ACTIVE);
+            deleteOffer(created.id);
 
-            restTemplate.delete("/api/secure/" + getOfferSuffix() + "/" + created.id, getClazz());
+            ResponseEntity<Void> secondResponse = deleteOffer(created.id);
 
-            assertThat(getRepository().findById(created.id).get().status).isEqualTo(BaseOffer.Status.INACTIVE);
-        }
-
-        @Test
-        void shouldReturn204OnDoubleDeletedOffer() {
-            T created = postSampleOffer();
-            restTemplate.delete("/api/secure/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
-
-            restTemplate.delete("/api/secure/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
+            assertThat(secondResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         }
     }
 
@@ -261,10 +273,13 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         );
     }
 
+    private ResponseEntity<Void> deleteOffer(Long id) {
+        return restTemplate.exchange("/api/secure/%s/%d".formatted(getOfferSuffix(), id), HttpMethod.DELETE, null, Void.class);
+    }
+
     protected T getOfferFromRepository(Long id) {
         Optional<T> foundEntity = getRepository().findById(id);
         assertThat(foundEntity).isNotEmpty();
         return foundEntity.get();
     }
-
 }
