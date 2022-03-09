@@ -25,7 +25,7 @@ public class MailService {
 
     private final JavaMailSender mailSender;
 
-    public boolean sendMail(String to, String replyTo, String subject, String htmlContent) {
+    public void sendMail(String to, String replyTo, String subject, String htmlContent) {
         MimeMessage message = mailSender.createMimeMessage();
 
         try {
@@ -36,7 +36,6 @@ public class MailService {
             helper.setSubject(subject);
             helper.setText(htmlContent, true);
             mailSender.send(message);
-            return true;
         } catch (MailException | MessagingException e) {
             log.error("Error during sending mail", e);
             throw new MailSendingException();
@@ -44,8 +43,8 @@ public class MailService {
     }
 
     @Async
-    public Future<Boolean> sendMailAsync(String to, String replyTo, String subject, String htmlContent) {
-        boolean result = sendMail(to, replyTo, subject, htmlContent);
-        return new AsyncResult<>(result);
+    public Future<Void> sendMailAsync(String to, String replyTo, String subject, String htmlContent) {
+        sendMail(to, replyTo, subject, htmlContent);
+        return new AsyncResult<>(null);
     }
 }
