@@ -66,6 +66,7 @@ public class MaterialAidResource {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable Long id, @Valid @RequestBody MaterialAidOfferDefinitionDTO update) {
         MaterialAidOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
+                .filter(BaseOffer::isActive)
                 .orElseThrow(OfferNotFoundException::new);
 
         update.applyTo(offer);

@@ -65,6 +65,7 @@ public class TransportResource {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable Long id, @Valid @RequestBody TransportOfferDefinitionDTO update) {
         TransportOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
+                .filter(BaseOffer::isActive)
                 .orElseThrow(OfferNotFoundException::new);
 
         update.applyTo(offer);

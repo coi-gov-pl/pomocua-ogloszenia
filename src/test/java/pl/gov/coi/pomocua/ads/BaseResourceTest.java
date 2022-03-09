@@ -293,7 +293,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         );
     }
 
-    private ResponseEntity<Void> deleteOffer(Long id) {
+    protected ResponseEntity<Void> deleteOffer(Long id) {
         return restTemplate.exchange("/api/secure/%s/%d".formatted(getOfferSuffix(), id), HttpMethod.DELETE, null, Void.class);
     }
 

@@ -18,6 +18,7 @@ import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.Offers;
 import pl.gov.coi.pomocua.ads.UserId;
+import pl.gov.coi.pomocua.ads.transport.TransportTestDataGenerator;
 
 import java.net.URI;
 import java.time.Instant;
@@ -170,6 +171,17 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
             var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
 
             ResponseEntity<Void> response = updateOffer(123L, updateJson);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        @Test
+        void shouldReturn404WhenOfferDeactivated() {
+            MaterialAidOffer offer = postSampleOffer();
+            deleteOffer(offer.id);
+            var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
+
+            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         }

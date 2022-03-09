@@ -70,6 +70,7 @@ public class AccommodationsResource {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable Long id, @Valid @RequestBody AccommodationOfferDefinitionDTO update) {
         AccommodationOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
+                .filter(BaseOffer::isActive)
                 .orElseThrow(OfferNotFoundException::new);
 
         update.applyTo(offer);

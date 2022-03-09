@@ -241,6 +241,17 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         }
 
         @Test
+        void shouldReturn404WhenOfferDeactivated() {
+            TransportOffer offer = postSampleOffer();
+            deleteOffer(offer.id);
+            var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+
+            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        @Test
         void shouldReturn404WhenOfferDoesNotBelongToCurrentUser() {
             testUser.setCurrentUserWithId(new UserId("other-user-2"));
             TransportOffer offer = postSampleOffer();
