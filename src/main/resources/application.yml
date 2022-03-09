@@ -28,6 +28,8 @@ app:
     client-id: ${KEYCLOAK_CLIENT_ID:ogloszenia-be}
     client-secret: ${KEYCLOAK_CLIENT_SECRET:280b739d-7150-44f6-8a95-260719782925}
     connection-pool-size: 100
+  mail:
+    from: ${MAIL_FROM:kontakt@pomagamukrainie.gov.pl}
 
 keycloak:
   enabled: ${KEYCLOAK_ENABLED:true}
