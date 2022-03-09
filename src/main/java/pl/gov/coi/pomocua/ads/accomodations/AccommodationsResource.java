@@ -42,11 +42,13 @@ public class AccommodationsResource {
     @DeleteMapping("secure/accommodations/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        repository.findByIdAndUserIdAndStatus(id, currentUser.getCurrentUserId(), BaseOffer.Status.ACTIVE)
-                .ifPresent(offer -> {
-                    offer.status = BaseOffer.Status.INACTIVE;
-                    repository.save(offer);
-                });
+        AccommodationOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
+                .orElseThrow(OfferNotFoundException::new);
+
+        if (!offer.isActive()) return;
+
+        offer.status = BaseOffer.Status.INACTIVE;
+        repository.save(offer);
     }
 
     @GetMapping("accommodations")

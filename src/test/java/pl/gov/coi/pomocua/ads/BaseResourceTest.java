@@ -211,6 +211,26 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
             assertThat(secondResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         }
+
+        @Test
+        void shouldReturn404WhenTryingToDeactivateNonExistingOffer() {
+            ResponseEntity<Void> response = deleteOffer(123L);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        @Test
+        void shouldReturn404WhenTryingToDeactivateOfferBelongingToAnotherUser() {
+            testUser.setCurrentUserWithId(new UserId("user-1"));
+            T offer = postSampleOffer();
+
+            testUser.setCurrentUserWithId(new UserId("user-2"));
+            ResponseEntity<Void> response = deleteOffer(offer.id);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+            T notDeactivatedOffer = getOfferFromRepository(offer.id);
+            assertThat(notDeactivatedOffer.status).isEqualTo(BaseOffer.Status.ACTIVE);
+        }
     }
 
     protected abstract Class<T> getClazz();

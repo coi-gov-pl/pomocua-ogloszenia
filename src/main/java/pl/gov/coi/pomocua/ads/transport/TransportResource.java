@@ -16,8 +16,6 @@ import pl.gov.coi.pomocua.ads.users.UsersService;
 
 import javax.validation.Valid;
 
-import java.util.Optional;
-
 import static pl.gov.coi.pomocua.ads.Offers.page;
 
 @RestController
@@ -43,11 +41,13 @@ public class TransportResource {
     @DeleteMapping("secure/transport/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        repository.findByIdAndUserIdAndStatus(id, currentUser.getCurrentUserId(), BaseOffer.Status.ACTIVE)
-                .ifPresent(offer -> {
-                    offer.status = BaseOffer.Status.INACTIVE;
-                    repository.save(offer);
-                });
+        TransportOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
+                .orElseThrow(OfferNotFoundException::new);
+
+        if (!offer.isActive()) return;
+
+        offer.status = BaseOffer.Status.INACTIVE;
+        repository.save(offer);
     }
 
     @Operation(description = "Allows to search for transport offers using different criterias (passes as query params). Each criteria is optional.")
