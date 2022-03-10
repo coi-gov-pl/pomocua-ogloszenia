@@ -3,6 +3,8 @@ package pl.gov.coi.pomocua.ads;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
 import pl.gov.coi.pomocua.ads.users.TestUsersRepository;
 import pl.gov.coi.pomocua.ads.users.TestUser;
