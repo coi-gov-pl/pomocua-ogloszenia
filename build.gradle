@@ -1,8 +1,9 @@
 buildscript {
 	ext {
-		springBootVersion = '2.6.4'
-		springDependencyVersion = '1.0.11.RELEASE'
-		springDocVersion = '1.6.6'
+		springBootVersion = project.properties["springBootVersion"]
+		springDependencyVersion = project.properties["springDependencyVersion"]
+		springDocVersion = project.properties["springDocVersion"]
+		gatlingVersion = project.properties["gatlingVersion"]
 	}
 }
 
@@ -10,12 +11,11 @@ plugins {
 	id 'org.springframework.boot' version "${springBootVersion}"
 	id 'io.spring.dependency-management' version "${springDependencyVersion}"
 	id 'java'
-	id 'io.gatling.gradle' version "3.7.6"
+	id 'io.gatling.gradle' version "${gatlingVersion}"
 }
 
 group = 'pl.gov.coi.pomocua'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+sourceCompatibility = project.properties["sourceCompatibility"]
 
 configurations {
 	compileOnly {
@@ -28,12 +28,13 @@ repositories {
 }
 
 ext {
-	set('testcontainersVersion', "1.16.2")
-	set('springdocVersion', "1.6.6")
-	set('keycloakVersion', "15.0.2")
-	set('hibernateEnversVersion', '5.6.5.Final')
-	set('greenmailVersion', '1.6.7')
-	set('commonsEmailVersion', '1.5')
+	set('testcontainersVersion', project.properties["testcontainersVersion"])
+	set('springDocVersion', project.properties["springDocVersion"])
+	set('keycloakVersion', project.properties["keycloakVersion"])
+	set('hibernateEnversVersion', project.properties["hibernateEnversVersion"])
+	set('greenmailVersion', project.properties["greenmailVersion"])
+	set('commonsEmailVersion', project.properties["commonsEmailVersion"])
+	set('restAssuredVersion', project.properties["restAssuredVersion"])
 }
 
 dependencies {
@@ -44,7 +45,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-freemarker'
 	implementation 'org.flywaydb:flyway-core'
-	implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
+	implementation "org.springdoc:springdoc-openapi-ui:${springDocVersion}"
 	implementation "org.hibernate:hibernate-envers:${hibernateEnversVersion}"
 	implementation "org.keycloak:keycloak-spring-boot-starter:${keycloakVersion}"
 	implementation "org.keycloak:keycloak-admin-client:${keycloakVersion}"
@@ -60,7 +61,7 @@ dependencies {
 	testImplementation 'org.assertj:assertj-core'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'io.rest-assured:rest-assured:4.4.0'
+	testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
 	testImplementation "com.icegreen:greenmail-junit5:${greenmailVersion}"
 	testImplementation "org.apache.commons:commons-email:${commonsEmailVersion}"
 }
