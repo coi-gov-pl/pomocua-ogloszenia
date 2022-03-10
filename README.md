@@ -25,6 +25,8 @@ Follow instructions on [this page](https://docs.docker.com/compose/install/).
 
 ### Running whole environment:
 
+Before you run apps, you have to set variables in .env or .env.{environment} file.
+
 If you want to run the app with keycloak, proxy and db you can do it with:
 
         $ docker-compose -p help-ua build
