@@ -1,35 +1,32 @@
 package pl.gov.coi.pomocua.ads.messages;
 
 import lombok.AllArgsConstructor;
-import org.apache.commons.codec.CharEncoding;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import pl.gov.coi.pomocua.ads.mail.HtmlGenerator;
+import pl.gov.coi.pomocua.ads.mail.MailService;
+import pl.gov.coi.pomocua.ads.mail.MessageProvider;
 import pl.gov.coi.pomocua.ads.users.User;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
 public class ReplyToOfferService {
 
-    private final JavaMailSender mailSender;
-
+    private final MailService mailService;
+    private final HtmlGenerator htmlGenerator;
+    private final MessageProvider messageProvider;
 
     public void sendMessage(User user, String replyTo, String messageBody) {
-        //TODO: generate html content from template with message body
 
-        MimeMessage message = mailSender.createMimeMessage();
-        try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, CharEncoding.UTF_8);
-            helper.setTo(user.email());
-            helper.setReplyTo(replyTo);
-            //TODO set from email
-            helper.setText(messageBody, true);
-            mailSender.send(message);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
+        String to = user.email();
+        String subject = messageProvider.getMessageByCode("REPLY_TO_OFFER_SUBJECT");
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("MESSAGE", messageBody);
+        String html = htmlGenerator.generateHtml("mail/reply-to-offer.ftlh", variables);
+
+        mailService.sendMail(to, replyTo, subject, html);
     }
 }
