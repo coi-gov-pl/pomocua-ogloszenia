@@ -7,6 +7,7 @@ create table material_aid_offer (
     city            text,
     region          text,
     modified_date   timestamp not null,
+
     CONSTRAINT PK_MAO_ID PRIMARY KEY (ID)
 );
 
