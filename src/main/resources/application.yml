@@ -28,6 +28,10 @@ app:
     client-id: ${KEYCLOAK_CLIENT_ID:ogloszenia-be}
     client-secret: ${KEYCLOAK_CLIENT_SECRET:280b739d-7150-44f6-8a95-260719782925}
     connection-pool-size: 100
+  captcha:
+    secret: ${CAPTCHA_SECRET:6LeS5Z8eAAAAABuQ6dnqb9wtEO_EhM3-VgB5f4f7}
+    site: ${CAPTCHA_SITE:6LeS5Z8eAAAAAHD7RNAr0lL7LHYqOd75JJUwMFok}
+    enabled: ${CAPTCHA_ENABLED:true}
 
 keycloak:
   enabled: ${KEYCLOAK_ENABLED:true}
