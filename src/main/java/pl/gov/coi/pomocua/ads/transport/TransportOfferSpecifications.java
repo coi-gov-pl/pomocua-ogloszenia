@@ -1,6 +1,7 @@
 package pl.gov.coi.pomocua.ads.transport;
 
 import org.springframework.data.jpa.domain.Specification;
+import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.Location;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ public class TransportOfferSpecifications {
     public static Specification<TransportOffer> from(TransportOfferSearchCriteria criteria) {
         List<Specification<TransportOffer>> specifications = new LinkedList<>();
 
+        specifications.add(onlyActive());
         if (criteria.getOrigin() != null) {
             specifications.add(fromLocation("origin", criteria.getOrigin()));
         }
@@ -25,6 +27,10 @@ public class TransportOfferSpecifications {
             specifications.add(fromTransportDate(criteria.getTransportDate()));
         }
         return joinSpecifications(specifications);
+    }
+
+    private static Specification<TransportOffer> onlyActive() {
+        return (root, cq, cb) -> cb.equal(root.get("status"), BaseOffer.Status.ACTIVE);
     }
 
     private static Specification<TransportOffer> fromLocation(String fieldName, Location location) {

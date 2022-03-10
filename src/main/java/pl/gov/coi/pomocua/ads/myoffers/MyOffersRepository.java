@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface MyOffersRepository extends PagingAndSortingRepository<BaseOffer, Long> {
 
-    Page<BaseOffer> findAllByUserId(UserId userId, Pageable pageable);
+    Page<BaseOffer> findAllByUserIdAndStatus(UserId userId, BaseOffer.Status status, Pageable pageable);
+
     Optional<BaseOffer> findByIdAndUserId(Long id, UserId userId);
 }

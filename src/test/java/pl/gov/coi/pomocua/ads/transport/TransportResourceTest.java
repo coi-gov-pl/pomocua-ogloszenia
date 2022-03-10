@@ -18,7 +18,6 @@ import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.Offers;
 import pl.gov.coi.pomocua.ads.UserId;
-import pl.gov.coi.pomocua.ads.accomodations.AccommodationsTestDataGenerator;
 
 import java.net.URI;
 import java.time.Instant;
@@ -161,6 +160,18 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
                     .extracting(r -> r.title)
                     .containsExactly("d", "ć", "c", "bb", "bą", "a");
         }
+
+        @Test
+        void shouldIgnoreDeactivatedOffer() {
+            TransportOffer offer = postOffer(aTransportOffer().build());
+            deleteOffer(offer.id);
+
+            PageRequest page = PageRequest.of(0, 10);
+            var results = searchOffers(page);
+
+            assertThat(results.totalElements).isEqualTo(0);
+            assertThat(results.content).isEmpty();
+        }
     }
 
     @Nested
@@ -236,6 +247,17 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
             var updateJson = TransportTestDataGenerator.sampleUpdateJson();
 
             ResponseEntity<Void> response = updateOffer(123L, updateJson);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        @Test
+        void shouldReturn404WhenOfferDeactivated() {
+            TransportOffer offer = postSampleOffer();
+            deleteOffer(offer.id);
+            var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+
+            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         }

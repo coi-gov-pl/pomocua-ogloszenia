@@ -16,6 +16,7 @@ import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.Language;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.LengthOfStay;
+import pl.gov.coi.pomocua.ads.transport.TransportTestDataGenerator;
 
 import java.time.Instant;
 import java.util.List;
@@ -111,6 +112,17 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
         }
 
         @Test
+        void shouldIgnoreDeactivatedOffer() {
+            AccommodationOffer offer = postSampleOffer();
+            deleteOffer(offer.id);
+
+            String requestParams = "/mazowIEckie/WARszaWA";
+            var offers = listOffers(requestParams);
+
+            assertThat(offers).isEmpty();
+        }
+
+        @Test
         void shouldReturnOffersByCapacityOnly() {
             AccommodationOffer response = postSampleOffer();
 
@@ -118,6 +130,17 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
             var offers = listOffers(requestParams);
 
             assertThat(offers).contains(response);
+        }
+
+        @Test
+        void shouldIgnoreDeactivatedOfferByCapacityOnly() {
+            AccommodationOffer offer = postSampleOffer();
+            deleteOffer(offer.id);
+
+            String requestParams = "?capacity=1";
+            var offers = listOffers(requestParams);
+
+            assertThat(offers).isEmpty();
         }
     }
 
@@ -160,6 +183,17 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
             var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
 
             ResponseEntity<Void> response = updateOffer(123L, updateJson);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        @Test
+        void shouldReturn404WhenOfferDeactivated() {
+            AccommodationOffer offer = postSampleOffer();
+            deleteOffer(offer.id);
+            var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+
+            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         }

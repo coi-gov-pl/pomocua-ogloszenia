@@ -72,6 +72,14 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         }
 
         @Test
+        void shouldSetActiveStatus() {
+            T created = postSampleOffer();
+
+            T createdEntity = getOfferFromRepository(created.id);
+            assertThat(createdEntity.status).isEqualTo(BaseOffer.Status.ACTIVE);
+        }
+
+        @Test
         void shouldReturnCreatedOfferOnList() {
             T response = postSampleOffer();
 
@@ -154,7 +162,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         void shouldReturnSingleOffer() {
             T createdOffer = postSampleOffer();
 
-            ResponseEntity<T> response = restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), createdOffer.id), getClazz());
+            ResponseEntity<T> response = fetchOffer(createdOffer.id);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(createdOffer);
@@ -162,9 +170,66 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
         @Test
         void shouldReturn404WhenSingleOfferNotFound() {
-            ResponseEntity<T> response = restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), 123L), getClazz());
+            ResponseEntity<T> response = fetchOffer(123L);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        @Test
+        void shouldReturn404WhenOfferDeactivated() {
+            T offer = postSampleOffer();
+            deleteOffer(offer.id);
+
+            ResponseEntity<T> response = fetchOffer(offer.id);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        private ResponseEntity<T> fetchOffer(Long id) {
+            return restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), id), getClazz());
+        }
+    }
+
+    @Nested
+    class Deactivating {
+        @Test
+        void shouldDeactivateOffer() {
+            T offer = postSampleOffer();
+
+            deleteOffer(offer.id);
+
+            T deactivatedOffer = getOfferFromRepository(offer.id);
+            assertThat(deactivatedOffer.status).isEqualTo(BaseOffer.Status.INACTIVE);
+        }
+
+        @Test
+        void deactivatingIsIdempotent() {
+            T created = postSampleOffer();
+            deleteOffer(created.id);
+
+            ResponseEntity<Void> secondResponse = deleteOffer(created.id);
+
+            assertThat(secondResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        }
+
+        @Test
+        void shouldReturn404WhenTryingToDeactivateNonExistingOffer() {
+            ResponseEntity<Void> response = deleteOffer(123L);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        @Test
+        void shouldReturn404WhenTryingToDeactivateOfferBelongingToAnotherUser() {
+            testUser.setCurrentUserWithId(new UserId("user-1"));
+            T offer = postSampleOffer();
+
+            testUser.setCurrentUserWithId(new UserId("user-2"));
+            ResponseEntity<Void> response = deleteOffer(offer.id);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+            T notDeactivatedOffer = getOfferFromRepository(offer.id);
+            assertThat(notDeactivatedOffer.status).isEqualTo(BaseOffer.Status.ACTIVE);
         }
     }
 
@@ -228,10 +293,13 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         );
     }
 
+    protected ResponseEntity<Void> deleteOffer(Long id) {
+        return restTemplate.exchange("/api/secure/%s/%d".formatted(getOfferSuffix(), id), HttpMethod.DELETE, null, Void.class);
+    }
+
     protected T getOfferFromRepository(Long id) {
         Optional<T> foundEntity = getRepository().findById(id);
         assertThat(foundEntity).isNotEmpty();
         return foundEntity.get();
     }
-
 }

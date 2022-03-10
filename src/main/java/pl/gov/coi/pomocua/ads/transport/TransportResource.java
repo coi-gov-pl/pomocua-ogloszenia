@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.OfferNotFoundException;
 import pl.gov.coi.pomocua.ads.Offers;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
@@ -37,6 +38,18 @@ public class TransportResource {
         return repository.save(offer);
     }
 
+    @DeleteMapping("secure/transport/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        TransportOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
+                .orElseThrow(OfferNotFoundException::new);
+
+        if (!offer.isActive()) return;
+
+        offer.status = BaseOffer.Status.INACTIVE;
+        repository.save(offer);
+    }
+
     @Operation(description = "Allows to search for transport offers using different criterias (passes as query params). Each criteria is optional.")
     @GetMapping("transport")
     public Offers<TransportOffer> list(Pageable pageRequest, TransportOfferSearchCriteria searchCriteria) {
@@ -45,13 +58,14 @@ public class TransportResource {
 
     @GetMapping("transport/{id}")
     public ResponseEntity<TransportOffer> get(@PathVariable Long id) {
-        return ResponseEntity.of(repository.findById(id));
+        return ResponseEntity.of(repository.findById(id).filter(BaseOffer::isActive));
     }
 
     @PutMapping("secure/transport/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable Long id, @Valid @RequestBody TransportOfferDefinitionDTO update) {
         TransportOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
+                .filter(BaseOffer::isActive)
                 .orElseThrow(OfferNotFoundException::new);
 
         update.applyTo(offer);
