@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlConfig;
 import pl.gov.coi.pomocua.ads.TestConfiguration;
 import pl.gov.coi.pomocua.ads.dictionaries.domain.City;
 import pl.gov.coi.pomocua.ads.dictionaries.domain.CityRepository;
@@ -17,7 +18,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-@Sql(scripts = "classpath:cities_terc_import.sql")
+@Sql(scripts = "classpath:cities_terc_import.sql", config = @SqlConfig(encoding = "utf-8"))
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestConfiguration.class)
 class CityLookupResourceTest {
