@@ -40,10 +40,11 @@ public class MessageResource {
         }
         BaseOffer offer = offersRepository.findById(messageDefinition.offerId).orElseThrow(ValidationException::new);
         User user = usersRepository.getById(offer.userId).orElseThrow(ValidationException::new);
-        replyToOfferService.sendMessage(user, messageDefinition.replyEmail, messageDefinition.text);
+
+        replyToOfferService.sendMessageToAdvertiser(user.email(), messageDefinition.replyEmail, messageDefinition.text);
+        replyToOfferService.sendOrderConfirmationMessage(messageDefinition.replyEmail, user.email(), offer.title, messageDefinition.text);
+
         return ResponseEntity.ok().build();
-
-
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
