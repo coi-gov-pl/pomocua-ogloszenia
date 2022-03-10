@@ -18,15 +18,25 @@ public class ReplyToOfferService {
     private final HtmlGenerator htmlGenerator;
     private final MessageProvider messageProvider;
 
-    public void sendMessage(User user, String replyTo, String messageBody) {
-
-        String to = user.email();
+    public void sendMessageToAdvertiser(String email, String replyTo, String messageBody) {
         String subject = messageProvider.getMessageByCode("REPLY_TO_OFFER_SUBJECT");
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("MESSAGE", messageBody);
-        String html = htmlGenerator.generateHtml("mail/reply-to-offer.ftlh", variables);
+        variables.put("REPLY_TO_EMAIL", replyTo);
+        String html = htmlGenerator.generateHtml("mail/message-to-advertiser.ftlh", variables);
 
-        mailService.sendMail(to, replyTo, subject, html);
+        mailService.sendMailAsync(email, replyTo, subject, html);
+    }
+
+    public void sendOrderConfirmationMessage(String email, String replyTo, String offerTitle, String messageBody) {
+        String subject = messageProvider.getMessageByCode("ORDER_CONFIRMATION_SUBJECT");
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("MESSAGE", messageBody);
+        variables.put("OFFER_TITLE", offerTitle);
+        String html = htmlGenerator.generateHtml("mail/offer-confirmation.ftlh", variables);
+
+        mailService.sendMailAsync(email, replyTo, subject, html);
     }
 }

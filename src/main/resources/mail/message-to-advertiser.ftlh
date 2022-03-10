@@ -10,7 +10,11 @@
 </head>
 <body>
 <div>
-    Ktoś wysłał ci wiadomość: ${MESSAGE!''}
+    <div>Ktoś odpowiedział na twoje ogłoszenie.</div>
+
+    <div>${REPLY_TO_EMAIL!''}</div>
+
+    <p>${MESSAGE!''}</p>
 </div>
 </body>
 </html>

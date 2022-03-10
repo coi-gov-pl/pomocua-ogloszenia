@@ -83,17 +83,41 @@ class MessageResourceTest  {
         ), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Thread.sleep(1000);
         MimeMessage[] sentMails = smtpServer.getReceivedMessages();
-        assertThat(sentMails.length).isEqualTo(1);
-        MimeMessage sentMail = sentMails[0];
-        assertThat(sentMail.getReplyTo().length).isEqualTo(1);
-        assertThat(sentMail.getReplyTo()[0].toString()).isEqualTo("reply@email.invalid");
-        assertThat(sentMail.getRecipients(Message.RecipientType.TO).length).isEqualTo(1);
-        assertThat(sentMail.getRecipients(Message.RecipientType.TO)[0].toString()).isEqualTo("recipient@email.invalid");
+        assertThat(sentMails.length).isEqualTo(2);
 
-        MimeMessageParser mimeMessageParser = new MimeMessageParser(sentMail);
-        mimeMessageParser.parse();
-        assertThat(mimeMessageParser.getHtmlContent()).contains("message body");
+        MimeMessage sentAdvertiserMail = null;
+        MimeMessage sentOrderConfirmationMail = null;
+
+        for (MimeMessage sentMail:sentMails) {
+            if(sentMail.getReplyTo()[0].toString().equals("recipient@email.invalid")) {
+                sentOrderConfirmationMail = sentMail;
+            }
+            if(sentMail.getReplyTo()[0].toString().equals("reply@email.invalid")) {
+                sentAdvertiserMail = sentMail;
+            }
+        }
+
+        assertThat(sentOrderConfirmationMail).isNotNull();
+        assertThat(sentOrderConfirmationMail.getReplyTo().length).isEqualTo(1);
+        assertThat(sentOrderConfirmationMail.getReplyTo()[0].toString()).isEqualTo("recipient@email.invalid");
+        assertThat(sentOrderConfirmationMail.getRecipients(Message.RecipientType.TO).length).isEqualTo(1);
+        assertThat(sentOrderConfirmationMail.getRecipients(Message.RecipientType.TO)[0].toString()).isEqualTo("reply@email.invalid");
+        MimeMessageParser mimeOrderConfirmationMessageParser = new MimeMessageParser(sentOrderConfirmationMail);
+        mimeOrderConfirmationMessageParser.parse();
+        assertThat(mimeOrderConfirmationMessageParser.getHtmlContent()).contains("message body");
+        assertThat(mimeOrderConfirmationMessageParser.getHtmlContent()).contains("title");
+
+        assertThat(sentAdvertiserMail).isNotNull();
+        assertThat(sentAdvertiserMail.getReplyTo().length).isEqualTo(1);
+        assertThat(sentAdvertiserMail.getReplyTo()[0].toString()).isEqualTo("reply@email.invalid");
+        assertThat(sentAdvertiserMail.getRecipients(Message.RecipientType.TO).length).isEqualTo(1);
+        assertThat(sentAdvertiserMail.getRecipients(Message.RecipientType.TO)[0].toString()).isEqualTo("recipient@email.invalid");
+        MimeMessageParser mimeAdvertiserMessageParser = new MimeMessageParser(sentAdvertiserMail);
+        mimeAdvertiserMessageParser.parse();
+        assertThat(mimeAdvertiserMessageParser.getHtmlContent()).contains("message body");
+        assertThat(mimeAdvertiserMessageParser.getHtmlContent()).contains(("reply@email.invalid"));
     }
 
     @Test
