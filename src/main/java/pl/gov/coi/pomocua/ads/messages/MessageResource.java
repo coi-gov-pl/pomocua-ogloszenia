@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.gov.coi.pomocua.ads.BaseOffer;
+import pl.gov.coi.pomocua.ads.captcha.CaptchaValidator;
 import pl.gov.coi.pomocua.ads.myoffers.MyOffersRepository;
 import pl.gov.coi.pomocua.ads.users.User;
 import pl.gov.coi.pomocua.ads.users.UsersRepository;
@@ -24,8 +25,16 @@ public class MessageResource {
 
     private final ReplyToOfferService replyToOfferService;
 
+    private final CaptchaValidator captchaValidator;
+
     @PostMapping
-    public ResponseEntity<Void> sendMessage(@Valid @RequestBody SendMessageDTO messageDefinition) {
+    public ResponseEntity<Void> sendMessage(@Valid @RequestBody SendMessageDTO messageDefinition,
+                                            @RequestParam(value = "recaptcha-response", required = false) final String recaptchaResponse) {
+
+        if (!captchaValidator.validate(recaptchaResponse)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         if (!messageDefinition.tosApproved) {
             throw new ValidationException();
         }

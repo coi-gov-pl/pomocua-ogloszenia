@@ -30,6 +30,10 @@ app:
     connection-pool-size: 100
   mail:
     from: ${MAIL_FROM:kontakt@pomagamukrainie.gov.pl}
+  captcha:
+    secret: ${CAPTCHA_SECRET:invalid}
+    site: ${CAPTCHA_SITE:invalid}
+    enabled: ${CAPTCHA_ENABLED:true}
 
 keycloak:
   enabled: ${KEYCLOAK_ENABLED:true}
