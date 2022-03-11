@@ -17,5 +17,5 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Build a project & run unit tests
+      - name: Build a project & run tests
         run: ./gradlew build test
