@@ -18,4 +18,4 @@ jobs:
           distribution: 'adopt'
 
       - name: Build a project & run unit tests
-        run: ./gradlew build -x test
+        run: ./gradlew build test
