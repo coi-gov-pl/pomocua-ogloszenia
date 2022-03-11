@@ -4,6 +4,7 @@ buildscript {
 		springDependencyVersion = project.properties["springDependencyVersion"]
 		springDocVersion = project.properties["springDocVersion"]
 		gatlingVersion = project.properties["gatlingVersion"]
+		testLoggerVersion = project.properties["testLoggerVersion"]
 	}
 }
 
@@ -12,6 +13,7 @@ plugins {
 	id 'io.spring.dependency-management' version "${springDependencyVersion}"
 	id 'java'
 	id 'io.gatling.gradle' version "${gatlingVersion}"
+	id 'com.adarshr.test-logger' version "${testLoggerVersion}"
 }
 
 group = 'pl.gov.coi.pomocua'
