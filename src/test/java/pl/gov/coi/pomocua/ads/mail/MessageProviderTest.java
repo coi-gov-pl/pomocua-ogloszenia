@@ -1,5 +1,6 @@
 package pl.gov.coi.pomocua.ads.mail;
 
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.apache.commons.codec.CharEncoding;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @SpringBootTest
 @Import(TestConfiguration.class)
+@AutoConfigureEmbeddedDatabase(refresh = AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_CLASS)
 class MessageProviderTest {
 
     @org.springframework.boot.test.context.TestConfiguration
