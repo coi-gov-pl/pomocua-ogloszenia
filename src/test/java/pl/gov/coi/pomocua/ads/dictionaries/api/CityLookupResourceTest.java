@@ -1,5 +1,6 @@
 package pl.gov.coi.pomocua.ads.dictionaries.api;
 
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +22,7 @@ import static org.assertj.core.api.Assertions.tuple;
 @Sql(scripts = "classpath:cities_terc_import.sql", config = @SqlConfig(encoding = "utf-8"))
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestConfiguration.class)
+@AutoConfigureEmbeddedDatabase(refresh = AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_CLASS)
 class CityLookupResourceTest {
 
     @Autowired
