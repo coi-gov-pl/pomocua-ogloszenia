@@ -2,7 +2,6 @@ package pl.gov.coi.pomocua.ads.messages;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.apache.commons.mail.util.MimeMessageParser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +33,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestConfiguration.class)
-@AutoConfigureEmbeddedDatabase(refresh = AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_CLASS)
 class MessageResourceTest  {
 
     @Autowired
