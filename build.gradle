@@ -66,6 +66,7 @@ dependencies {
 	testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
 	testImplementation "com.icegreen:greenmail-junit5:${greenmailVersion}"
 	testImplementation "org.apache.commons:commons-email:${commonsEmailVersion}"
+	testImplementation "io.zonky.test:embedded-database-spring-test:2.1.1"
 }
 
 dependencyManagement {
