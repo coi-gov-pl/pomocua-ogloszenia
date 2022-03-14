@@ -2,7 +2,6 @@ package pl.gov.coi.pomocua.ads;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestConfiguration.class)
-@AutoConfigureEmbeddedDatabase(refresh = AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_CLASS)
 public abstract class BaseResourceFunctionalTest {
 
   @Autowired

@@ -2349,3 +2349,5 @@ INSERT INTO city(id, region, city) VALUES(2345, 'pomorskie', 'łeba');
 INSERT INTO city(id, region, city) VALUES(2346, 'śląskie', 'łaziska górne');
 INSERT INTO city(id, region, city) VALUES(2347, 'wielkopolskie', 'trzemeszno');
 INSERT INTO city(id, region, city) VALUES(2348, 'łódzkie', 'piątek');
+
+ALTER SEQUENCE city_seq restart with 2500;
