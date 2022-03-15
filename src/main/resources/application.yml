@@ -11,14 +11,21 @@ spring:
     mapper:
       USE_BASE_TYPE_AS_DEFAULT_IMPL: true
   mail:
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: ${MAIL_SMTP_TRUST:}
+          starttls:
+            enable: true
+          auth: ${MAIL_AUTH:false}
+          connectiontimeout: 5000
+          timeout: 5000
     host: ${MAIL_HOST:localhost}
     port: ${MAIL_PORT:1025}
     username: ${MAIL_USERNAME:}
-    password: ${MAIL_USERNAME:}
-    properties:
-      mail:
-        transport.protocol: ${MAIL_TRANSPORT_PROTOCOL:smtp}
-        smtp.starttls.enable: ${MAIL_STARTTLS_ENABLE:true}
+    password: ${MAIL_PASSWORD:}
+    default-encoding: UTF-8
 
 
 app:
