@@ -6,6 +6,15 @@ spring.data.web.pageable.max-page-size: 1000
 springdoc.api-docs.enabled: false
 springdoc.swagger-ui.enabled: false
 
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: '/api'
+  endpoint:
+    health:
+      enabled: true
+
 spring:
   jackson:
     mapper:
