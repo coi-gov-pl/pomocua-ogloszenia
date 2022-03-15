@@ -1,0 +1,1 @@
+/subsystem=keycloak-server:list-add(name=providers, value=module:pl.gov.coi.keycloak.keycloak-plugins)

@@ -1,1 +1,2 @@
 keycloak.enabled: false
+keycloak.disable-trust-manager: ${KEYCLOAK_DISABLE_TRUST:true}

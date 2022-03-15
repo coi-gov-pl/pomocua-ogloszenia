@@ -27,9 +27,10 @@ Follow instructions on [this page](https://docs.docker.com/compose/install/).
 
 Before you run apps, you have to set variables in .env or .env.{environment} file.
 
-If you want to run the app with keycloak, proxy and db you can do it with:
+If you want to run the app with keycloak, proxy and db you can do it with (first step is optional for cleaing up):
 
-        $ docker-compose -p help-ua build
+        $ docker-compose down -v --remove-orphans
+        $ docker-compose build
         $ REINIT_KEYCLOAK=1 docker-compose -p help-ua up -d
 
 REINIT\_KEYCLOAK forces the keycloak to reinit the DB to initial state (all changes **WILL GET LOST**)._
