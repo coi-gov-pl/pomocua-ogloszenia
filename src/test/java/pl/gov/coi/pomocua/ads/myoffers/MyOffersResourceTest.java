@@ -1,8 +1,10 @@
 package pl.gov.coi.pomocua.ads.myoffers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,10 +16,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import pl.gov.coi.pomocua.ads.BaseOffer;
-import pl.gov.coi.pomocua.ads.PageableResponse;
-import pl.gov.coi.pomocua.ads.TestConfiguration;
-import pl.gov.coi.pomocua.ads.UserId;
+import pl.gov.coi.pomocua.ads.*;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationsTestDataGenerator;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
@@ -30,12 +29,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static pl.gov.coi.pomocua.ads.transport.TransportTestDataGenerator.aTransportOffer;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ExtendWith(CleanDatabaseExtension.class)
 @Import(TestConfiguration.class)
 class MyOffersResourceTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
-
     @Autowired
     private TestUser testUser;
 
@@ -79,13 +78,39 @@ class MyOffersResourceTest {
 
         @ParameterizedTest
         @MethodSource("pl.gov.coi.pomocua.ads.myoffers.MyOffersResourceTest#differentOfferTypes")
-        void shouldNotReturnDeactivatedOffer(BaseOffer offer, String urlSuffix) {
+        void shouldNotReturnDeactivatedOffer(BaseOffer offer, String urlSuffix, String jsonDiscriminator) {
             BaseOffer createdOffer = postOffer(offer, urlSuffix, BaseOffer.class);
             deleteOffer(createdOffer.id, urlSuffix);
 
             BaseOffer[] offers = listOffers();
 
             assertThat(offers).isEmpty();
+        }
+
+        @ParameterizedTest
+        @MethodSource("pl.gov.coi.pomocua.ads.myoffers.MyOffersResourceTest#differentOfferTypes")
+        void shouldReturnOfferDiscriminator(BaseOffer offer, String urlSuffix, String jsonDiscriminator) {
+            postOffer(offer, urlSuffix, BaseOffer.class);
+
+            JsonNode json = listOffersForJson();
+
+            assertThat(json.get("content"))
+                    .extracting(j -> j.get("@type").textValue())
+                    .containsExactly(jsonDiscriminator);
+        }
+
+        private BaseOffer[] listOffers() {
+            ResponseEntity<PageableResponse<BaseOffer>> response = restTemplate.exchange(
+                    "/api/secure/my-offers", HttpMethod.GET, null, new ParameterizedTypeReference<>() {}
+            );
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            return response.getBody().content;
+        }
+
+        private JsonNode listOffersForJson() {
+            ResponseEntity<JsonNode> response = restTemplate.getForEntity("/api/secure/my-offers", JsonNode.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            return response.getBody();
         }
     }
 
@@ -115,7 +140,7 @@ class MyOffersResourceTest {
 
         @ParameterizedTest
         @MethodSource("pl.gov.coi.pomocua.ads.myoffers.MyOffersResourceTest#differentOfferTypes")
-        void shouldNotReturnDeactivatedOffer(BaseOffer offer, String urlSuffix) {
+        void shouldNotReturnDeactivatedOffer(BaseOffer offer, String urlSuffix, String jsonDiscriminator) {
             BaseOffer createdOffer = postOffer(offer, urlSuffix, BaseOffer.class);
             deleteOffer(createdOffer.id, urlSuffix);
 
@@ -123,25 +148,33 @@ class MyOffersResourceTest {
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         }
+
+        @ParameterizedTest
+        @MethodSource("pl.gov.coi.pomocua.ads.myoffers.MyOffersResourceTest#differentOfferTypes")
+        void shouldReturnOfferDiscriminator(BaseOffer offer, String urlSuffix, String jsonDiscriminator) {
+            BaseOffer createdOffer = postOffer(offer, urlSuffix, BaseOffer.class);
+
+            ResponseEntity<JsonNode> response = getOfferForJson(createdOffer.id);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody().get("@type").textValue()).isEqualTo(jsonDiscriminator);
+        }
+
+        private <T extends BaseOffer> ResponseEntity<T> getOffer(Long id, Class<T> clazz) {
+            return restTemplate.getForEntity("/api/secure/my-offers/" + id, clazz);
+        }
+
+        private ResponseEntity<JsonNode> getOfferForJson(Long id) {
+            return restTemplate.getForEntity("/api/secure/my-offers/" + id, JsonNode.class);
+        }
     }
 
     private static Stream<Arguments> differentOfferTypes() {
         return Stream.of(
-                Arguments.of(AccommodationsTestDataGenerator.sampleOffer(), "accommodations"),
-                Arguments.of(MaterialAidTestDataGenerator.sampleOffer(), "material-aid"),
-                Arguments.of(aTransportOffer().build(), "transport")
+                Arguments.of(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", "accommodation"),
+                Arguments.of(MaterialAidTestDataGenerator.sampleOffer(), "material-aid", "materialAid"),
+                Arguments.of(aTransportOffer().build(), "transport", "transport")
         );
-    }
-
-    private <T extends BaseOffer> T[] listOffers() {
-        ResponseEntity<PageableResponse<T>> list = restTemplate.exchange(
-                "/api/secure/my-offers", HttpMethod.GET, null, new ParameterizedTypeReference<>() {}
-        );
-        return list.getBody().content;
-    }
-
-    private <T extends BaseOffer> ResponseEntity<T> getOffer(Long id, Class<T> clazz) {
-        return restTemplate.getForEntity("/api/secure/my-offers/" + id, clazz);
     }
 
     private <T extends BaseOffer> T postOffer(T request, String urlSuffix, Class<T> clazz) {
