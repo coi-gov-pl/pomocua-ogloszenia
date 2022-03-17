@@ -8,7 +8,6 @@ import pl.gov.coi.pomocua.ads.Location;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -38,6 +37,9 @@ public class AccommodationOffer extends BaseOffer {
     @Enumerated(STRING)
     @NotEmpty
     public List<Language> hostLanguage;
+
+    @Transient
+    public String type = "accommodation";
 
     public enum LengthOfStay {
         WEEK_1,

@@ -8,6 +8,7 @@ import pl.gov.coi.pomocua.ads.Location;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -26,4 +27,7 @@ public class MaterialAidOffer extends BaseOffer {
     @NotNull
     @Embedded
     public Location location;
+
+    @Transient
+    public String type = "materialAid";
 }

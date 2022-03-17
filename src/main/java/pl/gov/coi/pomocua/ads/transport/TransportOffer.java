@@ -44,4 +44,7 @@ public class TransportOffer extends BaseOffer {
 
     @NotNull
     public LocalDate transportDate;
+
+    @Transient
+    public String type = "transport";
 }
