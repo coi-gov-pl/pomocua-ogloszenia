@@ -95,7 +95,7 @@ class MyOffersResourceTest {
             JsonNode json = listOffersForJson();
 
             assertThat(json.get("content"))
-                    .extracting(j -> j.get("@type").textValue())
+                    .extracting(j -> j.get("type").textValue())
                     .containsExactly(jsonDiscriminator);
         }
 
@@ -157,7 +157,7 @@ class MyOffersResourceTest {
             ResponseEntity<JsonNode> response = getOfferForJson(createdOffer.id);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody().get("@type").textValue()).isEqualTo(jsonDiscriminator);
+            assertThat(response.getBody().get("type").textValue()).isEqualTo(jsonDiscriminator);
         }
 
         private <T extends BaseOffer> ResponseEntity<T> getOffer(Long id, Class<T> clazz) {

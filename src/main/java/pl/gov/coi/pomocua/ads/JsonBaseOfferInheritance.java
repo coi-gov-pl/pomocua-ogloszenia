@@ -10,7 +10,7 @@ import pl.gov.coi.pomocua.ads.transport.TransportOffer;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AccommodationOffer.class, name = "accommodation"),
         @JsonSubTypes.Type(value = MaterialAidOffer.class, name = "materialAid"),
