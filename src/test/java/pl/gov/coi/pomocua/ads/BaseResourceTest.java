@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ExtendWith(CleanDatabaseExtension.class)
 @Import(TestConfiguration.class)
 public abstract class BaseResourceTest<T extends BaseOffer> {
 
@@ -37,14 +39,6 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     protected TestTimeProvider testTimeProvider;
     @Autowired
     protected TestUser testUser;
-
-    @Autowired
-    private Collection<CrudRepository<?, ?>> repositories;
-
-    @BeforeEach
-    void clearDatabase() {
-        repositories.forEach(CrudRepository::deleteAll);
-    }
 
     @AfterEach
     void tearDown() {
