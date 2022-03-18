@@ -12,7 +12,7 @@ public final class SendMessageDTO {
     public final Long offerId;
     public final String text;
     @NotEmpty
-    @Email(message = "Email is not valid", regexp = EMAIL_REGEX)
+    @Email(regexp = EMAIL_REGEX)
     public final String replyEmail;
     @NotNull
     public final boolean tosApproved;

@@ -43,6 +43,8 @@ app:
     secret: ${CAPTCHA_SECRET:invalid}
     site: ${CAPTCHA_SITE:invalid}
     enabled: ${CAPTCHA_ENABLED:true}
+  locale:
+    header: X-Language
 
 keycloak:
   enabled: ${KEYCLOAK_ENABLED:true}

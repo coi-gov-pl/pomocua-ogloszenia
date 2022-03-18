@@ -13,12 +13,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.TestConfiguration;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
+import pl.gov.coi.pomocua.ads.error.ValidationError;
+import pl.gov.coi.pomocua.ads.error.ValidationErrorResponse;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidCategory;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOfferRepository;
@@ -53,6 +57,8 @@ class MessageResourceTest  {
     @Value("${spring.mail.port}")
     private int smtpPort;
 
+    @Value("${app.locale.header}")
+    private String localeHeader;
 
     private GreenMail smtpServer;
 
@@ -127,13 +133,59 @@ class MessageResourceTest  {
         MaterialAidOffer offer = anOffer();
 
         ResponseEntity<Void> response = restTemplate.postForEntity("/api/message", new SendMessageDTO(
-            offer.id,
-            "message body",
-            ".email@message@text.test",
-            true
+                offer.id,
+                "message body",
+                ".email@message@text.test",
+                true
         ), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldFailWhenEmailPrefixIsIncorrect_andWhenHeaderLanguageIsPL_expectPolishErrorMessage() {
+        MaterialAidOffer offer = anOffer();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(localeHeader, "pl_PL");
+        HttpEntity<SendMessageDTO> entity = new HttpEntity<>(new SendMessageDTO(
+                offer.id,
+                "message body",
+                ".email@message@text.test",
+                true
+        ), headers);
+
+        ResponseEntity<ValidationErrorResponse> response = restTemplate.postForEntity("/api/message", entity, ValidationErrorResponse.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).extracting("status").isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.getBody()).extracting("error").isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        assertThat(response.getBody()).extracting("errors").asList().hasSize(1).first()
+                .extracting("field", "message", "type")
+                .containsExactly("replyEmail", "Musi być poprawnie sformatowanym adresem e-mail", ValidationError.Type.FIELD);
+    }
+
+    @Test
+    void shouldFailWhenEmailPrefixIsIncorrect_andWhenHeaderLanguageIsEn_expectEnglishErrorMessage() {
+        MaterialAidOffer offer = anOffer();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(localeHeader, "en_EN");
+        HttpEntity<SendMessageDTO> entity = new HttpEntity<>(new SendMessageDTO(
+                offer.id,
+                "message body",
+                ".email@message@text.test",
+                true
+        ), headers);
+
+        ResponseEntity<ValidationErrorResponse> response = restTemplate.postForEntity("/api/message", entity, ValidationErrorResponse.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).extracting("status").isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.getBody()).extracting("error").isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        assertThat(response.getBody()).extracting("errors").asList().hasSize(1).first()
+                .extracting("field", "message", "type")
+                .containsExactly("replyEmail", "Must be a well-formed email address", ValidationError.Type.FIELD);
     }
 
     @Test
@@ -141,10 +193,10 @@ class MessageResourceTest  {
         MaterialAidOffer offer = anOffer();
 
         ResponseEntity<Void> response = restTemplate.postForEntity("/api/message", new SendMessageDTO(
-            offer.id,
-            "message body",
-            "email@invalid",
-            true
+                offer.id,
+                "message body",
+                "email@invalid",
+                true
         ), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
