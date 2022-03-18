@@ -23,7 +23,7 @@ spring:
     host: ${MAIL_HOST:localhost}
     port: ${MAIL_PORT:1025}
     username: ${MAIL_USERNAME:}
-    password: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
     properties:
       mail:
         transport.protocol: ${MAIL_TRANSPORT_PROTOCOL:smtp}
@@ -33,7 +33,7 @@ spring:
 app:
   keycloak:
     server-url: ${KEYCLOAK_URL:https://local.pomagamukrainie.gov.pl/auth}
-    realm: ${KEYCLOAK_REALM:POMOCUA}
+    realm: ${KEYCLOAK_REALM:OGLOSZENIA}
     client-id: ${KEYCLOAK_CLIENT_ID:ogloszenia-be}
     client-secret: ${KEYCLOAK_CLIENT_SECRET:280b739d-7150-44f6-8a95-260719782925}
     connection-pool-size: 100
@@ -46,7 +46,7 @@ app:
 
 keycloak:
   enabled: ${KEYCLOAK_ENABLED:true}
-  realm: POMOCUA
+  realm: ${KEYCLOAK_REALM:OGLOSZENIA}
   auth-server-url: ${KEYCLOAK_URL:https://local.pomagamukrainie.gov.pl/auth}
   disable-trust-manager: ${KEYCLOAK_DISABLE_TRUST:false}
   resource: ${KEYCLOAK_CLIENT_ID:ogloszenia-be}
