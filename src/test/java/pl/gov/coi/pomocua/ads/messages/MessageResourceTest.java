@@ -21,6 +21,7 @@ import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.TestConfiguration;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
+import pl.gov.coi.pomocua.ads.error.ValidationError;
 import pl.gov.coi.pomocua.ads.error.ValidationErrorResponse;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidCategory;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
@@ -160,8 +161,8 @@ class MessageResourceTest  {
         assertThat(response.getBody()).extracting("status").isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(response.getBody()).extracting("error").isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
         assertThat(response.getBody()).extracting("errors").asList().hasSize(1).first()
-                .extracting("field", "message")
-                .containsExactly("replyEmail", "Musi być poprawnie sformatowanym adresem e-mail");
+                .extracting("field", "message", "type")
+                .containsExactly("replyEmail", "Musi być poprawnie sformatowanym adresem e-mail", ValidationError.Type.FIELD);
     }
 
     @Test
@@ -183,8 +184,8 @@ class MessageResourceTest  {
         assertThat(response.getBody()).extracting("status").isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(response.getBody()).extracting("error").isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
         assertThat(response.getBody()).extracting("errors").asList().hasSize(1).first()
-                .extracting("field", "message")
-                .containsExactly("replyEmail", "Must be a well-formed email address");
+                .extracting("field", "message", "type")
+                .containsExactly("replyEmail", "Must be a well-formed email address", ValidationError.Type.FIELD);
     }
 
     @Test
