@@ -49,7 +49,7 @@ Execute `./start_server.sh` to run the server with running database, pgAdmin and
 This command will setup:
 
 - API running on [http://localhost:8080](http://localhost:8080)
-- Swagger documentation running on [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- Swagger documentation running on [http://localhost:8080/ogloszenia/swagger-ui.html](http://localhost:8080/ogloszenia/swagger-ui.html)
 - pgAdmin running on [http://localhost:8081](http://localhost:8081) (user: `admin@admin.pl`, pass: `admin`)
 - PostgreSQL 14.2-alpine running on `http://localhost:5432` (or `http://ads-postgres:5432` internally on docker network)
 
