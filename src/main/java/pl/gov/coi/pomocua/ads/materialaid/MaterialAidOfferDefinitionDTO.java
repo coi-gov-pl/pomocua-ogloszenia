@@ -11,6 +11,7 @@ import javax.validation.constraints.Pattern;
 
 import static javax.persistence.EnumType.STRING;
 import static pl.gov.coi.pomocua.ads.BaseOffer.ALLOWED_TEXT;
+import static pl.gov.coi.pomocua.ads.BaseOffer.PHONE_REGEX;
 
 public class MaterialAidOfferDefinitionDTO {
     @NotBlank
@@ -31,10 +32,17 @@ public class MaterialAidOfferDefinitionDTO {
     @NotNull
     public MaterialAidCategory category;
 
+    @NotBlank
+    @Length(min = 7, max = 15)
+    @Pattern(regexp = PHONE_REGEX)
+    public String phoneNumber;
+
+
     public void applyTo(MaterialAidOffer materialAidOffer) {
         materialAidOffer.title = this.title;
         materialAidOffer.description = this.description;
         materialAidOffer.category = this.category;
         materialAidOffer.location = this.location;
+        materialAidOffer.phoneNumber = this.phoneNumber;
     }
 }

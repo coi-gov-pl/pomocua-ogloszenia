@@ -39,6 +39,7 @@ public class FakeOffersCreator {
         o1.destination = new Location("Pomorskie", "Gdynia");
         o1.capacity = 11;
         o1.transportDate = LocalDate.now();
+        o1.phoneNumber = "4832137890";
 
         TransportOffer o2 = new TransportOffer();
         o2.title = "Darmowy transport na granicę i z granicy z Ostrowa i okolic";
@@ -50,6 +51,7 @@ public class FakeOffersCreator {
         o2.destination = new Location("Mazowieckie", "Warszawa");
         o2.capacity = 10;
         o2.transportDate = LocalDate.now();
+        o2.phoneNumber = "48987654321";
 
         transportOfferRepository.save(o1);
         transportOfferRepository.save(o2);
@@ -66,6 +68,7 @@ public class FakeOffersCreator {
         o1.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
         o1.guests = 2;
         o1.lengthOfStay = AccommodationOffer.LengthOfStay.MONTH_2;
+        o1.phoneNumber = "4832137890";
 
         AccommodationOffer o2 = new AccommodationOffer();
         o2.title = "Mieszkanie w bloku, 4 osoby - Międzygórze, woj. podlaskie";
@@ -76,6 +79,7 @@ public class FakeOffersCreator {
         o2.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
         o2.guests = 4;
         o2.lengthOfStay = AccommodationOffer.LengthOfStay.LONGER;
+        o2.phoneNumber = "48987654321";
 
         accommodationsRepository.save(o1);
         accommodationsRepository.save(o2);
@@ -90,6 +94,7 @@ public class FakeOffersCreator {
         o1.userFirstName = "Krystyna";
         o1.category = MaterialAidCategory.HOUSEHOLD_GOODS;
         o1.location = new Location("Pomorskie", "Gdańsk");
+        o1.phoneNumber = "4832137890";
 
         MaterialAidOffer o2 = new MaterialAidOffer();
         o2.title = "Mam do oddania zabawki dziecięce";
@@ -98,6 +103,7 @@ public class FakeOffersCreator {
         o2.userFirstName = "Maria";
         o2.category = MaterialAidCategory.FOR_CHILDREN;
         o2.location = new Location("Mazowieckie", "Warszawa");
+        o2.phoneNumber = "48987654321";
 
         materialAidOfferRepository.save(o1);
         materialAidOfferRepository.save(o2);

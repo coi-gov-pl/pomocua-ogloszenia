@@ -16,6 +16,7 @@ public class TransportTestDataGenerator {
                 .origin(new Location("mazowieckie", "Warszawa"))
                 .destination(new Location("pomorskie", "Gdańsk"))
                 .transportDate(LocalDate.of(2022, 2, 25))
+                .phoneNumber("481234567890")
                 ;
     }
 
@@ -27,6 +28,7 @@ public class TransportTestDataGenerator {
         updateJson.destination = new Location("podlaskie", "Białystok");
         updateJson.capacity = 35;
         updateJson.transportDate = LocalDate.of(2022, 3, 8);
+        updateJson.phoneNumber = "481234567890";
         return updateJson;
     }
 
@@ -38,6 +40,7 @@ public class TransportTestDataGenerator {
             Location destination,
             Integer capacity,
             LocalDate transportDate,
+            String phoneNumber,
             BaseOffer.Status status
     ) {
         TransportOffer result = new TransportOffer();
@@ -47,6 +50,7 @@ public class TransportTestDataGenerator {
         result.destination = destination;
         result.capacity = capacity;
         result.transportDate = transportDate;
+        result.phoneNumber = phoneNumber;
         result.status = Optional.ofNullable(status).orElse(BaseOffer.Status.ACTIVE);
         return result;
     }

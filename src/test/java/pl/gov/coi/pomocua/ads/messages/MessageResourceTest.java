@@ -284,6 +284,7 @@ class MessageResourceTest  {
         offer.location = new Location("Mazowieckie", "Warszawa");
         offer.userId = userId;
         offer.userFirstName= "Jan";
+        offer.phoneNumber = "481234567890";
         return materialAidOfferRepository.save(offer);
     }
 }

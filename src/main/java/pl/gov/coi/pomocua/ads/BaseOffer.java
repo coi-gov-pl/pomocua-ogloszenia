@@ -27,6 +27,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseOffer {
     public static final String ALLOWED_TEXT = "^[^<>()%#@\"']*$";
+    public static final String PHONE_REGEX = "^\\d{7,15}$";
 
     @Id
     @GeneratedValue(strategy = SEQUENCE)
@@ -48,6 +49,11 @@ public abstract class BaseOffer {
     @Length(max = 1000)
     @Pattern(regexp = ALLOWED_TEXT)
     public String description;
+
+    @NotBlank
+    @Length(min = 7, max = 15)
+    @Pattern(regexp = PHONE_REGEX)
+    public String phoneNumber;
 
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")

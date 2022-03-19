@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static pl.gov.coi.pomocua.ads.BaseOffer.ALLOWED_TEXT;
+import static pl.gov.coi.pomocua.ads.BaseOffer.PHONE_REGEX;
 
 public class AccommodationOfferDefinitionDTO {
     @NotBlank
@@ -37,6 +38,11 @@ public class AccommodationOfferDefinitionDTO {
     @NotEmpty
     public List<Language> hostLanguage;
 
+    @NotBlank
+    @Length(min = 7, max = 15)
+    @Pattern(regexp = PHONE_REGEX)
+    public String phoneNumber;
+
     public void applyTo(AccommodationOffer offer) {
         offer.title = title;
         offer.description = description;
@@ -44,5 +50,6 @@ public class AccommodationOfferDefinitionDTO {
         offer.guests = guests;
         offer.lengthOfStay = lengthOfStay;
         offer.hostLanguage = new LinkedList<>(hostLanguage);
+        offer.phoneNumber = phoneNumber;
     }
 }
