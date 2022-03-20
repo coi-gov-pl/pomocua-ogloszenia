@@ -11,8 +11,8 @@ import javax.validation.constraints.*;
 
 import java.time.LocalDate;
 
-import static javax.persistence.EnumType.STRING;
 import static pl.gov.coi.pomocua.ads.BaseOffer.ALLOWED_TEXT;
+import static pl.gov.coi.pomocua.ads.BaseOffer.PHONE_REGEX;
 
 public class TransportOfferDefinitionDTO {
     @NotBlank
@@ -42,6 +42,11 @@ public class TransportOfferDefinitionDTO {
     @NotNull
     public LocalDate transportDate;
 
+    @NotBlank
+    @Length(min = 7, max = 15)
+    @Pattern(regexp = PHONE_REGEX)
+    public String phoneNumber;
+
     public void applyTo(TransportOffer transportOffer) {
         transportOffer.title = this.title;
         transportOffer.description = this.description;
@@ -49,5 +54,6 @@ public class TransportOfferDefinitionDTO {
         transportOffer.destination = this.destination;
         transportOffer.capacity = this.capacity;
         transportOffer.transportDate = this.transportDate;
+        transportOffer.phoneNumber = phoneNumber;
     }
 }

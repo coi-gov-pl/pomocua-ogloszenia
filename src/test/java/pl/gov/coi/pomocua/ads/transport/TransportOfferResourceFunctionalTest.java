@@ -51,7 +51,8 @@ public class TransportOfferResourceFunctionalTest extends BaseResourceFunctional
               "city": "Warszawa"
             },
             "capacity": 3,
-            "transportDate": "2022-03-05"
+            "transportDate": "2022-03-05",
+            "phoneNumber": "481234567890"
           }
         """;
   }

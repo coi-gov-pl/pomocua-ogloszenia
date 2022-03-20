@@ -314,6 +314,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         request.title = "some title";
         request.category = MaterialAidCategory.CLOTHING;
         request.location = new Location("mazowieckie", "warszawa");
+        request.phoneNumber = "481234567890";
         return request;
     }
 
@@ -348,13 +349,15 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
             String title,
             String description,
             MaterialAidCategory category,
-            Location location
+            Location location,
+            String phoneNumber
     ) {
         MaterialAidOffer offer = new MaterialAidOffer();
         offer.title = Optional.ofNullable(title).orElse("some title");
         offer.description = Optional.ofNullable(description).orElse("some description");
         offer.category = Optional.ofNullable(category).orElse(MaterialAidCategory.FOOD);
         offer.location = Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa"));
+        offer.phoneNumber = Optional.ofNullable(phoneNumber).orElse("481234567890");
         return offer;
     }
 }

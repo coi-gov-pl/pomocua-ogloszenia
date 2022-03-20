@@ -85,7 +85,8 @@ public class AccommodationsResourceFunctionalTest extends BaseResourceFunctional
           "lengthOfStay": "WEEK_1",
           "hostLanguage": [
             "UA"
-          ]
+          ],
+          "phoneNumber": "481234567890"
         }
         """;
   }
