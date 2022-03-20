@@ -15,9 +15,9 @@ import java.lang.annotation.RetentionPolicy;
 
 @JsonTypeInfo(use = Id.NAME, include = As.EXISTING_PROPERTY, property = "type")
 @JsonSubTypes({
-        @Type(value = AccommodationOffer.class, name = "accommodation"),
-        @Type(value = MaterialAidOffer.class, name = "materialAid"),
-        @Type(value = TransportOffer.class, name = "transport")
+        @Type(value = AccommodationOffer.class, name = "ACCOMMODATION"),
+        @Type(value = MaterialAidOffer.class, name = "MATERIAL_AID"),
+        @Type(value = TransportOffer.class, name = "TRANSPORT")
 })
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside

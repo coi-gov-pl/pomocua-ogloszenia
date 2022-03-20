@@ -28,6 +28,11 @@ public class MaterialAidOffer extends BaseOffer {
     @Embedded
     public Location location;
 
+    @NotNull
     @Transient
-    public String type = "materialAid";
+    public final Type type = Type.MATERIAL_AID;
+
+    public enum Type {
+        MATERIAL_AID
+    }
 }
