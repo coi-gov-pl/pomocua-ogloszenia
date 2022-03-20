@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class ValidationErrorResponse {
+public class ErrorResponse {
 
     private int status;
 
@@ -17,7 +17,7 @@ public class ValidationErrorResponse {
 
     private List<ValidationError> errors;
 
-    public ValidationErrorResponse(HttpStatus status) {
+    public ErrorResponse(HttpStatus status) {
         this.status = status.value();
         this.error = status.getReasonPhrase();
         this.errors = new ArrayList<>();

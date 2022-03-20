@@ -40,6 +40,7 @@ public class TransportOfferDefinitionDTO {
     public Integer capacity;
 
     @NotNull
+    @FutureOrPresent
     public LocalDate transportDate;
 
     @NotBlank

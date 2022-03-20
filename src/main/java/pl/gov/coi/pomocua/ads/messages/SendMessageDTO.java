@@ -1,5 +1,6 @@
 package pl.gov.coi.pomocua.ads.messages;
 
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ public final class SendMessageDTO {
     @Email(regexp = EMAIL_REGEX)
     public final String replyEmail;
     @NotNull
+    @AssertTrue(message = "{terms-and-conditions.validation}")
     public final boolean tosApproved;
 
     public SendMessageDTO(Long offerId, String text, String replyEmail,

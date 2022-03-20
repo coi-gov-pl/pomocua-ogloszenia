@@ -5,10 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
-import pl.gov.coi.pomocua.ads.authentication.UnauthorizedException;
-
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor

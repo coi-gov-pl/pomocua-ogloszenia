@@ -51,6 +51,6 @@ public class UserResourceTest {
 
         ResponseEntity<UserInfo> response = restTemplate.getForEntity("/api/secure/me", UserInfo.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }

@@ -8,6 +8,9 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public class TransportTestDataGenerator {
+
+    public static final LocalDate TRANSPORT_DATE = LocalDate.now().plusDays(2L);
+
     public static TransportOfferBuilder aTransportOffer() {
         return TransportTestDataGenerator.builder()
                 .title("some title")
@@ -15,7 +18,7 @@ public class TransportTestDataGenerator {
                 .capacity(1)
                 .origin(new Location("mazowieckie", "Warszawa"))
                 .destination(new Location("pomorskie", "Gdańsk"))
-                .transportDate(LocalDate.of(2022, 2, 25))
+                .transportDate(TRANSPORT_DATE)
                 .phoneNumber("481234567890")
                 ;
     }
@@ -27,7 +30,7 @@ public class TransportTestDataGenerator {
         updateJson.origin = new Location("dolnośląskie", "Wrocław");
         updateJson.destination = new Location("podlaskie", "Białystok");
         updateJson.capacity = 35;
-        updateJson.transportDate = LocalDate.of(2022, 3, 8);
+        updateJson.transportDate = TRANSPORT_DATE;
         updateJson.phoneNumber = "481234567890";
         return updateJson;
     }

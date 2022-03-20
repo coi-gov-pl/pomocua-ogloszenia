@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.gov.coi.pomocua.ads.transport.TransportTestDataGenerator.TRANSPORT_DATE;
 import static pl.gov.coi.pomocua.ads.transport.TransportTestDataGenerator.aTransportOffer;
 
 class TransportResourceTest extends BaseResourceTest<TransportOffer> {
@@ -231,7 +232,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
             assertThat(updatedOffer.destination.region).isEqualTo("podlaskie");
             assertThat(updatedOffer.destination.city).isEqualTo("Białystok");
             assertThat(updatedOffer.capacity).isEqualTo(35);
-            assertThat(updatedOffer.transportDate).isEqualTo(LocalDate.of(2022, 3, 8));
+            assertThat(updatedOffer.transportDate).isEqualTo(TRANSPORT_DATE);
         }
 
         @Test

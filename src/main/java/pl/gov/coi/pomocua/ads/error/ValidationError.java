@@ -24,7 +24,7 @@ public class ValidationError {
         this(error.getObjectName(), error.getDefaultMessage(), Type.OBJECT);
     }
 
-    private ValidationError(String field, String message, Type type) {
+    public ValidationError(String field, String message, Type type) {
         this.field = field;
         this.message = StringUtils.capitalize(message);
         this.type = type;
