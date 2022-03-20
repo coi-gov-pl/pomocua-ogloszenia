@@ -171,9 +171,9 @@ class MyOffersResourceTest {
 
     private static Stream<Arguments> differentOfferTypes() {
         return Stream.of(
-                Arguments.of(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", "accommodation"),
-                Arguments.of(MaterialAidTestDataGenerator.sampleOffer(), "material-aid", "materialAid"),
-                Arguments.of(aTransportOffer().build(), "transport", "transport")
+                Arguments.of(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", "ACCOMMODATION"),
+                Arguments.of(MaterialAidTestDataGenerator.sampleOffer(), "material-aid", "MATERIAL_AID"),
+                Arguments.of(aTransportOffer().build(), "transport", "TRANSPORT")
         );
     }
 

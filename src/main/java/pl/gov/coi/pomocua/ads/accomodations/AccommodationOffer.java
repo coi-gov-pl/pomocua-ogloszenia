@@ -38,8 +38,13 @@ public class AccommodationOffer extends BaseOffer {
     @NotEmpty
     public List<Language> hostLanguage;
 
+    @NotNull
     @Transient
-    public String type = "accommodation";
+    public final Type type = Type.ACCOMMODATION;
+
+    public enum Type {
+        ACCOMMODATION
+    }
 
     public enum LengthOfStay {
         WEEK_1,
