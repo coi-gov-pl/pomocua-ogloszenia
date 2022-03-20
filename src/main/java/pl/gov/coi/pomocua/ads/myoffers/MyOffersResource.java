@@ -2,6 +2,7 @@ package pl.gov.coi.pomocua.ads.myoffers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +17,7 @@ import static pl.gov.coi.pomocua.ads.Offers.page;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/secure/")
+@RequestMapping(value = "/api/secure/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MyOffersResource {
     private final MyOffersRepository repository;
     private final CurrentUser currentUser;
