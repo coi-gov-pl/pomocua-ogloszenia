@@ -45,6 +45,11 @@ public class TransportOffer extends BaseOffer {
     @NotNull
     public LocalDate transportDate;
 
+    @NotNull
     @Transient
-    public String type = "transport";
+    public final Type type = Type.TRANSPORT;
+
+    public enum Type {
+        TRANSPORT
+    }
 }
