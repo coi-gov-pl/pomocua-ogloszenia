@@ -30,6 +30,7 @@ public abstract class BaseOffer {
     public static final String PHONE_REGEX = "^\\d{7,15}$";
 
     @Id
+    @NotNull
     @GeneratedValue(strategy = SEQUENCE)
     public Long id;
 
