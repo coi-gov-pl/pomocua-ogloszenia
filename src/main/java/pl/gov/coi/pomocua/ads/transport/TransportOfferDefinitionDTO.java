@@ -42,7 +42,6 @@ public class TransportOfferDefinitionDTO {
     @NotNull
     public LocalDate transportDate;
 
-    @NotBlank
     @Length(min = 7, max = 15)
     @Pattern(regexp = PHONE_REGEX)
     public String phoneNumber;

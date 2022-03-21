@@ -51,7 +51,6 @@ public abstract class BaseOffer {
     @Pattern(regexp = ALLOWED_TEXT)
     public String description;
 
-    @NotBlank
     @Length(min = 7, max = 15)
     @Pattern(regexp = PHONE_REGEX)
     public String phoneNumber;
