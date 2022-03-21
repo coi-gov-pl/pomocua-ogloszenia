@@ -259,7 +259,7 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
             void shouldRejectTooLongDescription() {
                 AccommodationOffer offer = postSampleOffer();
                 var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
-                updateJson.description = "a".repeat(81);
+                updateJson.description = "a".repeat(2001);
 
                 ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
 

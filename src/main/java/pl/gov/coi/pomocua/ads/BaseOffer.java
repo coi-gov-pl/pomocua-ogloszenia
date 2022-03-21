@@ -46,7 +46,7 @@ public abstract class BaseOffer {
     public String title;
 
     @NotBlank
-    @Length(max = 1000)
+    @Length(max = 2000)
     @Pattern(regexp = ALLOWED_TEXT)
     public String description;
 

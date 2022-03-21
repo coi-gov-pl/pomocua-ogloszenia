@@ -21,7 +21,7 @@ public class TransportOfferDefinitionDTO {
     public String title;
 
     @NotBlank
-    @Length(max = 80)
+    @Length(max = 2000)
     @Pattern(regexp = ALLOWED_TEXT)
     public String description;
 

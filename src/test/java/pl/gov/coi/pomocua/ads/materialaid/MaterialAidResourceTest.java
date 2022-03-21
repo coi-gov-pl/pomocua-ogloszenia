@@ -259,7 +259,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
             void shouldRejectTooLongDescription() {
                 MaterialAidOffer offer = postSampleOffer();
                 var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
-                updateJson.description = "a".repeat(81);
+                updateJson.description = "a".repeat(2001);
 
                 ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
 

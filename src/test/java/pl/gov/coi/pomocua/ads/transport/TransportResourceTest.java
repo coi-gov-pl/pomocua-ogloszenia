@@ -329,7 +329,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
             void shouldRejectTooLongDescription() {
                 TransportOffer offer = postSampleOffer();
                 var updateJson = TransportTestDataGenerator.sampleUpdateJson();
-                updateJson.description = "a".repeat(81);
+                updateJson.description = "a".repeat(2001);
 
                 ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
 
