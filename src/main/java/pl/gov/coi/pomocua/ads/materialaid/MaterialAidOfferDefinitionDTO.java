@@ -32,7 +32,6 @@ public class MaterialAidOfferDefinitionDTO {
     @NotNull
     public MaterialAidCategory category;
 
-    @NotBlank
     @Length(min = 7, max = 15)
     @Pattern(regexp = PHONE_REGEX)
     public String phoneNumber;
