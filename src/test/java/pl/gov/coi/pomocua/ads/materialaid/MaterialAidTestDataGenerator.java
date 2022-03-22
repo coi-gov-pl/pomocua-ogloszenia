@@ -9,7 +9,7 @@ public class MaterialAidTestDataGenerator {
         request.category = MaterialAidCategory.CLOTHING;
         request.location = new Location("Mazowieckie", "Warszawa");
         request.description = "description";
-        request.phoneNumber = "481234567890";
+        request.phoneNumber = "+48123456789";
         return request;
     }
 
@@ -19,7 +19,7 @@ public class MaterialAidTestDataGenerator {
         updateJson.description = "new description";
         updateJson.location = new Location("Pomorskie", "Gdańsk");
         updateJson.category = MaterialAidCategory.FOR_CHILDREN;
-        updateJson.phoneNumber = "481234567890";
+        updateJson.phoneNumber = "+48123456780";
         return updateJson;
     }
 }

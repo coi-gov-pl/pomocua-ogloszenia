@@ -47,7 +47,7 @@ public class MaterialAidResourceFunctionalTest extends BaseResourceFunctionalTes
             "region": "Mazowieckie",
             "city": "Warszawa"
           },
-          "phoneNumber": "481234567890"
+          "phoneNumber": "+48123456789"
         }
         """;
   }

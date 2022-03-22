@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
@@ -34,9 +33,6 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
 
     @Autowired
     private TransportOfferRepository repository;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Override
     protected Class<TransportOffer> getClazz() {

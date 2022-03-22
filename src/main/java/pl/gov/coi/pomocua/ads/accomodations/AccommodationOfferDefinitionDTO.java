@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Length;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.Language;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.LengthOfStay;
+import pl.gov.coi.pomocua.ads.configuration.validation.PhoneNumber;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -11,7 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static pl.gov.coi.pomocua.ads.BaseOffer.ALLOWED_TEXT;
-import static pl.gov.coi.pomocua.ads.BaseOffer.PHONE_REGEX;
 
 public class AccommodationOfferDefinitionDTO {
     @NotBlank
@@ -38,8 +38,7 @@ public class AccommodationOfferDefinitionDTO {
     @NotEmpty
     public List<Language> hostLanguage;
 
-    @Length(min = 7, max = 15)
-    @Pattern(regexp = PHONE_REGEX)
+    @PhoneNumber
     public String phoneNumber;
 
     public void applyTo(AccommodationOffer offer) {

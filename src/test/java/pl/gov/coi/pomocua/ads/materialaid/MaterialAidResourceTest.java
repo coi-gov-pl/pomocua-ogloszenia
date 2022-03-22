@@ -309,13 +309,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
 
     @Override
     protected MaterialAidOffer sampleOfferRequest() {
-        MaterialAidOffer request = new MaterialAidOffer();
-        request.description = "some description";
-        request.title = "some title";
-        request.category = MaterialAidCategory.CLOTHING;
-        request.location = new Location("mazowieckie", "warszawa");
-        request.phoneNumber = "481234567890";
-        return request;
+        return MaterialAidTestDataGenerator.sampleOffer();
     }
 
     private List<MaterialAidOffer> searchOffers(MaterialAidOfferSearchCriteria searchCriteria) {
@@ -357,7 +351,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         offer.description = Optional.ofNullable(description).orElse("some description");
         offer.category = Optional.ofNullable(category).orElse(MaterialAidCategory.FOOD);
         offer.location = Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa"));
-        offer.phoneNumber = Optional.ofNullable(phoneNumber).orElse("481234567890");
+        offer.phoneNumber = Optional.ofNullable(phoneNumber).orElse("+48123456789");
         return offer;
     }
 }

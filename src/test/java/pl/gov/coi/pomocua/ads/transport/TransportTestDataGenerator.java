@@ -16,7 +16,7 @@ public class TransportTestDataGenerator {
                 .origin(new Location("mazowieckie", "Warszawa"))
                 .destination(new Location("pomorskie", "Gdańsk"))
                 .transportDate(LocalDate.of(2022, 2, 25))
-                .phoneNumber("481234567890")
+                .phoneNumber("+48123456789")
                 ;
     }
 
@@ -28,7 +28,7 @@ public class TransportTestDataGenerator {
         updateJson.destination = new Location("podlaskie", "Białystok");
         updateJson.capacity = 35;
         updateJson.transportDate = LocalDate.of(2022, 3, 8);
-        updateJson.phoneNumber = "481234567890";
+        updateJson.phoneNumber = "+48123456780";
         return updateJson;
     }
 

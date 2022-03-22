@@ -147,6 +147,29 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
                 offer.description = "description" + notAllowedChar;
                 assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
             }
+
+            @ParameterizedTest
+            @ValueSource(strings = {"+48 123 123", "+48 123", "invalid phone", "+48 invalid phone", "+48000000000", "0048123456"})
+            void shouldRejectInvalidPhoneNumber(String invalidPhoneNumber) {
+                T offer = sampleOfferRequest();
+                offer.phoneNumber = invalidPhoneNumber;
+                assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+            }
+
+            @Test
+            void shouldAcceptMissingPhoneNumber() {
+                T offer = sampleOfferRequest();
+                offer.phoneNumber = null;
+                assertPostResponseStatus(offer, HttpStatus.CREATED);
+            }
+
+            @ParameterizedTest
+            @ValueSource(strings = {"+48123456789", "+48 123 456 789", "+48 123-456-789", "0048 123456789", "0048 (123) 456-789"})
+            void shouldAcceptPhoneNumberInDifferentFormats(String phoneNumber) {
+                T offer = sampleOfferRequest();
+                offer.phoneNumber = phoneNumber;
+                assertPostResponseStatus(offer, HttpStatus.CREATED);
+            }
         }
     }
 

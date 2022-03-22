@@ -16,7 +16,6 @@ import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.Language;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.LengthOfStay;
-import pl.gov.coi.pomocua.ads.transport.TransportTestDataGenerator;
 
 import java.time.Instant;
 import java.util.List;

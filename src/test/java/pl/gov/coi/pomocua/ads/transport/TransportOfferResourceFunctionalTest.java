@@ -52,7 +52,7 @@ public class TransportOfferResourceFunctionalTest extends BaseResourceFunctional
             },
             "capacity": 3,
             "transportDate": "2022-03-05",
-            "phoneNumber": "481234567890"
+            "phoneNumber": "+48123456789"
           }
         """;
   }
