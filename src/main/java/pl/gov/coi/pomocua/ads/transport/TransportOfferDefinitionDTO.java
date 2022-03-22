@@ -25,12 +25,9 @@ public class TransportOfferDefinitionDTO {
     @Pattern(regexp = ALLOWED_TEXT)
     public String description;
 
-
-    @NotNull
     @Valid
     public Location origin;
 
-    @NotNull
     @Valid
     public Location destination;
 
@@ -39,7 +36,6 @@ public class TransportOfferDefinitionDTO {
     @Max(99)
     public Integer capacity;
 
-    @NotNull
     public LocalDate transportDate;
 
     @Length(min = 7, max = 15)
