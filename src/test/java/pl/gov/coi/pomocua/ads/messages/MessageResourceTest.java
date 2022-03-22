@@ -18,7 +18,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.Location;
-import pl.gov.coi.pomocua.ads.Phone;
 import pl.gov.coi.pomocua.ads.TestConfiguration;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
@@ -285,7 +284,7 @@ class MessageResourceTest  {
         offer.location = new Location("Mazowieckie", "Warszawa");
         offer.userId = userId;
         offer.userFirstName= "Jan";
-        offer.phoneNumber = Phone.from("+48123456789");
+        offer.phoneNumber = "+48123456789";
         return materialAidOfferRepository.save(offer);
     }
 }

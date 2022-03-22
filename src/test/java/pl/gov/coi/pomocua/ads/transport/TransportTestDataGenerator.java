@@ -3,7 +3,6 @@ package pl.gov.coi.pomocua.ads.transport;
 import lombok.Builder;
 import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.Location;
-import pl.gov.coi.pomocua.ads.Phone;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -51,7 +50,7 @@ public class TransportTestDataGenerator {
         result.destination = destination;
         result.capacity = capacity;
         result.transportDate = transportDate;
-        result.phoneNumber = Phone.from(phoneNumber);
+        result.phoneNumber = phoneNumber;
         result.status = Optional.ofNullable(status).orElse(BaseOffer.Status.ACTIVE);
         return result;
     }

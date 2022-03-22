@@ -147,10 +147,10 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
             }
 
             @ParameterizedTest
-            @ValueSource(strings = {"+48 123 123", "+48 123", "+48000000000", "0048123456"})
+            @ValueSource(strings = {"0048123", "+48 123 123", "+48 123", "+48000000000", "0048123456"})
             void shouldRejectInvalidPhoneNumber(String invalidPhoneNumber) {
                 T offer = sampleOfferRequest();
-                offer.phoneNumber = Phone.from(invalidPhoneNumber);
+                offer.phoneNumber = invalidPhoneNumber;
                 assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
             }
 
@@ -165,7 +165,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
             @ValueSource(strings = {"+48123456789", "+48 123 456 789", "+48 123-456-789", "0048 123456789", "0048 (123) 456-789"})
             void shouldAcceptPhoneNumberInVariousFormats(String phoneNumber) {
                 T offer = sampleOfferRequest();
-                offer.phoneNumber = Phone.from(phoneNumber);
+                offer.phoneNumber = phoneNumber;
                 assertPostResponseStatus(offer, HttpStatus.CREATED);
             }
 
@@ -173,12 +173,12 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
             @ValueSource(strings = {"+48123456789", "+48 123 456 789", "+48 123-456-789", "0048 123456789", "0048 (123) 456-789"})
             void shouldSaveNormalizedPhoneNumber(String phoneNumber) {
                 T offer = sampleOfferRequest();
-                offer.phoneNumber = Phone.from(phoneNumber);
+                offer.phoneNumber = phoneNumber;
 
                 T createdOffer = postOffer(offer);
 
                 T offerFromRepository = getOfferFromRepository(createdOffer.id);
-                assertThat(offerFromRepository.phoneNumber).isEqualTo(Phone.from("+48123456789"));
+                assertThat(offerFromRepository.phoneNumber).isEqualTo("+48123456789");
             }
         }
     }

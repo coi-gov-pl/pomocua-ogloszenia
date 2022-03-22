@@ -1,7 +1,6 @@
 package pl.gov.coi.pomocua.ads.materialaid;
 
 import pl.gov.coi.pomocua.ads.Location;
-import pl.gov.coi.pomocua.ads.Phone;
 
 public class MaterialAidTestDataGenerator {
     public static MaterialAidOffer sampleOffer() {
@@ -10,7 +9,7 @@ public class MaterialAidTestDataGenerator {
         request.category = MaterialAidCategory.CLOTHING;
         request.location = new Location("Mazowieckie", "Warszawa");
         request.description = "description";
-        request.phoneNumber = Phone.from("+48123456789");
+        request.phoneNumber = "+48123456789";
         return request;
     }
 

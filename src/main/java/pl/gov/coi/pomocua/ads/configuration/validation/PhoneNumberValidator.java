@@ -1,6 +1,6 @@
 package pl.gov.coi.pomocua.ads.configuration.validation;
 
-import pl.gov.coi.pomocua.ads.Phone;
+import pl.gov.coi.pomocua.ads.PhoneUtil;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -11,6 +11,6 @@ public class PhoneNumberValidator implements ConstraintValidator<PhoneNumber, St
         if (value == null) {
             return true;
         }
-        return Phone.isValid(value);
+        return PhoneUtil.isValid(value);
     }
 }
