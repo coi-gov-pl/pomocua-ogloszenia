@@ -3,12 +3,13 @@ package pl.gov.coi.pomocua.ads;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import pl.gov.coi.pomocua.ads.configuration.validation.PhoneNumber;
 import pl.gov.coi.pomocua.ads.users.User;
 
 import javax.persistence.*;
@@ -51,8 +52,10 @@ public abstract class BaseOffer {
     @Pattern(regexp = ALLOWED_TEXT)
     public String description;
 
-    @PhoneNumber
-    public String phoneNumber;
+    @Convert(converter = Phone.Converter.class)
+    @JsonSerialize(using = Phone.Serializer.class)
+    @JsonDeserialize(using = Phone.Deserializer.class)
+    public Phone phoneNumber;
 
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")

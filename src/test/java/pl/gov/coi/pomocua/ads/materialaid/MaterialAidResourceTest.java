@@ -14,10 +14,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.gov.coi.pomocua.ads.BaseResourceTest;
-import pl.gov.coi.pomocua.ads.Location;
-import pl.gov.coi.pomocua.ads.Offers;
-import pl.gov.coi.pomocua.ads.UserId;
+import pl.gov.coi.pomocua.ads.*;
 import pl.gov.coi.pomocua.ads.transport.TransportTestDataGenerator;
 
 import java.net.URI;
@@ -351,7 +348,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         offer.description = Optional.ofNullable(description).orElse("some description");
         offer.category = Optional.ofNullable(category).orElse(MaterialAidCategory.FOOD);
         offer.location = Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa"));
-        offer.phoneNumber = Optional.ofNullable(phoneNumber).orElse("+48123456789");
+        offer.phoneNumber = Phone.from(Optional.ofNullable(phoneNumber).orElse("+48123456789"));
         return offer;
     }
 }

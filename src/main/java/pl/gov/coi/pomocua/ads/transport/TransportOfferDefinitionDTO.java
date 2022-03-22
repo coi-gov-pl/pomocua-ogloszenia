@@ -2,11 +2,13 @@ package pl.gov.coi.pomocua.ads.transport;
 
 import org.hibernate.validator.constraints.Length;
 import pl.gov.coi.pomocua.ads.Location;
+import pl.gov.coi.pomocua.ads.Phone;
 import pl.gov.coi.pomocua.ads.configuration.validation.PhoneNumber;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static pl.gov.coi.pomocua.ads.BaseOffer.ALLOWED_TEXT;
 
@@ -41,13 +43,13 @@ public class TransportOfferDefinitionDTO {
     @PhoneNumber
     public String phoneNumber;
 
-    public void applyTo(TransportOffer transportOffer) {
-        transportOffer.title = this.title;
-        transportOffer.description = this.description;
-        transportOffer.origin = this.origin;
-        transportOffer.destination = this.destination;
-        transportOffer.capacity = this.capacity;
-        transportOffer.transportDate = this.transportDate;
-        transportOffer.phoneNumber = phoneNumber;
+    public void applyTo(TransportOffer offer) {
+        offer.title = title;
+        offer.description = description;
+        offer.origin = origin;
+        offer.destination = destination;
+        offer.capacity = capacity;
+        offer.transportDate = transportDate;
+        offer.phoneNumber = Optional.ofNullable(phoneNumber).map(Phone::from).orElse(null);
     }
 }

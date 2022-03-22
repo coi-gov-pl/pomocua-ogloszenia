@@ -1,6 +1,7 @@
 package pl.gov.coi.pomocua.ads.accomodations;
 
 import pl.gov.coi.pomocua.ads.Location;
+import pl.gov.coi.pomocua.ads.Phone;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class AccommodationsTestDataGenerator {
         request.description = "description";
         request.lengthOfStay = AccommodationOffer.LengthOfStay.MONTH_2;
         request.guests = 5;
-        request.phoneNumber = "+48123456789";
+        request.phoneNumber = Phone.from("+48123456789");
         return request;
     }
 
