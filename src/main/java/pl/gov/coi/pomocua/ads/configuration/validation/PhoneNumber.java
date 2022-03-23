@@ -12,7 +12,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(FIELD)
 @Retention(RUNTIME)
 public @interface PhoneNumber {
-    String message() default "Invalid phone number";
+    String message() default "{pl.gov.coi.pomocua.ads.configuration.validation.PhoneNumber.message}";
 
     Class<?>[] groups() default {};
 
