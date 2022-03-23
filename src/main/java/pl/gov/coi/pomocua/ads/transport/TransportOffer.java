@@ -25,7 +25,6 @@ public class TransportOffer extends BaseOffer {
             @AttributeOverride(name = "city", column = @Column(name = "origin_city"))
     })
     @Valid
-    @NotNull
     public Location origin;
 
     @Embedded
@@ -34,7 +33,6 @@ public class TransportOffer extends BaseOffer {
             @AttributeOverride(name = "city", column = @Column(name = "destination_city"))
     })
     @Valid
-    @NotNull
     public Location destination;
 
     @NotNull
@@ -42,7 +40,6 @@ public class TransportOffer extends BaseOffer {
     @Max(99)
     public Integer capacity;
 
-    @NotNull
     public LocalDate transportDate;
 
     @NotNull
