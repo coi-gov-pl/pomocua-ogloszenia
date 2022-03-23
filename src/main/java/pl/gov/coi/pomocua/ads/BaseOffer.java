@@ -8,6 +8,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import pl.gov.coi.pomocua.ads.configuration.validation.PhoneNumber;
 import pl.gov.coi.pomocua.ads.users.User;
 
 import javax.persistence.*;
@@ -27,7 +28,6 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseOffer {
     public static final String ALLOWED_TEXT = "^[^<>()%#@\"']*$";
-    public static final String PHONE_REGEX = "^\\d{7,15}$";
 
     @Id
     @NotNull
@@ -51,8 +51,7 @@ public abstract class BaseOffer {
     @Pattern(regexp = ALLOWED_TEXT)
     public String description;
 
-    @Length(min = 7, max = 15)
-    @Pattern(regexp = PHONE_REGEX)
+    @PhoneNumber
     public String phoneNumber;
 
     @LastModifiedDate

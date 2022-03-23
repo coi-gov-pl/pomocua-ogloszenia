@@ -1,7 +1,6 @@
 package pl.gov.coi.pomocua.ads;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +21,6 @@ import pl.gov.coi.pomocua.ads.users.User;
 
 import java.net.URI;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -146,6 +144,41 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
                 T offer = sampleOfferRequest();
                 offer.description = "description" + notAllowedChar;
                 assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+            }
+
+            @ParameterizedTest
+            @ValueSource(strings = {"invalid phone", "+48 invalid phone", "0048123", "+48 123 123", "+48 123", "+48000000000", "0048123456"})
+            void shouldRejectInvalidPhoneNumber(String invalidPhoneNumber) {
+                T offer = sampleOfferRequest();
+                offer.phoneNumber = invalidPhoneNumber;
+                assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+            }
+
+            @Test
+            void shouldAcceptMissingPhoneNumber() {
+                T offer = sampleOfferRequest();
+                offer.phoneNumber = null;
+                assertPostResponseStatus(offer, HttpStatus.CREATED);
+            }
+
+            @ParameterizedTest
+            @ValueSource(strings = {"+48123456789", "+48 123 456 789", "+48 123-456-789", "0048 123456789", "0048 (123) 456-789"})
+            void shouldAcceptPhoneNumberInVariousFormats(String phoneNumber) {
+                T offer = sampleOfferRequest();
+                offer.phoneNumber = phoneNumber;
+                assertPostResponseStatus(offer, HttpStatus.CREATED);
+            }
+
+            @ParameterizedTest
+            @ValueSource(strings = {"+48123456789", "+48 123 456 789", "+48 123-456-789", "0048 123456789", "0048 (123) 456-789"})
+            void shouldSaveNormalizedPhoneNumber(String phoneNumber) {
+                T offer = sampleOfferRequest();
+                offer.phoneNumber = phoneNumber;
+
+                T createdOffer = postOffer(offer);
+
+                T offerFromRepository = getOfferFromRepository(createdOffer.id);
+                assertThat(offerFromRepository.phoneNumber).isEqualTo("+48123456789");
             }
         }
     }
@@ -273,7 +306,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         T entity = response.getBody();
         assertThat(entity.id).isNotNull();
         assertThat(entity).usingRecursiveComparison()
-                .ignoringFields("id", "modifiedDate", "userFirstName")
+                .ignoringFields("id", "modifiedDate", "userFirstName", "phoneNumber")
                 .isEqualTo(request);
         return entity;
     }

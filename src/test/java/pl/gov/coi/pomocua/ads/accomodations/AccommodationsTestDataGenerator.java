@@ -13,7 +13,7 @@ public class AccommodationsTestDataGenerator {
         request.description = "description";
         request.lengthOfStay = AccommodationOffer.LengthOfStay.MONTH_2;
         request.guests = 5;
-        request.phoneNumber = "481234567890";
+        request.phoneNumber = "+48123456789";
         return request;
     }
 
@@ -25,7 +25,7 @@ public class AccommodationsTestDataGenerator {
         updateJson.guests = 14;
         updateJson.lengthOfStay = AccommodationOffer.LengthOfStay.MONTH_3;
         updateJson.hostLanguage = List.of(AccommodationOffer.Language.UA);
-        updateJson.phoneNumber = "481234567891";
+        updateJson.phoneNumber = "+48123456780";
         return updateJson;
     }
 }

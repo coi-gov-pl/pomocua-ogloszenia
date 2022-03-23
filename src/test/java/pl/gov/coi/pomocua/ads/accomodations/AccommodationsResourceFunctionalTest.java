@@ -86,7 +86,7 @@ public class AccommodationsResourceFunctionalTest extends BaseResourceFunctional
           "hostLanguage": [
             "UA"
           ],
-          "phoneNumber": "481234567890"
+          "phoneNumber": "+48123456789"
         }
         """;
   }
