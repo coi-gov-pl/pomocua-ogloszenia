@@ -20,7 +20,7 @@ public class AccommodationOfferDefinitionDTO {
     public String title;
 
     @NotBlank
-    @Length(max = 80)
+    @Length(max = 2000)
     @Pattern(regexp = ALLOWED_TEXT)
     public String description;
 
@@ -38,7 +38,6 @@ public class AccommodationOfferDefinitionDTO {
     @NotEmpty
     public List<Language> hostLanguage;
 
-    @NotBlank
     @Length(min = 7, max = 15)
     @Pattern(regexp = PHONE_REGEX)
     public String phoneNumber;

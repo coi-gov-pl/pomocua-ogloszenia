@@ -21,16 +21,13 @@ public class TransportOfferDefinitionDTO {
     public String title;
 
     @NotBlank
-    @Length(max = 80)
+    @Length(max = 2000)
     @Pattern(regexp = ALLOWED_TEXT)
     public String description;
 
-
-    @NotNull
     @Valid
     public Location origin;
 
-    @NotNull
     @Valid
     public Location destination;
 
@@ -39,11 +36,9 @@ public class TransportOfferDefinitionDTO {
     @Max(99)
     public Integer capacity;
 
-    @NotNull
     @FutureOrPresent
     public LocalDate transportDate;
 
-    @NotBlank
     @Length(min = 7, max = 15)
     @Pattern(regexp = PHONE_REGEX)
     public String phoneNumber;

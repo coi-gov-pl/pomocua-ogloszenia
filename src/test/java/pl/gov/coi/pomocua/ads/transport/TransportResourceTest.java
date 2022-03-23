@@ -200,17 +200,17 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         }
 
         @Test
-        void shouldRejectNullOrigin() {
+        void shouldAcceptNullOrigin() {
             TransportOffer offer = sampleOfferRequest();
             offer.origin = null;
-            assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+            assertPostResponseStatus(offer, HttpStatus.CREATED);
         }
 
         @Test
-        void shouldRejectNullDestination() {
+        void shouldAcceptNullDestination() {
             TransportOffer offer = sampleOfferRequest();
             offer.destination = null;
-            assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
+            assertPostResponseStatus(offer, HttpStatus.CREATED);
         }
     }
 
@@ -330,7 +330,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
             void shouldRejectTooLongDescription() {
                 TransportOffer offer = postSampleOffer();
                 var updateJson = TransportTestDataGenerator.sampleUpdateJson();
-                updateJson.description = "a".repeat(81);
+                updateJson.description = "a".repeat(2001);
 
                 ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
 
@@ -340,9 +340,8 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
             }
 
             @ParameterizedTest
-            @NullSource
             @MethodSource("pl.gov.coi.pomocua.ads.transport.TransportResourceTest#invalidLocations")
-            void shouldRejectMissingOrInvalidOrigin(Location location) {
+            void shouldRejectInvalidOrigin(Location location) {
                 TransportOffer offer = postSampleOffer();
                 var updateJson = TransportTestDataGenerator.sampleUpdateJson();
                 updateJson.origin = location;
@@ -356,8 +355,21 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
 
             @ParameterizedTest
             @NullSource
+            void shouldAcceptMissingOrigin(Location location) {
+                TransportOffer offer = postSampleOffer();
+                var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+                updateJson.origin = location;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+                TransportOffer updatedOffer = getOfferFromRepository(offer.id);
+                assertThat(updatedOffer.origin).isNull();
+            }
+
+            @ParameterizedTest
             @MethodSource("pl.gov.coi.pomocua.ads.transport.TransportResourceTest#invalidLocations")
-            void shouldRejectMissingOrInvalidDestination(Location location) {
+            void shouldRejectInvalidDestination(Location location) {
                 TransportOffer offer = postSampleOffer();
                 var updateJson = TransportTestDataGenerator.sampleUpdateJson();
                 updateJson.destination = location;
@@ -367,6 +379,20 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
                 TransportOffer notUpdatedOffer = getOfferFromRepository(offer.id);
                 assertThat(notUpdatedOffer.destination).isEqualTo(offer.destination);
+            }
+
+            @ParameterizedTest
+            @NullSource
+            void shouldAcceptMissingDestination(Location location) {
+                TransportOffer offer = postSampleOffer();
+                var updateJson = TransportTestDataGenerator.sampleUpdateJson();
+                updateJson.destination = location;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+                TransportOffer updatedOffer = getOfferFromRepository(offer.id);
+                assertThat(updatedOffer.destination).isNull();
             }
 
             @ParameterizedTest
@@ -385,16 +411,16 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
             }
 
             @Test
-            void shouldRejectMissingTransportDate() {
+            void shouldAcceptMissingTransportDate() {
                 TransportOffer offer = postSampleOffer();
                 var updateJson = TransportTestDataGenerator.sampleUpdateJson();
                 updateJson.transportDate = null;
 
                 ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
 
-                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-                TransportOffer notUpdatedOffer = getOfferFromRepository(offer.id);
-                assertThat(notUpdatedOffer.transportDate).isEqualTo(offer.transportDate);
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+                TransportOffer updatedOffer = getOfferFromRepository(offer.id);
+                assertThat(updatedOffer.transportDate).isNull();
             }
         }
     }
