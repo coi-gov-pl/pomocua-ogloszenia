@@ -323,6 +323,45 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
                 AccommodationOffer notUpdatedOffer = getOfferFromRepository(offer.id);
                 assertThat(notUpdatedOffer.hostLanguage).containsExactlyInAnyOrderElementsOf(offer.hostLanguage);
             }
+
+            @ParameterizedTest
+            @ValueSource(strings = {"invalid phone", "+48 invalid phone", "0048123", "+48 123 123", "+48 123", "+48000000000", "0048123456"})
+            void shouldRejectInvalidPhoneNumber(String invalidPhoneNumber) {
+                AccommodationOffer offer = postSampleOffer();
+                var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+                updateJson.phoneNumber = invalidPhoneNumber;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            }
+
+            @Test
+            void shouldAcceptMissingPhoneNumber() {
+                AccommodationOffer offer = postSampleOffer();
+                var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+                updateJson.phoneNumber = null;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+                AccommodationOffer updatedOffer = getOfferFromRepository(offer.id);
+                assertThat(updatedOffer.phoneNumber).isNull();
+            }
+
+            @ParameterizedTest
+            @ValueSource(strings = {"+48123456789", "+48 123 456 789", "+48 123-456-789", "0048 123456789", "0048 (123) 456-789"})
+            void shouldAcceptPhoneNumberInVariousFormatsAndNormalizeIt(String phoneNumber) {
+                AccommodationOffer offer = postSampleOffer();
+                var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+                updateJson.phoneNumber = phoneNumber;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+                AccommodationOffer updatedOffer = getOfferFromRepository(offer.id);
+                assertThat(updatedOffer.phoneNumber).isEqualTo("+48123456789");
+            }
         }
     }
 
