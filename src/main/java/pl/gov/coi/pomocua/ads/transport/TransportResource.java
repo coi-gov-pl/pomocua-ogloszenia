@@ -2,6 +2,7 @@ package pl.gov.coi.pomocua.ads.transport;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -53,7 +54,9 @@ public class TransportResource {
     @Operation(description = "Allows to search for transport offers using different criterias (passes as query params). Each criteria is optional.")
     @GetMapping("transport")
     public Offers<TransportOffer> list(Pageable pageRequest, TransportOfferSearchCriteria searchCriteria) {
-        return page(repository.findAll(TransportOfferSpecifications.from(searchCriteria), pageRequest));
+
+        Pageable pageable = TransportSort.modifySort((PageRequest) pageRequest, searchCriteria);
+        return page(repository.findAll(TransportOfferSpecifications.from(searchCriteria), pageable));
     }
 
     @GetMapping("transport/{id}")
