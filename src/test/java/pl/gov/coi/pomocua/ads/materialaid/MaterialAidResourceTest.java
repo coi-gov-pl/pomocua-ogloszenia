@@ -1,6 +1,5 @@
 package pl.gov.coi.pomocua.ads.materialaid;
 
-import lombok.Builder;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,24 +17,19 @@ import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.Offers;
 import pl.gov.coi.pomocua.ads.UserId;
-import pl.gov.coi.pomocua.ads.transport.TransportTestDataGenerator;
 
 import java.net.URI;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.gov.coi.pomocua.ads.materialaid.MaterialAidTestDataGenerator.aMaterialAidOffer;
 
 class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
 
     @Autowired
     private MaterialAidOfferRepository repository;
-
-    private static MaterialAidOfferBuilder aMaterialAidOffer() {
-        return new MaterialAidOfferBuilder();
-    }
 
     @Override
     protected Class<MaterialAidOffer> getClazz() {
@@ -50,6 +44,11 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
     @Override
     protected CrudRepository<MaterialAidOffer, Long> getRepository() {
         return repository;
+    }
+
+    @Override
+    protected MaterialAidOffer sampleOfferRequest() {
+        return aMaterialAidOffer().build();
     }
 
     @Nested
@@ -295,6 +294,45 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
                 MaterialAidOffer notUpdatedOffer = getOfferFromRepository(offer.id);
                 assertThat(notUpdatedOffer.category).isEqualTo(offer.category);
             }
+
+            @ParameterizedTest
+            @ValueSource(strings = {"invalid phone", "+48 invalid phone", "0048123", "+48 123 123", "+48 123", "+48000000000", "0048123456"})
+            void shouldRejectInvalidPhoneNumber(String invalidPhoneNumber) {
+                MaterialAidOffer offer = postSampleOffer();
+                var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
+                updateJson.phoneNumber = invalidPhoneNumber;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            }
+
+            @Test
+            void shouldAcceptMissingPhoneNumber() {
+                MaterialAidOffer offer = postSampleOffer();
+                var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
+                updateJson.phoneNumber = null;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+                MaterialAidOffer updatedOffer = getOfferFromRepository(offer.id);
+                assertThat(updatedOffer.phoneNumber).isNull();
+            }
+
+            @ParameterizedTest
+            @ValueSource(strings = {"+48123456789", "+48 123 456 789", "+48 123-456-789", "0048 123456789", "0048 (123) 456-789"})
+            void shouldAcceptPhoneNumberInVariousFormatsAndNormalizeIt(String phoneNumber) {
+                MaterialAidOffer offer = postSampleOffer();
+                var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
+                updateJson.phoneNumber = phoneNumber;
+
+                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+                MaterialAidOffer updatedOffer = getOfferFromRepository(offer.id);
+                assertThat(updatedOffer.phoneNumber).isEqualTo("+48123456789");
+            }
         }
     }
 
@@ -305,17 +343,6 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
                 new Location("region", null),
                 new Location("region", "   ")
         );
-    }
-
-    @Override
-    protected MaterialAidOffer sampleOfferRequest() {
-        MaterialAidOffer request = new MaterialAidOffer();
-        request.description = "some description";
-        request.title = "some title";
-        request.category = MaterialAidCategory.CLOTHING;
-        request.location = new Location("mazowieckie", "warszawa");
-        request.phoneNumber = "481234567890";
-        return request;
     }
 
     private List<MaterialAidOffer> searchOffers(MaterialAidOfferSearchCriteria searchCriteria) {
@@ -342,22 +369,5 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         String url = builder.encode().toUriString();
 
         return listOffers(URI.create(url));
-    }
-
-    @Builder
-    private static MaterialAidOffer materialAidOfferBuilder(
-            String title,
-            String description,
-            MaterialAidCategory category,
-            Location location,
-            String phoneNumber
-    ) {
-        MaterialAidOffer offer = new MaterialAidOffer();
-        offer.title = Optional.ofNullable(title).orElse("some title");
-        offer.description = Optional.ofNullable(description).orElse("some description");
-        offer.category = Optional.ofNullable(category).orElse(MaterialAidCategory.FOOD);
-        offer.location = Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa"));
-        offer.phoneNumber = Optional.ofNullable(phoneNumber).orElse("481234567890");
-        return offer;
     }
 }

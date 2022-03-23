@@ -26,6 +26,7 @@ import pl.gov.coi.pomocua.ads.users.TestUser;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.gov.coi.pomocua.ads.materialaid.MaterialAidTestDataGenerator.aMaterialAidOffer;
 import static pl.gov.coi.pomocua.ads.transport.TransportTestDataGenerator.aTransportOffer;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -50,7 +51,7 @@ class MyOffersResourceTest {
             testUser.setCurrentUserWithId(new UserId("my-offer user id"));
 
             AccommodationOffer accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOffer.class);
-            MaterialAidOffer materialAidOffer = postOffer(MaterialAidTestDataGenerator.sampleOffer(), "material-aid", MaterialAidOffer.class);
+            MaterialAidOffer materialAidOffer = postOffer(aMaterialAidOffer().build(), "material-aid", MaterialAidOffer.class);
 
             BaseOffer[] offers = listOffers();
             assertThat(offers).extracting("id").containsExactly(accOffer.id, materialAidOffer.id);
@@ -67,7 +68,7 @@ class MyOffersResourceTest {
 
             UserId materialAidOfferUserId = new UserId("job offer user id");
             testUser.setCurrentUserWithId(materialAidOfferUserId);
-            postOffer(MaterialAidTestDataGenerator.sampleOffer(), "material-aid", MaterialAidOffer.class);
+            postOffer(aMaterialAidOffer().build(), "material-aid", MaterialAidOffer.class);
 
             testUser.setCurrentUserWithId(accommodationOfferUserId);
             BaseOffer[] offers = listOffers();
@@ -172,7 +173,7 @@ class MyOffersResourceTest {
     private static Stream<Arguments> differentOfferTypes() {
         return Stream.of(
                 Arguments.of(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", "ACCOMMODATION"),
-                Arguments.of(MaterialAidTestDataGenerator.sampleOffer(), "material-aid", "MATERIAL_AID"),
+                Arguments.of(aMaterialAidOffer().build(), "material-aid", "MATERIAL_AID"),
                 Arguments.of(aTransportOffer().build(), "transport", "TRANSPORT")
         );
     }

@@ -44,20 +44,20 @@ public class TransportOfferResourceFunctionalTest extends BaseResourceFunctional
     return """
           {
             "title": "testTitle",
-                "description": "testDescription",
-                "origin": {
-                  "region": "Małopolska",
-                  "city": "Kraków"
-                },
-                "destination": {
-                  "region": "Mazowieckie",
-                  "city": "Warszawa"
-                },
-                "capacity": 3,
-                "transportDate": "%s",
-                "phoneNumber": "481234567890"
-              }
-            """.formatted(TRANSPORT_DATE_TEXT);
+            "description": "testDescription",
+            "origin": {
+              "region": "Małopolska",
+              "city": "Kraków"
+            },
+            "destination": {
+              "region": "Mazowieckie",
+              "city": "Warszawa"
+            },
+            "capacity": 3,
+            "transportDate": "2022-03-05",
+            "phoneNumber": "+48123456789"
+          }
+        """;
   }
 
   @Override
