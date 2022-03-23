@@ -30,7 +30,7 @@ public class CityLookupResource {
         }
 
         List<CityLookupDto> cities = cityRepository
-                .findFirst5ByLocationCityStartsWithOrderByLocationCityAsc(query.toLowerCase())
+                .findFirst5ByLocationCityIgnoreCaseStartsWithOrderByLocationCityAsc(query.toLowerCase())
                 .stream()
                 .map(CityLookupDto::fromEntity)
                 .collect(Collectors.toList());
