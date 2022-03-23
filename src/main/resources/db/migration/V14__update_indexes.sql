@@ -25,4 +25,4 @@ CREATE index idx_transport_offer_destination_region ON transport_offer (lower(de
 CREATE index idx_transport_offer_status ON transport_offer USING hash(status);
 CREATE index idx_transport_offer_user_id ON transport_offer USING hash(user_id);
 
-CREATE index idx_city_city ON city (lower(city));
+CREATE index idx_city_city ON city (upper(city)); -- Spring Data uses "upper" function when using "ignoreCase" modifier in repository
