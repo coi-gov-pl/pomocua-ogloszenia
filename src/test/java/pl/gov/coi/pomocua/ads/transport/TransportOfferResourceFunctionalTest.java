@@ -54,11 +54,11 @@ public class TransportOfferResourceFunctionalTest extends BaseResourceFunctional
               "city": "Warszawa"
             },
             "capacity": 3,
-            "transportDate": "2022-03-05",
+            "transportDate": "%s",
             "phoneNumber": "+48123456789"
           }
-        """;
-  }
+        """.formatted(TRANSPORT_DATE_TEXT);
+}
 
   @Override
   protected void assertResponseBody(ValidatableResponse response) {
