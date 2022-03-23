@@ -1,6 +1,5 @@
 package pl.gov.coi.pomocua.ads.materialaid;
 
-import lombok.Builder;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,25 +17,19 @@ import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.Offers;
 import pl.gov.coi.pomocua.ads.UserId;
-import pl.gov.coi.pomocua.ads.transport.TransportOffer;
-import pl.gov.coi.pomocua.ads.transport.TransportTestDataGenerator;
 
 import java.net.URI;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.gov.coi.pomocua.ads.materialaid.MaterialAidTestDataGenerator.aMaterialAidOffer;
 
 class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
 
     @Autowired
     private MaterialAidOfferRepository repository;
-
-    private static MaterialAidOfferBuilder aMaterialAidOffer() {
-        return new MaterialAidOfferBuilder();
-    }
 
     @Override
     protected Class<MaterialAidOffer> getClazz() {
@@ -51,6 +44,11 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
     @Override
     protected CrudRepository<MaterialAidOffer, Long> getRepository() {
         return repository;
+    }
+
+    @Override
+    protected MaterialAidOffer sampleOfferRequest() {
+        return aMaterialAidOffer().build();
     }
 
     @Nested
@@ -347,11 +345,6 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         );
     }
 
-    @Override
-    protected MaterialAidOffer sampleOfferRequest() {
-        return MaterialAidTestDataGenerator.sampleOffer();
-    }
-
     private List<MaterialAidOffer> searchOffers(MaterialAidOfferSearchCriteria searchCriteria) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         if (searchCriteria.getLocation() != null) {
@@ -376,22 +369,5 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         String url = builder.encode().toUriString();
 
         return listOffers(URI.create(url));
-    }
-
-    @Builder
-    private static MaterialAidOffer materialAidOfferBuilder(
-            String title,
-            String description,
-            MaterialAidCategory category,
-            Location location,
-            String phoneNumber
-    ) {
-        MaterialAidOffer offer = new MaterialAidOffer();
-        offer.title = Optional.ofNullable(title).orElse("some title");
-        offer.description = Optional.ofNullable(description).orElse("some description");
-        offer.category = Optional.ofNullable(category).orElse(MaterialAidCategory.FOOD);
-        offer.location = Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa"));
-        offer.phoneNumber = Optional.ofNullable(phoneNumber).orElse("+48123456789");
-        return offer;
     }
 }
