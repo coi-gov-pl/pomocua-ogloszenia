@@ -147,7 +147,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
             }
 
             @ParameterizedTest
-            @ValueSource(strings = {"0048123", "+48 123 123", "+48 123", "+48000000000", "0048123456"})
+            @ValueSource(strings = {"invalid phone", "+48 invalid phone", "0048123", "+48 123 123", "+48 123", "+48000000000", "0048123456"})
             void shouldRejectInvalidPhoneNumber(String invalidPhoneNumber) {
                 T offer = sampleOfferRequest();
                 offer.phoneNumber = invalidPhoneNumber;

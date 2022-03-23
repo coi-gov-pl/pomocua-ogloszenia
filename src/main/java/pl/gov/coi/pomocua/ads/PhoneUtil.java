@@ -10,16 +10,18 @@ public class PhoneUtil {
     private static final PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
 
     public static boolean isValid(String value) {
-        return phoneNumberUtil.isValidNumber(parse(value));
+        try {
+            PhoneNumber phoneNumber = phoneNumberUtil.parse(value, DEFAULT_REGION);
+            return phoneNumberUtil.isValidNumber(phoneNumber);
+        } catch (NumberParseException e) {
+            return false;
+        }
     }
 
     public static String normalize(String value) {
-        return phoneNumberUtil.format(parse(value), PhoneNumberFormat.E164);
-    }
-
-    private static PhoneNumber parse(String value) {
         try {
-            return phoneNumberUtil.parse(value, DEFAULT_REGION);
+            PhoneNumber phoneNumber = phoneNumberUtil.parse(value, DEFAULT_REGION);
+            return phoneNumberUtil.format(phoneNumber, PhoneNumberFormat.E164);
         } catch (NumberParseException e) {
             throw new IllegalArgumentException("invalid phone number: %s".formatted(value), e);
         }
