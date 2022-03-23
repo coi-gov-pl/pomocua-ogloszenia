@@ -28,6 +28,26 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
     @Autowired
     private AccommodationsRepository repository;
 
+    @Override
+    protected Class<AccommodationOffer> getClazz() {
+        return AccommodationOffer.class;
+    }
+
+    @Override
+    protected String getOfferSuffix() {
+        return "accommodations";
+    }
+
+    @Override
+    protected AccommodationOffer sampleOfferRequest() {
+        return AccommodationsTestDataGenerator.sampleOffer();
+    }
+
+    @Override
+    protected CrudRepository<AccommodationOffer, Long> getRepository() {
+        return repository;
+    }
+
     @Nested
     class CreatingValidation {
         @ParameterizedTest
@@ -372,25 +392,5 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
                 new Location("region", null),
                 new Location("region", "   ")
         );
-    }
-
-    @Override
-    protected Class<AccommodationOffer> getClazz() {
-        return AccommodationOffer.class;
-    }
-
-    @Override
-    protected String getOfferSuffix() {
-        return "accommodations";
-    }
-
-    @Override
-    protected AccommodationOffer sampleOfferRequest() {
-        return AccommodationsTestDataGenerator.sampleOffer();
-    }
-
-    @Override
-    protected CrudRepository<AccommodationOffer, Long> getRepository() {
-        return repository;
     }
 }
