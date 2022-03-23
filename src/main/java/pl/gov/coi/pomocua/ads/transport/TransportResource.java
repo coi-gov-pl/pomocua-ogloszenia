@@ -60,8 +60,8 @@ public class TransportResource {
     }
 
     @GetMapping("transport/{id}")
-    public ResponseEntity<TransportOffer> get(@PathVariable Long id) {
-        return ResponseEntity.of(repository.findById(id).filter(BaseOffer::isActive));
+    public TransportOffer get(@PathVariable Long id) {
+        return repository.findById(id).filter(BaseOffer::isActive).orElseThrow(OfferNotFoundException::new);
     }
 
     @PutMapping("secure/transport/{id}")

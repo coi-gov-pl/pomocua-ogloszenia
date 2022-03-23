@@ -22,7 +22,7 @@ import pl.gov.coi.pomocua.ads.TestConfiguration;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.authentication.TestCurrentUser;
 import pl.gov.coi.pomocua.ads.error.ValidationError;
-import pl.gov.coi.pomocua.ads.error.ValidationErrorResponse;
+import pl.gov.coi.pomocua.ads.error.ErrorResponse;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidCategory;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOfferRepository;
@@ -155,7 +155,7 @@ class MessageResourceTest  {
                 true
         ), headers);
 
-        ResponseEntity<ValidationErrorResponse> response = restTemplate.postForEntity("/api/message", entity, ValidationErrorResponse.class);
+        ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/api/message", entity, ErrorResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).extracting("status").isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -178,7 +178,7 @@ class MessageResourceTest  {
                 true
         ), headers);
 
-        ResponseEntity<ValidationErrorResponse> response = restTemplate.postForEntity("/api/message", entity, ValidationErrorResponse.class);
+        ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/api/message", entity, ErrorResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).extracting("status").isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -251,7 +251,7 @@ class MessageResourceTest  {
                 true
         ), Void.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
@@ -264,7 +264,7 @@ class MessageResourceTest  {
                 true
         ), Void.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     //TODO implement after disabling offer functionality is implemented

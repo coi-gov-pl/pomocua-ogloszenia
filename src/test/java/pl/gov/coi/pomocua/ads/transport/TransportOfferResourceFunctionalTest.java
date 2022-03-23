@@ -11,8 +11,11 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static pl.gov.coi.pomocua.ads.transport.TransportTestDataGenerator.TRANSPORT_DATE;
 
 public class TransportOfferResourceFunctionalTest extends BaseResourceFunctionalTest {
+
+  private static final String TRANSPORT_DATE_TEXT = TRANSPORT_DATE.toString();
 
   @Autowired
   TransportOfferRepository transportOfferRepository;
@@ -51,23 +54,23 @@ public class TransportOfferResourceFunctionalTest extends BaseResourceFunctional
               "city": "Warszawa"
             },
             "capacity": 3,
-            "transportDate": "2022-03-05",
+            "transportDate": "%s",
             "phoneNumber": "+48123456789"
           }
-        """;
-  }
+        """.formatted(TRANSPORT_DATE_TEXT);
+}
 
   @Override
   protected void assertResponseBody(ValidatableResponse response) {
     response
-        .body("title", equalTo("testTitle"))
-        .body("description", equalTo("testDescription"))
-        .body("origin.region", equalTo("Małopolska"))
-        .body("origin.city", equalTo("Kraków"))
-        .body("destination.region", equalTo("Mazowieckie"))
-        .body("destination.city", equalTo("Warszawa"))
-        .body("capacity", equalTo(3))
-        .body("transportDate", equalTo("2022-03-05"));
+            .body("title", equalTo("testTitle"))
+            .body("description", equalTo("testDescription"))
+            .body("origin.region", equalTo("Małopolska"))
+            .body("origin.city", equalTo("Kraków"))
+            .body("destination.region", equalTo("Mazowieckie"))
+            .body("destination.city", equalTo("Warszawa"))
+            .body("capacity", equalTo(3))
+            .body("transportDate", equalTo(TRANSPORT_DATE_TEXT));
   }
 
   @Override
@@ -80,7 +83,7 @@ public class TransportOfferResourceFunctionalTest extends BaseResourceFunctional
         .body("content[0].destination.region", equalTo("Mazowieckie"))
         .body("content[0].destination.city", equalTo("Warszawa"))
         .body("content[0].capacity", equalTo(3))
-        .body("content[0].transportDate", equalTo("2022-03-05"));
+        .body("content[0].transportDate", equalTo(TRANSPORT_DATE_TEXT));
 
   }
 
@@ -96,6 +99,6 @@ public class TransportOfferResourceFunctionalTest extends BaseResourceFunctional
     assertThat(transportOffer.destination.region).isEqualTo("Mazowieckie");
     assertThat(transportOffer.destination.city).isEqualTo("Warszawa");
     assertThat(transportOffer.capacity).isEqualTo(3);
-    assertThat(transportOffer.transportDate).isEqualTo("2022-03-05");
+    assertThat(transportOffer.transportDate).isEqualTo(TRANSPORT_DATE_TEXT);
   }
 }

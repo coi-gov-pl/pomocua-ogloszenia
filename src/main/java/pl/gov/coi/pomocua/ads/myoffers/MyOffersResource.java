@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.gov.coi.pomocua.ads.BaseOffer;
+import pl.gov.coi.pomocua.ads.OfferNotFoundException;
 import pl.gov.coi.pomocua.ads.Offers;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
@@ -29,8 +30,8 @@ public class MyOffersResource {
     }
 
     @GetMapping("my-offers/{id}")
-    public ResponseEntity<BaseOffer> get(@PathVariable Long id) {
+    public BaseOffer get(@PathVariable Long id) {
         UserId userId = currentUser.getCurrentUserId();
-        return ResponseEntity.of(repository.findByIdAndUserId(id, userId).filter(BaseOffer::isActive));
+        return repository.findByIdAndUserId(id, userId).filter(BaseOffer::isActive).orElseThrow(OfferNotFoundException::new);
     }
 }

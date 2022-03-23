@@ -37,12 +37,12 @@ public class CurrentUserTest {
     }
 
     @Test
-    void shouldReturn401WhenCurrentUserAbsent() {
+    void shouldReturn404WhenCurrentUserAbsent() {
         testCurrentUser.clear();
 
         ResponseEntity<String> response = restTemplate.getForEntity("/api/test-authentication", String.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @org.springframework.boot.test.context.TestConfiguration

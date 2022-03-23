@@ -145,7 +145,7 @@ class MyOffersResourceTest {
             BaseOffer createdOffer = postOffer(offer, urlSuffix, BaseOffer.class);
             deleteOffer(createdOffer.id, urlSuffix);
 
-            ResponseEntity<BaseOffer> response = getOffer(createdOffer.id, BaseOffer.class);
+            ResponseEntity<Void> response = getOffer(createdOffer.id, Void.class);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         }
@@ -161,7 +161,7 @@ class MyOffersResourceTest {
             assertThat(response.getBody().get("type").textValue()).isEqualTo(jsonDiscriminator);
         }
 
-        private <T extends BaseOffer> ResponseEntity<T> getOffer(Long id, Class<T> clazz) {
+        private <T> ResponseEntity<T> getOffer(Long id, Class<T> clazz) {
             return restTemplate.getForEntity("/api/secure/my-offers/" + id, clazz);
         }
 

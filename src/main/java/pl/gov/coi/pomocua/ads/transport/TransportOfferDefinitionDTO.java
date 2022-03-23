@@ -34,6 +34,7 @@ public class TransportOfferDefinitionDTO {
     @Max(99)
     public Integer capacity;
 
+    @FutureOrPresent
     public LocalDate transportDate;
 
     @PhoneNumber
