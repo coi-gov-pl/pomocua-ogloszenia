@@ -78,9 +78,8 @@ public class AccommodationsResource {
     }
 
     @GetMapping("accommodations/{id}")
-    public ResponseEntity<AccommodationOffer> get(@PathVariable Long id) {
-        AccommodationOffer accommodationOffer = repository.findById(id).filter(BaseOffer::isActive).orElseThrow(OfferNotFoundException::new);
-        return ResponseEntity.ok(accommodationOffer);
+    public AccommodationOffer get(@PathVariable Long id) {
+        return repository.findById(id).filter(BaseOffer::isActive).orElseThrow(OfferNotFoundException::new);
     }
 
     @PutMapping("secure/accommodations/{id}")

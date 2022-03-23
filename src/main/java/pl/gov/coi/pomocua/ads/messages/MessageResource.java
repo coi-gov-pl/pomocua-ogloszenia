@@ -40,7 +40,7 @@ public class MessageResource {
                                             @RequestParam(value = "recaptcha-response", required = false) final String recaptchaResponse) {
 
         if (!captchaValidator.validate(recaptchaResponse)) {
-            throw new CaptchaException(CodeValidationError.fieldError("recaptcha-response", "recaptcha.validation"));
+            throw new CaptchaException();
         }
 
         BaseOffer offer = offersRepository.findById(messageDefinition.offerId).orElseThrow(OfferNotFoundException::new);

@@ -30,9 +30,8 @@ public class MyOffersResource {
     }
 
     @GetMapping("my-offers/{id}")
-    public ResponseEntity<BaseOffer> get(@PathVariable Long id) {
+    public BaseOffer get(@PathVariable Long id) {
         UserId userId = currentUser.getCurrentUserId();
-        BaseOffer baseOffer = repository.findByIdAndUserId(id, userId).filter(BaseOffer::isActive).orElseThrow(OfferNotFoundException::new);
-        return ResponseEntity.ok(baseOffer);
+        return repository.findByIdAndUserId(id, userId).filter(BaseOffer::isActive).orElseThrow(OfferNotFoundException::new);
     }
 }

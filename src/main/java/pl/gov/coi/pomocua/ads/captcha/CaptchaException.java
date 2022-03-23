@@ -7,7 +7,7 @@ import pl.gov.coi.pomocua.ads.error.CodeValidationError;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class CaptchaException extends CodeException {
-    public CaptchaException(CodeValidationError validationError) {
-        super(validationError);
+    public CaptchaException() {
+        super(CodeValidationError.fieldError("recaptcha-response", "recaptcha.validation"));
     }
 }

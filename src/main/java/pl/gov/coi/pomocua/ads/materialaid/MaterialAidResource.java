@@ -58,9 +58,8 @@ public class MaterialAidResource {
     }
 
     @GetMapping("material-aid/{id}")
-    public ResponseEntity<MaterialAidOffer> get(@PathVariable Long id) {
-        MaterialAidOffer materialAidOffer = repository.findById(id).filter(BaseOffer::isActive).orElseThrow(OfferNotFoundException::new);
-        return ResponseEntity.ok(materialAidOffer);
+    public MaterialAidOffer get(@PathVariable Long id) {
+        return repository.findById(id).filter(BaseOffer::isActive).orElseThrow(OfferNotFoundException::new);
     }
 
     @PutMapping("secure/material-aid/{id}")
