@@ -51,6 +51,8 @@ dependencies {
 	implementation "org.keycloak:keycloak-spring-boot-starter:${keycloakVersion}"
 	implementation "org.keycloak:keycloak-admin-client:${keycloakVersion}"
 	implementation "com.googlecode.libphonenumber:libphonenumber:${googleLibPhoneNumber}"
+	implementation platform('com.google.cloud:libraries-bom:24.3.0')
+	implementation 'com.google.cloud:google-cloud-recaptchaenterprise'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'

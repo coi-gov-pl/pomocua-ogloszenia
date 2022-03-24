@@ -40,9 +40,11 @@ app:
   mail:
     from: ${MAIL_FROM:kontakt@pomagamukrainie.gov.pl}
   captcha:
-    secret: ${CAPTCHA_SECRET:invalid}
-    site: ${CAPTCHA_SITE:invalid}
     enabled: ${CAPTCHA_ENABLED:true}
+    google-cloud-project-id: ${CAPTCHA_PROJECT_ID:pomoc-ua-test}
+    site-key: ${CAPTCHA_SITE:6LfEA_seAAAAAAQHUMMniUNZTG7bizEIy5EMmPFm}
+    google-cloud-api-key: ${CAPTCHA_API_KEY:AIzaSyAiWz-9TvPqi17A09ObaMZ-5EONgJuSQDc}
+    accept-level: ${CAPTCHA_ACCEPT_LEVEL:0.4}
   locale:
     header: X-Language
 
