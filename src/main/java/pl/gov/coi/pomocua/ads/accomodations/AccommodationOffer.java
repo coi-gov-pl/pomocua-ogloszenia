@@ -56,7 +56,7 @@ public class AccommodationOffer extends BaseOffer {
     }
 
     public enum Language {
-        UA, PL
+        UA, PL, EN, RU
     }
 }
 
