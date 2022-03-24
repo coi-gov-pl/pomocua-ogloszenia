@@ -36,10 +36,10 @@ public class TransportOfferSpecifications {
     private static Specification<TransportOffer> fromLocation(String fieldName, Location location) {
         List<Specification<TransportOffer>> specifications = new LinkedList<>();
         if (location.getCity() != null) {
-            specifications.add((root, cq, cb) -> cb.or(cb.isNull(root.get(fieldName).get("city")), cb.equal(cb.lower(root.get(fieldName).get("city")), location.getCity().toLowerCase())));
+            specifications.add((root, cq, cb) -> cb.or(cb.isNull(root.get(fieldName).get("city")), cb.equal(cb.upper(root.get(fieldName).get("city")), location.getCity().toUpperCase())));
         }
         if (location.getRegion() != null) {
-            specifications.add((root, cq, cb) -> cb.or(cb.isNull(root.get(fieldName).get("region")), cb.equal(cb.lower(root.get(fieldName).get("region")), location.getRegion().toLowerCase())));
+            specifications.add((root, cq, cb) -> cb.or(cb.isNull(root.get(fieldName).get("region")), cb.equal(cb.upper(root.get(fieldName).get("region")), location.getRegion().toUpperCase())));
         }
         return joinSpecifications(specifications);
     }

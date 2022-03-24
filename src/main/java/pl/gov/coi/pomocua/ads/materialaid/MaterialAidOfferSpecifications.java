@@ -30,10 +30,10 @@ public class MaterialAidOfferSpecifications {
     private static Specification<MaterialAidOffer> fromLocation(Location location) {
         List<Specification<MaterialAidOffer>> specifications = new LinkedList<>();
         if (location.getCity() != null) {
-            specifications.add((root, cq, cb) -> cb.equal(cb.lower(root.get("location").get("city")), location.getCity().toLowerCase()));
+            specifications.add((root, cq, cb) -> cb.equal(cb.upper(root.get("location").get("city")), location.getCity().toUpperCase()));
         }
         if (location.getRegion() != null) {
-            specifications.add((root, cq, cb) -> cb.equal(cb.lower(root.get("location").get("region")), location.getRegion().toLowerCase()));
+            specifications.add((root, cq, cb) -> cb.equal(cb.upper(root.get("location").get("region")), location.getRegion().toUpperCase()));
         }
         return joinSpecifications(specifications);
     }
