@@ -13,17 +13,17 @@ import javax.validation.constraints.Pattern;
 import java.util.Optional;
 
 import static javax.persistence.EnumType.STRING;
-import static pl.gov.coi.pomocua.ads.BaseOffer.ALLOWED_TEXT;
+import static pl.gov.coi.pomocua.ads.BaseOffer.*;
 
 public class MaterialAidOfferDefinitionDTO {
     @NotBlank
     @Length(max = 80)
-    @Pattern(regexp = ALLOWED_TEXT)
+    @Pattern(regexp = TITLE_ALLOWED_TEXT)
     public String title;
 
     @NotBlank
     @Length(max = 2000)
-    @Pattern(regexp = ALLOWED_TEXT)
+    @Pattern(regexp = DESCRIPTION_ALLOWED_TEXT)
     public String description;
 
     @Valid
