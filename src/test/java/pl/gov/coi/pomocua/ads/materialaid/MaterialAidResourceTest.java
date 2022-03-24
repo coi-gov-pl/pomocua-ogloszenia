@@ -232,7 +232,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         class Validation {
             @ParameterizedTest
             @NullAndEmptySource
-            @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
+            @ValueSource(strings = {"<", ">", "(", ")", "%", "@", "\"", "'"})
             void shouldRejectMissingOrInvalidTitle(String title) {
                 MaterialAidOffer offer = postSampleOffer();
                 var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
@@ -260,7 +260,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
 
             @ParameterizedTest
             @NullAndEmptySource
-            @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
+            @ValueSource(strings = {"<", ">", "%", "\"", "'"})
             void shouldRejectMissingOrInvalidDescription(String description) {
                 MaterialAidOffer offer = postSampleOffer();
                 var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();

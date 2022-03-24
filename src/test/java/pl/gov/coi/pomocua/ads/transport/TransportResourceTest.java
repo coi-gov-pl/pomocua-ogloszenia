@@ -321,7 +321,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         class Validation {
             @ParameterizedTest
             @NullAndEmptySource
-            @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
+            @ValueSource(strings = {"<", ">", "(", ")", "%", "@", "\"", "'"})
             void shouldRejectMissingOrInvalidTitle(String title) {
                 TransportOffer offer = postSampleOffer();
                 var updateJson = TransportTestDataGenerator.sampleUpdateJson();
@@ -349,7 +349,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
 
             @ParameterizedTest
             @NullAndEmptySource
-            @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
+            @ValueSource(strings = {"<", ">", "%", "\"", "'"})
             void shouldRejectMissingOrInvalidDescription(String description) {
                 TransportOffer offer = postSampleOffer();
                 var updateJson = TransportTestDataGenerator.sampleUpdateJson();
