@@ -178,6 +178,43 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
             assertThat(results.totalElements).isEqualTo(0);
             assertThat(results.content).isEmpty();
         }
+
+        @Test
+        void shouldIgnoreCaseWhenFindByOrigin() {
+            TransportOffer transportOffer1 = postOffer(aTransportOffer()
+                .origin(new Location("mazowieckie", "warszawa"))
+                .build());
+            postOffer(aTransportOffer()
+                .origin(new Location("Pomorskie", "Wejherowo"))
+                .build());
+            postOffer(aTransportOffer()
+                .origin(new Location("Wielkopolskie", "Warszawa"))
+                .build());
+
+            TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
+            searchCriteria.setOrigin(new Location("Mazowieckie", "WarszAWA"));
+            var results = searchOffers(searchCriteria);
+
+            assertThat(results).hasSize(1);
+            assertThat(results).first().isEqualTo(transportOffer1);
+        }
+
+        @Test
+        void shouldIgnoreCaseWhenFindByDestination() {
+            TransportOffer transportOffer1 = postOffer(aTransportOffer()
+                .destination(new Location("pomorskie", "GdyniA"))
+                .build());
+            postOffer(aTransportOffer()
+                .destination(new Location("Pomorskie", "Wejherowo"))
+                .build());
+
+            TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
+            searchCriteria.setDestination(new Location("Pomorskie", "GDYnia"));
+            var results = searchOffers(searchCriteria);
+
+            assertThat(results).hasSize(1);
+            assertThat(results).first().isEqualTo(transportOffer1);
+        }
     }
 
     @Nested

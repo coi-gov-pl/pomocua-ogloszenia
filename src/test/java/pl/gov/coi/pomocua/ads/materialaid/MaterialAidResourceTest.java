@@ -126,6 +126,25 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
             assertThat(results.totalElements).isEqualTo(0);
             assertThat(results.content).isEmpty();
         }
+
+        @Test
+        void shouldIgnoreCaseWhenSearchByLocation() {
+            MaterialAidOffer offer1 = postOffer(aMaterialAidOffer()
+                .location(new Location("Mazowieckie", "Warszawa"))
+                .category(MaterialAidCategory.CLOTHING)
+                .build());
+
+            postOffer(aMaterialAidOffer()
+                .location(new Location("Pomorskie", "Gdańsk"))
+                .category(MaterialAidCategory.CLOTHING)
+                .build());
+
+            MaterialAidOfferSearchCriteria searchCriteria = new MaterialAidOfferSearchCriteria();
+            searchCriteria.setLocation(new Location("Mazowieckie", "WarSZAwa"));
+            var results = searchOffers(searchCriteria);
+
+            assertThat(results).hasSize(1).contains(offer1);
+        }
     }
 
     @Nested

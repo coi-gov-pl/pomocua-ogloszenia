@@ -79,7 +79,20 @@ class CityLookupResourceTest {
                 );
     }
 
-    // ---
+    @Test
+    void shouldIgnoreCaseWhenSearching() {
+        // given:
+        givenFollowingCitiesExists("test-region/SoME CItY");
+
+        // when:
+        ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity(URL + "/?query=sOmE", CityLookupResponse.class);
+
+        // then:
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().cities())
+                .extracting("city", "region")
+                .contains(tuple("SoME CItY", "test-region"));
+    }
 
     private void givenFollowingCitiesExists(String... values) {
         Stream.of(values).forEach(value -> {
