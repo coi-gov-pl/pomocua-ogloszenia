@@ -10,17 +10,17 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static pl.gov.coi.pomocua.ads.BaseOffer.ALLOWED_TEXT;
+import static pl.gov.coi.pomocua.ads.BaseOffer.*;
 
 public class TransportOfferDefinitionDTO {
     @NotBlank
     @Length(max = 80)
-    @Pattern(regexp = ALLOWED_TEXT)
+    @Pattern(regexp = TITLE_ALLOWED_TEXT)
     public String title;
 
     @NotBlank
     @Length(max = 2000)
-    @Pattern(regexp = ALLOWED_TEXT)
+    @Pattern(regexp = DESCRIPTION_ALLOWED_TEXT)
     public String description;
 
     @Valid
