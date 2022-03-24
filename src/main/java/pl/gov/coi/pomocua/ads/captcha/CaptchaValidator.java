@@ -1,14 +1,16 @@
 package pl.gov.coi.pomocua.ads.captcha;
 
+import com.google.cloud.recaptchaenterprise.v1beta1.RecaptchaEnterpriseServiceV1Beta1Client;
+import com.google.recaptchaenterprise.v1beta1.Assessment;
+import com.google.recaptchaenterprise.v1beta1.CreateAssessmentRequest;
+import com.google.recaptchaenterprise.v1beta1.Event;
+import com.google.recaptchaenterprise.v1beta1.ProjectName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestOperations;
 
-import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
-import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -17,17 +19,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CaptchaValidator {
 
-    public static final Pattern RESPONSE_PATTERN = Pattern.compile("[A-Za-z0-9_-]+");
-    public static final String RECAPTCHA_URL_TEMPLATE = "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s&remoteip=%s";
+    private final CaptchaProperties properties;
+    private final RecaptchaEnterpriseServiceV1Beta1Client recaptchaClient;
 
-    private final CaptchaProperties captchaProperties;
-    private final RestOperations restOperations;
-    private final HttpServletRequest request;
+    public static final Pattern RESPONSE_PATTERN = Pattern.compile("[A-Za-z0-9_-]+");
 
     public boolean validate(String recaptchaResponse) {
 
-        if (!captchaProperties.isEnabled()) {
-            log.debug("Skip captcha validation.");
+        if (!properties.isEnabled()) {
+            log.debug("Skip captcha validation. To enable change 'pl.gov.coi.captcha.enterprise.enabled' property");
             return true;
         }
 
@@ -36,38 +36,39 @@ public class CaptchaValidator {
             return false;
         }
 
-        URI verifyUri = URI.create(String.format(
-                RECAPTCHA_URL_TEMPLATE, getCaptchaSecret(), recaptchaResponse, getClientIP()));
-        log.debug("Check reCaptcha: " + verifyUri);
+        ProjectName projectName = ProjectName.of(properties.getGoogleCloudProjectId());
+        Event event = Event.newBuilder()
+                .setSiteKey(properties.getSiteKey())
+                .setToken(recaptchaResponse)
+                .build();
 
-        CaptchaResponse captchaResponse = restOperations.getForObject(verifyUri, CaptchaResponse.class);
+        CreateAssessmentRequest createAssessmentRequest =
+                CreateAssessmentRequest.newBuilder()
+                        .setParent(projectName.toString())
+                        .setAssessment(Assessment.newBuilder().setEvent(event).build())
+                        .build();
 
-        if (captchaResponse == null ) {
-            log.warn("Empty response from reCaptcha");
+        Assessment response = recaptchaClient.createAssessment(createAssessmentRequest);
+
+        // Check if the token is valid.
+        if (!response.getTokenProperties().getValid()) {
+            String invalidTokenReason = response.getTokenProperties().getInvalidReason().name();
+            log.debug("The CreateAssessment call failed because the token was: " + invalidTokenReason);
             return false;
         }
 
-        if (!captchaResponse.isSuccess()) {
-            String errors = "";
-            CaptchaResponse.ErrorCode[] errorCodes = captchaResponse.getErrorCodes();
-            if (errorCodes != null && errorCodes.length > 0) {
-                errors = Arrays.stream(errorCodes)
-                        .map(Enum::name)
-                        .collect(Collectors.joining(", "));
-            }
-            log.warn("reCaptcha validation errors: " +  errors);
+        float score = response.getScore();
+        if (score < properties.getAcceptLevel()) {
+            List<String> reasons = response.getReasonsList()
+                    .stream()
+                    .map(classificationReason -> classificationReason.getDescriptorForType().getFullName())
+                    .collect(Collectors.toList());
+            log.debug("Validation failed. Score: " + score + ". Reasons: " + String.join(", ", reasons));
             return false;
         }
 
+        log.debug("Validation OK - score: " + score);
         return true;
-    }
-
-    private String getCaptchaSecret() {
-        return captchaProperties.getSecret();
-    }
-
-    private String getClientIP() {
-        return request.getRemoteAddr();
     }
 
     private boolean responseSanityCheck(String response) {

@@ -233,7 +233,7 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
         class Validation {
             @ParameterizedTest
             @NullAndEmptySource
-            @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
+            @ValueSource(strings = {"<", ">", "(", ")", "%", "@", "\"", "'"})
             void shouldRejectMissingOrInvalidTitle(String title) {
                 AccommodationOffer offer = postSampleOffer();
                 var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
@@ -261,7 +261,7 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
 
             @ParameterizedTest
             @NullAndEmptySource
-            @ValueSource(strings = {"<", ">", "(", ")", "%", "#", "@", "\"", "'"})
+            @ValueSource(strings = {"<", ">", "%", "\"", "'"})
             void shouldRejectMissingOrInvalidDescription(String description) {
                 AccommodationOffer offer = postSampleOffer();
                 var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();

@@ -27,8 +27,8 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @JsonBaseOfferInheritance
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseOffer {
-    public static final String TITLE_ALLOWED_TEXT = "^[^<>()@\"']*$";
-    public static final String DESCRIPTION_ALLOWED_TEXT = "^[^<>%\"']*$";
+    public static final String TITLE_ALLOWED_TEXT = "^[^'\"%<>()@]*$";
+    public static final String DESCRIPTION_ALLOWED_TEXT = "^[^'\"%<>]*$";
 
     @Id
     @NotNull
