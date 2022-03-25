@@ -50,6 +50,11 @@ public class CaptchaValidator {
 
         Assessment response = recaptchaClient.createAssessment(createAssessmentRequest);
 
+        if (response == null) {
+            log.warn("Empty response from reCaptcha");
+            return false;
+        }
+
         // Check if the token is valid.
         if (!response.getTokenProperties().getValid()) {
             String invalidTokenReason = response.getTokenProperties().getInvalidReason().name();
