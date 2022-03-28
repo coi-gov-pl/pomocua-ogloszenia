@@ -162,7 +162,7 @@ class MessageResourceTest  {
         assertThat(response.getBody()).extracting("error").isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
         assertThat(response.getBody()).extracting("errors").asList().hasSize(1).first()
                 .extracting("field", "message", "type")
-                .containsExactly("replyEmail", "Musi być poprawnie sformatowanym adresem e-mail", ValidationError.Type.FIELD);
+                .containsExactly("replyEmail", "musi być poprawnie sformatowanym adresem e-mail", ValidationError.Type.FIELD);
     }
 
     @Test
@@ -185,7 +185,7 @@ class MessageResourceTest  {
         assertThat(response.getBody()).extracting("error").isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
         assertThat(response.getBody()).extracting("errors").asList().hasSize(1).first()
                 .extracting("field", "message", "type")
-                .containsExactly("replyEmail", "Must be a well-formed email address", ValidationError.Type.FIELD);
+                .containsExactly("replyEmail", "must be a well-formed email address", ValidationError.Type.FIELD);
     }
 
     @Test
