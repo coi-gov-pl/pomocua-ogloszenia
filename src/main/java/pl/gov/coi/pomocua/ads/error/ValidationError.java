@@ -26,7 +26,7 @@ public class ValidationError {
 
     public ValidationError(String field, String message, Type type) {
         this.field = field;
-        this.message = StringUtils.capitalize(message);
+        this.message = message;
         this.type = type;
     }
 
