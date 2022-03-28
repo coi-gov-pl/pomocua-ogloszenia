@@ -10,8 +10,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static javax.persistence.EnumType.STRING;
 
 @EqualsAndHashCode(callSuper = true)
@@ -32,10 +36,8 @@ public class AccommodationOffer extends BaseOffer {
     @NotNull
     public LengthOfStay lengthOfStay;
 
-    @ElementCollection(targetClass = Language.class, fetch = FetchType.EAGER)
-    @CollectionTable
-    @Enumerated(STRING)
     @NotEmpty
+    @Convert(converter = LanguageConverter.class)
     public List<Language> hostLanguage;
 
     @NotNull
@@ -58,5 +60,22 @@ public class AccommodationOffer extends BaseOffer {
     public enum Language {
         UA, PL, EN, RU
     }
-}
 
+    public static class LanguageConverter implements AttributeConverter<List<Language>, String> {
+        @Override
+        public String convertToDatabaseColumn(List<Language> values) {
+            if (values == null || values.isEmpty()) {
+                return "";
+            }
+            return values.stream().map(Enum::name).collect(joining(","));
+        }
+
+        @Override
+        public List<Language> convertToEntityAttribute(String value) {
+            if (value == null || value.isBlank()) {
+                return emptyList();
+            }
+            return Arrays.stream(value.split(",")).map(Language::valueOf).collect(toList());
+        }
+    }
+}

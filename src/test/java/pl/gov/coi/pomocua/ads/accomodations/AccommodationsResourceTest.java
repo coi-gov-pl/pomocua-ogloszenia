@@ -161,6 +161,36 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
 
             assertThat(offers).isEmpty();
         }
+
+        @Test
+        void shouldSearchWithManyHostLanguages() {
+            AccommodationOffer offer = sampleOfferRequest();
+            offer.hostLanguage = List.of(Language.EN, Language.PL);
+            postOffer(offer);
+
+            var offers = listOffers();
+
+            assertThat(offers)
+                    .hasSize(1)
+                    .element(0)
+                    .extracting(o -> o.hostLanguage)
+                    .isEqualTo(List.of(Language.EN, Language.PL));
+        }
+
+        @Test
+        void shouldSearchWithOneHostLanguage() {
+            AccommodationOffer offer = sampleOfferRequest();
+            offer.hostLanguage = List.of(Language.PL);
+            postOffer(offer);
+
+            var offers = listOffers();
+
+            assertThat(offers)
+                    .hasSize(1)
+                    .element(0)
+                    .extracting(o -> o.hostLanguage)
+                    .isEqualTo(List.of(Language.PL));
+        }
     }
 
     @Nested
