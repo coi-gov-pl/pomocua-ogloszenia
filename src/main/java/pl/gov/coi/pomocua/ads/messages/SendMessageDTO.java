@@ -11,20 +11,26 @@ public final class SendMessageDTO {
 
     @NotNull
     public final Long offerId;
+
     public final String text;
+
     @NotEmpty
     @Email(regexp = EMAIL_REGEX)
     public final String replyEmail;
+
     @NotNull
     @AssertTrue(message = "{terms-and-conditions.validation}")
     public final boolean tosApproved;
 
+    public final String recaptchaResponse;
+
     public SendMessageDTO(Long offerId, String text, String replyEmail,
-                          boolean tosApproved) {
+                          boolean tosApproved, String recaptchaResponse) {
         this.offerId = offerId;
         this.text = text;
         this.replyEmail = replyEmail;
         this.tosApproved = tosApproved;
+        this.recaptchaResponse = recaptchaResponse;
     }
 
 

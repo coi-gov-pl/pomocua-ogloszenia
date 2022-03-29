@@ -87,7 +87,8 @@ class MessageResourceTest  {
                 offer.id,
                 "message body",
                 "reply@email.invalid",
-                true
+                true,
+                ""
         ), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -136,7 +137,8 @@ class MessageResourceTest  {
                 offer.id,
                 "message body",
                 ".email@message@text.test",
-                true
+                true,
+                ""
         ), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -152,7 +154,8 @@ class MessageResourceTest  {
                 offer.id,
                 "message body",
                 ".email@message@text.test",
-                true
+                true,
+                ""
         ), headers);
 
         ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/api/message", entity, ErrorResponse.class);
@@ -175,7 +178,8 @@ class MessageResourceTest  {
                 offer.id,
                 "message body",
                 ".email@message@text.test",
-                true
+                true,
+                ""
         ), headers);
 
         ResponseEntity<ErrorResponse> response = restTemplate.postForEntity("/api/message", entity, ErrorResponse.class);
@@ -196,7 +200,8 @@ class MessageResourceTest  {
                 offer.id,
                 "message body",
                 "email@invalid",
-                true
+                true,
+                ""
         ), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -210,7 +215,8 @@ class MessageResourceTest  {
                 offer.id,
                 "abc",
                 "reply@email.invalid",
-                false
+                false,
+                ""
         ), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -221,7 +227,8 @@ class MessageResourceTest  {
                 null,
                 "abc",
                 "reply@email.invalid",
-                true
+                true,
+                ""
         ), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -235,7 +242,8 @@ class MessageResourceTest  {
                 offer.id,
                 "text",
                 "",
-                true
+                true,
+                ""
         ), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -248,7 +256,8 @@ class MessageResourceTest  {
                 offer.id,
                 "text",
                 "reply@email.invalid",
-                true
+                true,
+                ""
         ), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -261,7 +270,8 @@ class MessageResourceTest  {
                 1L,
                 "text",
                 "reply@email.invalid",
-                true
+                true,
+                ""
         ), Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
