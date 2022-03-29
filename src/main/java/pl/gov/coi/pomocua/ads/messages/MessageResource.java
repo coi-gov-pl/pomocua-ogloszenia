@@ -36,10 +36,9 @@ public class MessageResource {
     private final CaptchaValidator captchaValidator;
 
     @PostMapping
-    public ResponseEntity<Void> sendMessage(@Valid @RequestBody SendMessageDTO messageDefinition,
-                                            @RequestParam(value = "recaptcha-response", required = false) final String recaptchaResponse) {
+    public ResponseEntity<Void> sendMessage(@Valid @RequestBody SendMessageDTO messageDefinition) {
 
-        if (!captchaValidator.validate(recaptchaResponse)) {
+        if (!captchaValidator.validate(messageDefinition.recaptchaResponse)) {
             throw new CaptchaException();
         }
 
