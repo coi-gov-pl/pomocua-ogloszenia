@@ -1,6 +1,6 @@
 package pl.gov.coi.pomocua.ads.users;
 
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,9 +25,9 @@ public class UserResourceTest {
     @Autowired
     private TestUsersRepository testUsersRepository;
 
-    @AfterEach
+    @BeforeEach
     void clear() {
-        testUsersRepository.clear();
+        testUsersRepository.setDefault();
     }
 
     @Test
@@ -52,5 +52,16 @@ public class UserResourceTest {
         ResponseEntity<UserInfo> response = restTemplate.getForEntity("/api/secure/me", UserInfo.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void testRemoveAccount() {
+        User user = new User(new UserId("some-current-id"), "some@email.invalid", "John", "600000000");
+        testUsersRepository.saveUser(user);
+        testCurrentUser.setCurrentUserId(user.id());
+
+        ResponseEntity<Void> response = restTemplate.postForEntity("/api/secure/remove-account", null, Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
