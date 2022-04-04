@@ -17,6 +17,11 @@ public class UsersResource {
         return ResponseEntity.ok(UserInfo.from(usersService.getCurrentUser()));
     }
 
+    @PostMapping("secure/remove-account")
+    public void removeAccount() {
+        usersService.removeCurrentUser();
+    }
+
     @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
     public static final class UserInfo {
         public String email;

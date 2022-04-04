@@ -38,4 +38,9 @@ public class TestUsersRepository implements UsersRepository {
     public Optional<User> getById(UserId userId) {
         return Optional.ofNullable(users.get(userId));
     }
+
+    @Override
+    public void removeUser(UserId userId) {
+        users.remove(userId);
+    }
 }

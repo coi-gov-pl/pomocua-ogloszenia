@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface UsersRepository {
 
     Optional<User> getById(UserId userId);
+
+    void removeUser(UserId userId);
 }
