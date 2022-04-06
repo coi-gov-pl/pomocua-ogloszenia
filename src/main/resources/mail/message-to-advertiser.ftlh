@@ -10,7 +10,7 @@
 </head>
 <body>
 <div>
-    <div>Ktoś odpowiedział na twoje ogłoszenie.</div>
+    <div>Ktoś odpowiedział na twoje ogłoszenie ${OFFER_TITLE!''}.</div>
 
     <div>${REPLY_TO_EMAIL!''}</div>
 
