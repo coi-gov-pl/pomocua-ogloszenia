@@ -69,6 +69,7 @@ dependencies {
 	testImplementation "com.icegreen:greenmail-junit5:${greenmailVersion}"
 	testImplementation "org.apache.commons:commons-email:${commonsEmailVersion}"
 	testImplementation "com.h2database:h2:1.4.200"
+	testImplementation group: 'org.mockito', name: 'mockito-inline', version: '4.4.0'
 }
 
 dependencyManagement {

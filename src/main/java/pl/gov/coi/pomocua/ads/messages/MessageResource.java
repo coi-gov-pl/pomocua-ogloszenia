@@ -45,7 +45,8 @@ public class MessageResource {
         BaseOffer offer = offersRepository.findById(messageDefinition.offerId).orElseThrow(OfferNotFoundException::new);
         User user = usersRepository.getById(offer.userId).orElseThrow(UserNotFoundException::new);
 
-        replyToOfferService.sendMessageToAdvertiser(user.email(), messageDefinition.replyEmail, messageDefinition.text);
+        replyToOfferService.sendMessageToAdvertiser(user.email(), messageDefinition.replyEmail, messageDefinition.text,
+                offer.title);
         replyToOfferService.sendOrderConfirmationMessage(messageDefinition.replyEmail, user.email(), offer.title, messageDefinition.text);
 
         return ResponseEntity.ok().build();
