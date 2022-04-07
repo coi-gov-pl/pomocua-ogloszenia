@@ -1,7 +1,5 @@
 package pl.gov.coi.pomocua.ads.dictionaries.api;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,10 +30,10 @@ public class CityLookupResource {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "location.city"));
+        Sort sort = Sort.by(Sort.Direction.ASC, "location.city");
 
         List<CityLookupDto> cities = cityRepository
-                .findByLocationCityWithPageable(query.toLowerCase(), pageable)
+                .findByLocationCityWithSort(query.toLowerCase(), sort)
                 .stream()
                 .map(CityLookupDto::fromEntity)
                 .collect(Collectors.toList());
