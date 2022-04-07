@@ -1,4 +1,4 @@
-CREATE EXTENSION IF NOT EXISTS pg_trgm;
+DROP INDEX idx_city_region_city;
 
-CREATE INDEX idx_city_region_city_gin
-    ON city using gin ((UPPER(city || ', ' || region)) gin_trgm_ops);
+CREATE UNIQUE INDEX idx_city_region_city ON city
+    USING btree ((UPPER(city || ', ' || region)) text_pattern_ops);
