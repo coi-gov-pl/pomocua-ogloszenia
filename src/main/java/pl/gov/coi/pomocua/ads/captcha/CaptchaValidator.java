@@ -27,7 +27,7 @@ public class CaptchaValidator {
     public boolean validate(String recaptchaResponse) {
 
         if (!properties.isEnabled()) {
-            log.debug("Skip captcha validation. To enable change 'pl.gov.coi.captcha.enterprise.enabled' property");
+            log.debug("Skip captcha validation. To enable change 'app.captcha.enabled' property");
             return true;
         }
 
@@ -49,6 +49,11 @@ public class CaptchaValidator {
                         .build();
 
         Assessment response = recaptchaClient.createAssessment(createAssessmentRequest);
+
+        if (response == null) {
+            log.warn("Empty response from reCaptcha");
+            return false;
+        }
 
         // Check if the token is valid.
         if (!response.getTokenProperties().getValid()) {

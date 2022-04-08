@@ -18,12 +18,13 @@ public class ReplyToOfferService {
     private final HtmlGenerator htmlGenerator;
     private final MessageProvider messageProvider;
 
-    public void sendMessageToAdvertiser(String email, String replyTo, String messageBody) {
+    public void sendMessageToAdvertiser(String email, String replyTo, String messageBody, String offerTitle) {
         String subject = messageProvider.getMessageByCode("REPLY_TO_OFFER_SUBJECT");
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("MESSAGE", messageBody);
         variables.put("REPLY_TO_EMAIL", replyTo);
+        variables.put("OFFER_TITLE", offerTitle);
         String html = htmlGenerator.generateHtml("mail/message-to-advertiser.ftlh", variables);
 
         mailService.sendMailAsync(email, replyTo, subject, html);
