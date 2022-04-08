@@ -350,7 +350,8 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
 
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
                 MaterialAidOffer updatedOffer = getOfferFromRepository(offer.id);
-                assertThat(updatedOffer.phoneNumber).isEqualTo("+48123456789");
+                assertThat(updatedOffer.phoneNumber).isEqualTo("123456789");
+                assertThat(updatedOffer.phoneCountryCode).isEqualTo("48");
             }
         }
     }

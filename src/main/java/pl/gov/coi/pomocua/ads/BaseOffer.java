@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import pl.gov.coi.pomocua.ads.configuration.validation.PhoneNumber;
+import pl.gov.coi.pomocua.ads.phone.PhoneDetails;
+import pl.gov.coi.pomocua.ads.phone.PhoneUtil;
 import pl.gov.coi.pomocua.ads.users.User;
 
 import javax.persistence.*;
@@ -16,6 +18,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.Instant;
+import java.util.Optional;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
@@ -52,8 +55,9 @@ public abstract class BaseOffer {
     @Pattern(regexp = DESCRIPTION_ALLOWED_TEXT)
     public String description;
 
-    @PhoneNumber
     public String phoneNumber;
+
+    public String phoneCountryCode;
 
     @LastModifiedDate
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
@@ -71,6 +75,16 @@ public abstract class BaseOffer {
     public void attachTo(User user) {
         this.userId = user.id();
         this.userFirstName = user.firstName();
+    }
+
+    @PostLoad
+    private void onLoad() {
+        Optional<PhoneDetails> phoneDetailsOpt = PhoneUtil.getPhoneDetails(phoneNumber);
+        if (phoneDetailsOpt.isPresent() && StringUtils.isEmpty(phoneCountryCode)) {
+            PhoneDetails phoneDetails = phoneDetailsOpt.get();
+            phoneCountryCode = phoneDetails.countryCode();
+            phoneNumber = phoneDetails.nationalNumber();
+        }
     }
 
     @JsonIgnore

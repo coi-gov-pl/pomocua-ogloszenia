@@ -2,7 +2,8 @@ package pl.gov.coi.pomocua.ads.accomodations;
 
 import org.hibernate.validator.constraints.Length;
 import pl.gov.coi.pomocua.ads.Location;
-import pl.gov.coi.pomocua.ads.PhoneUtil;
+import pl.gov.coi.pomocua.ads.phone.PhoneDetails;
+import pl.gov.coi.pomocua.ads.phone.PhoneUtil;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.Language;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.LengthOfStay;
 import pl.gov.coi.pomocua.ads.configuration.validation.PhoneNumber;
@@ -50,6 +51,7 @@ public class AccommodationOfferDefinitionDTO {
         offer.guests = guests;
         offer.lengthOfStay = lengthOfStay;
         offer.hostLanguage = new LinkedList<>(hostLanguage);
-        offer.phoneNumber = Optional.ofNullable(phoneNumber).map(PhoneUtil::normalize).orElse(null);
+        offer.phoneNumber = PhoneUtil.getPhoneDetails(phoneNumber).map(PhoneDetails::nationalNumber).orElse(null);
+        offer.phoneCountryCode = PhoneUtil.getPhoneDetails(phoneNumber).map(PhoneDetails::countryCode).orElse(null);
     }
 }

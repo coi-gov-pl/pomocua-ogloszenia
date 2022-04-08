@@ -2,7 +2,8 @@ package pl.gov.coi.pomocua.ads.transport;
 
 import org.hibernate.validator.constraints.Length;
 import pl.gov.coi.pomocua.ads.Location;
-import pl.gov.coi.pomocua.ads.PhoneUtil;
+import pl.gov.coi.pomocua.ads.phone.PhoneDetails;
+import pl.gov.coi.pomocua.ads.phone.PhoneUtil;
 import pl.gov.coi.pomocua.ads.configuration.validation.PhoneNumber;
 
 import javax.validation.Valid;
@@ -47,6 +48,7 @@ public class TransportOfferDefinitionDTO {
         offer.destination = destination;
         offer.capacity = capacity;
         offer.transportDate = transportDate;
-        offer.phoneNumber = Optional.ofNullable(phoneNumber).map(PhoneUtil::normalize).orElse(null);
+        offer.phoneNumber = PhoneUtil.getPhoneDetails(phoneNumber).map(PhoneDetails::nationalNumber).orElse(null);
+        offer.phoneCountryCode = PhoneUtil.getPhoneDetails(phoneNumber).map(PhoneDetails::countryCode).orElse(null);
     }
 }

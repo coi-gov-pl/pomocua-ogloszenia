@@ -28,7 +28,8 @@ spring:
       mail:
         transport.protocol: ${MAIL_TRANSPORT_PROTOCOL:smtp}
         smtp.starttls.enable: ${MAIL_STARTTLS_ENABLE:true}
-
+  jpa:
+    show-sql: true
 
 app:
   keycloak:

@@ -17,6 +17,8 @@ import pl.gov.coi.pomocua.ads.users.UsersService;
 
 import javax.validation.Valid;
 
+import java.util.Optional;
+
 import static pl.gov.coi.pomocua.ads.Offers.page;
 
 @RestController
@@ -61,7 +63,8 @@ public class TransportResource {
 
     @GetMapping("transport/{id}")
     public TransportOffer get(@PathVariable Long id) {
-        return repository.findById(id).filter(BaseOffer::isActive).orElseThrow(OfferNotFoundException::new);
+        Optional<TransportOffer> byId = repository.findById(id);
+        return byId.filter(BaseOffer::isActive).orElseThrow(OfferNotFoundException::new);
     }
 
     @PutMapping("secure/transport/{id}")
