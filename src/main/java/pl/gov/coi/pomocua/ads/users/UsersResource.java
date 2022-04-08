@@ -26,19 +26,16 @@ public class UsersResource {
     public static final class UserInfo {
         public String email;
         public String firstName;
-        public String phoneNumber;
 
-        public UserInfo(String email, String firstName, String phoneNumber) {
+        public UserInfo(String email, String firstName) {
             this.email = email;
             this.firstName = firstName;
-            this.phoneNumber = phoneNumber;
         }
 
         public static UserInfo from(User user) {
             return new UserInfo(
                 user.email(),
-                user.firstName(),
-                user.phoneNumber()
+                user.firstName()
             );
         }
     }

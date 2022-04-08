@@ -55,7 +55,7 @@ class KeycloakUsersRepositoryTest {
         //then
         assertAll(
                 () -> assertThat(userOpt).isPresent()
-                        .get().extracting(User::id, User::email, User::phoneNumber).containsExactly(userId, email, null),
+                        .get().extracting(User::id, User::email).containsExactly(userId, email),
                 () -> verify(keycloakUsersResource, times(1)).get(id),
                 () -> verify(userResource, times(1)).toRepresentation()
         );

@@ -410,7 +410,8 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer> {
 
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
                 AccommodationOffer updatedOffer = getOfferFromRepository(offer.id);
-                assertThat(updatedOffer.phoneNumber).isEqualTo("+48123456789");
+                assertThat(updatedOffer.phoneNumber).isEqualTo("123456789");
+                assertThat(updatedOffer.phoneCountryCode).isEqualTo("48");
             }
         }
     }

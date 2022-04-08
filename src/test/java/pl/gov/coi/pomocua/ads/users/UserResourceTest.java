@@ -32,7 +32,7 @@ public class UserResourceTest {
 
     @Test
     void shouldReturnCurrentUserData() {
-        User user = new User(new UserId("some-current-id"), "some@email.invalid", "John", "600000000");
+        User user = new User(new UserId("some-current-id"), "some@email.invalid", "John");
         testUsersRepository.saveUser(user);
         testCurrentUser.setCurrentUserId(user.id());
 
@@ -41,7 +41,6 @@ public class UserResourceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().email).isEqualTo("some@email.invalid");
         assertThat(response.getBody().firstName).isEqualTo("John");
-        assertThat(response.getBody().phoneNumber).isEqualTo("600000000");
     }
 
     @Test
@@ -56,7 +55,7 @@ public class UserResourceTest {
 
     @Test
     void testRemoveAccount() {
-        User user = new User(new UserId("some-current-id"), "some@email.invalid", "John", "600000000");
+        User user = new User(new UserId("some-current-id"), "some@email.invalid", "John");
         testUsersRepository.saveUser(user);
         testCurrentUser.setCurrentUserId(user.id());
 
