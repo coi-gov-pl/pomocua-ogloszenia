@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+
 import java.util.Optional;
 
 import static javax.persistence.EnumType.STRING;
@@ -43,7 +44,9 @@ public class MaterialAidOfferDefinitionDTO {
         offer.description = description;
         offer.category = category;
         offer.location = location;
-        offer.phoneNumber = PhoneUtil.getPhoneDetails(phoneNumber).map(PhoneDetails::nationalNumber).orElse(null);
-        offer.phoneCountryCode = PhoneUtil.getPhoneDetails(phoneNumber).map(PhoneDetails::countryCode).orElse(null);
+
+        Optional<PhoneDetails> phoneDetails = PhoneUtil.getPhoneDetails(phoneNumber);
+        offer.phoneNumber = phoneDetails.map(PhoneDetails::nationalNumber).orElse(null);
+        offer.phoneCountryCode = phoneDetails.map(PhoneDetails::countryCode).orElse(null);
     }
 }

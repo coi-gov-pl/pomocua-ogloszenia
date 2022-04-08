@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.OfferNotFoundException;
@@ -16,8 +15,6 @@ import pl.gov.coi.pomocua.ads.users.User;
 import pl.gov.coi.pomocua.ads.users.UsersService;
 
 import javax.validation.Valid;
-
-import java.util.Optional;
 
 import static pl.gov.coi.pomocua.ads.Offers.page;
 
@@ -63,8 +60,7 @@ public class TransportResource {
 
     @GetMapping("transport/{id}")
     public TransportOffer get(@PathVariable Long id) {
-        Optional<TransportOffer> byId = repository.findById(id);
-        return byId.filter(BaseOffer::isActive).orElseThrow(OfferNotFoundException::new);
+        return repository.findById(id).filter(BaseOffer::isActive).orElseThrow(OfferNotFoundException::new);
     }
 
     @PutMapping("secure/transport/{id}")

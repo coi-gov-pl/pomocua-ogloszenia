@@ -48,7 +48,9 @@ public class TransportOfferDefinitionDTO {
         offer.destination = destination;
         offer.capacity = capacity;
         offer.transportDate = transportDate;
-        offer.phoneNumber = PhoneUtil.getPhoneDetails(phoneNumber).map(PhoneDetails::nationalNumber).orElse(null);
-        offer.phoneCountryCode = PhoneUtil.getPhoneDetails(phoneNumber).map(PhoneDetails::countryCode).orElse(null);
+
+        Optional<PhoneDetails> phoneDetails = PhoneUtil.getPhoneDetails(phoneNumber);
+        offer.phoneNumber = phoneDetails.map(PhoneDetails::nationalNumber).orElse(null);
+        offer.phoneCountryCode = phoneDetails.map(PhoneDetails::countryCode).orElse(null);
     }
 }
