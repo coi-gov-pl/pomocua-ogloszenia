@@ -1,5 +1,5 @@
 name: Run tests
-on: push
+on: [push, pull_request]
 jobs:
   RunTests:
     runs-on: ubuntu-latest
@@ -11,5 +11,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+          cache: 'gradle'
       - name: Run tests
         run: ./gradlew test
