@@ -35,7 +35,9 @@ public class ControllerAdviceConfiguration {
 
         ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST);
         e.getGlobalErrors().forEach(error -> response.addError(new ValidationError(error)));
-        e.getFieldErrors().forEach(error -> response.addError(new ValidationError(error)));
+        e.getFieldErrors().stream()
+                .filter(fieldError -> !fieldError.isBindingFailure())
+                .forEach(error -> response.addError(new ValidationError(error)));
 
         return ResponseEntity.status(response.getStatus()).body(response);
     }
