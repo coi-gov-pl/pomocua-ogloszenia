@@ -1,0 +1,16 @@
+name: Run tests
+on: push
+jobs:
+  RunTests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: 'gradle'
+      - name: Run tests
+        run: ./gradlew test
