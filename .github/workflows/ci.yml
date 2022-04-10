@@ -1,8 +1,8 @@
-name: Run tests
+name: CI
 on:
   push:
     branches: [develop, main]
-  pull_request:
+  pull_request_target:
     branches: [develop, main]
 jobs:
   RunTests:
