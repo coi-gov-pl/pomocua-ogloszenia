@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer;
+import pl.gov.coi.pomocua.ads.job.JobOffer;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
 import pl.gov.coi.pomocua.ads.transport.TransportOffer;
 
@@ -17,7 +18,8 @@ import java.lang.annotation.RetentionPolicy;
 @JsonSubTypes({
         @Type(value = AccommodationOffer.class, name = "ACCOMMODATION"),
         @Type(value = MaterialAidOffer.class, name = "MATERIAL_AID"),
-        @Type(value = TransportOffer.class, name = "TRANSPORT")
+        @Type(value = TransportOffer.class, name = "TRANSPORT"),
+        @Type(value = JobOffer.class, name = "JOB")
 })
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside

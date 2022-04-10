@@ -3,6 +3,7 @@ package pl.gov.coi.pomocua.ads.accomodations;
 import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
 import pl.gov.coi.pomocua.ads.BaseOffer;
+import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 
 import javax.persistence.*;
@@ -55,10 +56,6 @@ public class AccommodationOffer extends BaseOffer {
         MONTH_2,
         MONTH_3,
         LONGER
-    }
-
-    public enum Language {
-        UA, PL, EN, RU
     }
 
     public static class LanguageConverter implements AttributeConverter<List<Language>, String> {

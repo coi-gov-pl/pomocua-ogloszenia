@@ -3,15 +3,22 @@ package pl.gov.coi.pomocua.ads.dev;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationsRepository;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
+import pl.gov.coi.pomocua.ads.job.JobOffer;
+import pl.gov.coi.pomocua.ads.job.JobOfferRepository;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidCategory;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOfferRepository;
 import pl.gov.coi.pomocua.ads.transport.TransportOffer;
 import pl.gov.coi.pomocua.ads.transport.TransportOfferRepository;
+import pl.gov.coi.pomocua.ads.job.JobOffer.Mode;
+import pl.gov.coi.pomocua.ads.job.JobOffer.Industry;
+import pl.gov.coi.pomocua.ads.job.JobOffer.ContractType;
+import pl.gov.coi.pomocua.ads.job.JobOffer.WorkTime;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
@@ -25,6 +32,7 @@ public class FakeOffersCreator {
     private final TransportOfferRepository transportOfferRepository;
     private final AccommodationsRepository accommodationsRepository;
     private final MaterialAidOfferRepository materialAidOfferRepository;
+    private final JobOfferRepository jobOfferRepository;
     private final CurrentUser currentUser;
 
     @PostConstruct
@@ -65,7 +73,7 @@ public class FakeOffersCreator {
         o1.userId = currentUser.getCurrentUserId();
         o1.userFirstName = "Basia";
         o1.location = new Location("podkarpackie", "Rzeszów");
-        o1.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
+        o1.hostLanguage = List.of(Language.PL, Language.UA);
         o1.guests = 2;
         o1.lengthOfStay = AccommodationOffer.LengthOfStay.MONTH_2;
         o1.phoneNumber = "+48123456789";
@@ -76,7 +84,7 @@ public class FakeOffersCreator {
         o2.userId = currentUser.getCurrentUserId();
         o2.userFirstName = "Piotr";
         o2.location = new Location("podlaskie", "Międzygórze");
-        o2.hostLanguage = List.of(AccommodationOffer.Language.PL, AccommodationOffer.Language.UA);
+        o2.hostLanguage = List.of(Language.PL, Language.UA);
         o2.guests = 4;
         o2.lengthOfStay = AccommodationOffer.LengthOfStay.LONGER;
         o2.phoneNumber = "+48123456780";
@@ -107,5 +115,36 @@ public class FakeOffersCreator {
 
         materialAidOfferRepository.save(o1);
         materialAidOfferRepository.save(o2);
+    }
+
+    @PostConstruct
+    public void jobOffer() {
+        JobOffer o1 = new JobOffer();
+        o1.title = "Praca w księgowości";
+        o1.description = "Praca w księgowości na cały lub pół etatu, stacjonarnie - Gdańsk";
+        o1.userId = currentUser.getCurrentUserId();
+        o1.userFirstName = "Małgorzata";
+        o1.mode = Mode.ONSITE;
+        o1.setWorkTime(List.of(WorkTime.FULL_TIME, WorkTime.PART_TIME));
+        o1.setContractType(List.of(ContractType.EMPLOYMENT));
+        o1.setIndustry(List.of(Industry.FINANCES));
+        o1.setLanguage(List.of(Language.PL, Language.EN));
+        o1.location = new Location("Pomorskie", "Gdańsk");
+        o1.phoneNumber = "+48789234567";
+
+        JobOffer o2 = new JobOffer();
+        o2.title = "Praca w salonie medycyny estetycznej";
+        o2.description = "Praca w salonie medycyny estetycznej, cały etat, Warszawa";
+        o2.userId = currentUser.getCurrentUserId();
+        o2.userFirstName = "Ewelina";
+        o2.mode = Mode.ONSITE;
+        o2.setWorkTime(List.of(WorkTime.FULL_TIME));
+        o2.setContractType(List.of(ContractType.EMPLOYMENT));
+        o2.setIndustry(List.of(Industry.HEALTH_AND_BEAUTY, Industry.MARKETING));
+        o2.setLanguage(List.of(Language.PL, Language.EN, Language.UA));
+        o2.location = new Location("Mazowieckie", "Warszawa");
+        o2.phoneNumber = "+48654321778";
+
+        jobOfferRepository.save(o1);
     }
 }

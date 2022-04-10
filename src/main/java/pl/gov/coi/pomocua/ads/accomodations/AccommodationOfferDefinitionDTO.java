@@ -1,10 +1,10 @@
 package pl.gov.coi.pomocua.ads.accomodations;
 
 import org.hibernate.validator.constraints.Length;
+import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.phone.PhoneDetails;
 import pl.gov.coi.pomocua.ads.phone.PhoneUtil;
-import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.Language;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.LengthOfStay;
 import pl.gov.coi.pomocua.ads.configuration.validation.PhoneNumber;
 

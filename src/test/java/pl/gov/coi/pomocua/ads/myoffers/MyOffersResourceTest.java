@@ -20,7 +20,6 @@ import pl.gov.coi.pomocua.ads.*;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationsTestDataGenerator;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
-import pl.gov.coi.pomocua.ads.materialaid.MaterialAidTestDataGenerator;
 import pl.gov.coi.pomocua.ads.users.TestUser;
 
 import java.util.stream.Stream;
@@ -28,6 +27,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.gov.coi.pomocua.ads.materialaid.MaterialAidTestDataGenerator.aMaterialAidOffer;
 import static pl.gov.coi.pomocua.ads.transport.TransportTestDataGenerator.aTransportOffer;
+import static pl.gov.coi.pomocua.ads.job.JobTestDataGenerator.aJobOffer;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(CleanDatabaseExtension.class)
@@ -174,7 +174,8 @@ class MyOffersResourceTest {
         return Stream.of(
                 Arguments.of(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", "ACCOMMODATION"),
                 Arguments.of(aMaterialAidOffer().build(), "material-aid", "MATERIAL_AID"),
-                Arguments.of(aTransportOffer().build(), "transport", "TRANSPORT")
+                Arguments.of(aTransportOffer().build(), "transport", "TRANSPORT"),
+                Arguments.of(aJobOffer().build(), "job", "JOB")
         );
     }
 
