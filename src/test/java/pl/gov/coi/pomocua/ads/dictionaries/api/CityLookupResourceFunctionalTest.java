@@ -51,7 +51,7 @@ public class CityLookupResourceFunctionalTest {
 
   @Test
   @Disabled("Embedded Postgres cannot provide expected sorting order")
-  void shouldReturnListOfFiveMatchingCities() {
+  void shouldReturnListOfMatchingCities() {
     given()
         .queryParam("query", "rud")
         .when()
@@ -59,7 +59,7 @@ public class CityLookupResourceFunctionalTest {
         .then()
         .assertThat()
         .statusCode(200)
-        .body("cities", hasSize(5))
+        .body("cities", hasSize(10))
         .body("cities[0].city", equalTo("ruda-huta"))
         .body("cities[0].region", equalTo("lubelskie"))
         .body("cities[1].city", equalTo("ruda maleniecka"))
@@ -69,7 +69,17 @@ public class CityLookupResourceFunctionalTest {
         .body("cities[3].city", equalTo("rudka"))
         .body("cities[3].region", equalTo("podlaskie"))
         .body("cities[4].city", equalTo("rudna"))
-        .body("cities[4].region", equalTo("dolnośląskie"));
+        .body("cities[4].region", equalTo("dolnośląskie"))
+        .body("cities[5].city", equalTo("rudnik"))
+        .body("cities[5].region", equalTo("lubelskie"))
+        .body("cities[6].city", equalTo("rudnik"))
+        .body("cities[6].region", equalTo("śląskie"))
+        .body("cities[7].city", equalTo("rudnik nad sanem"))
+        .body("cities[7].region", equalTo("podkarpackie"))
+        .body("cities[8].city", equalTo("rudniki"))
+        .body("cities[8].region", equalTo("opolskie"))
+        .body("cities[9].city", equalTo("rudziniec"))
+        .body("cities[9].region", equalTo("śląskie"));
   }
 
   @ParameterizedTest
