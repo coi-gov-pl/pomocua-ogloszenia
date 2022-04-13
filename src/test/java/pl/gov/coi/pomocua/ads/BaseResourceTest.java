@@ -101,7 +101,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         @Test
         void shouldIgnoreSuppliedIdOnCreate() {
             T request = sampleOfferRequest();
-            request.id = 42L;
+            request.id = 422L;
             T response = restTemplate.postForObject("/api/secure/" + getOfferSuffix(), request, getClazz());
             assertThat(response.id).isNotNull();
             assertThat(response.id).isNotEqualTo(request.id);
