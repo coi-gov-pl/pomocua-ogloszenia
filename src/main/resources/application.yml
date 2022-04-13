@@ -29,7 +29,6 @@ spring:
         transport.protocol: ${MAIL_TRANSPORT_PROTOCOL:smtp}
         smtp.starttls.enable: ${MAIL_STARTTLS_ENABLE:true}
 
-
 app:
   keycloak:
     server-url: ${KEYCLOAK_URL:https://local.pomagamukrainie.gov.pl/auth}
