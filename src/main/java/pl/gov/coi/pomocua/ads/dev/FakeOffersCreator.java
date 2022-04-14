@@ -10,6 +10,8 @@ import pl.gov.coi.pomocua.ads.accomodations.AccommodationsRepository;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
 import pl.gov.coi.pomocua.ads.job.JobOffer;
 import pl.gov.coi.pomocua.ads.job.JobOfferRepository;
+import pl.gov.coi.pomocua.ads.law.LawOffer;
+import pl.gov.coi.pomocua.ads.law.LawOfferRepository;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidCategory;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOfferRepository;
@@ -19,6 +21,8 @@ import pl.gov.coi.pomocua.ads.job.JobOffer.Mode;
 import pl.gov.coi.pomocua.ads.job.JobOffer.Industry;
 import pl.gov.coi.pomocua.ads.job.JobOffer.ContractType;
 import pl.gov.coi.pomocua.ads.job.JobOffer.WorkTime;
+import pl.gov.coi.pomocua.ads.law.LawOffer.HelpKind;
+import pl.gov.coi.pomocua.ads.law.LawOffer.HelpMode;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
@@ -33,6 +37,7 @@ public class FakeOffersCreator {
     private final AccommodationsRepository accommodationsRepository;
     private final MaterialAidOfferRepository materialAidOfferRepository;
     private final JobOfferRepository jobOfferRepository;
+    private final LawOfferRepository lawOfferRepository;
     private final CurrentUser currentUser;
 
     @PostConstruct
@@ -146,5 +151,34 @@ public class FakeOffersCreator {
         o2.phoneNumber = "+48654321778";
 
         jobOfferRepository.save(o1);
+        jobOfferRepository.save(o2);
+    }
+
+    @PostConstruct
+    public void lawOffer() {
+        LawOffer o1 = new LawOffer();
+        o1.title = "Pomoc prawna dla uchodźców";
+        o1.description = "Pomoc prawna w zakresie prawa pracy";
+        o1.userId = currentUser.getCurrentUserId();
+        o1.userFirstName = "Małgorzata";
+        o1.setHelpMode(List.of(HelpMode.ONLINE, HelpMode.BY_PHONE));
+        o1.setHelpKind(List.of(HelpKind.LABOUR_LAW));
+        o1.setLanguage(List.of(Language.PL, Language.EN));
+        o1.location = new Location("Pomorskie", "Gdańsk");
+        o1.phoneNumber = "+48789234567";
+
+        LawOffer o2 = new LawOffer();
+        o2.title = "Pomoc prawna - telefonicznie";
+        o2.description = "Telefonicznie udzielę pomocy prawnej";
+        o2.userId = currentUser.getCurrentUserId();
+        o2.userFirstName = "Ewelina";
+        o2.setHelpMode(List.of(HelpMode.BY_PHONE));
+        o2.setHelpKind(List.of(HelpKind.IMMIGRATION_LAW, HelpKind.FAMILY_LAW));
+        o2.setLanguage(List.of(Language.PL, Language.EN, Language.UA));
+        o2.location = new Location("Mazowieckie", "Warszawa");
+        o2.phoneNumber = "+48654321778";
+
+        lawOfferRepository.save(o1);
+        lawOfferRepository.save(o2);
     }
 }
