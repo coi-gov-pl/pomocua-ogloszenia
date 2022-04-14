@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
@@ -24,6 +25,9 @@ import static org.hamcrest.Matchers.hasSize;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestConfiguration.class)
 public class CityLookupResourceFunctionalTest {
+
+  @Value("${app.city-lookup-limit}")
+  public int cityLookupLimit;
 
   @LocalServerPort
   int port;
@@ -80,6 +84,18 @@ public class CityLookupResourceFunctionalTest {
         .body("cities[8].region", equalTo("opolskie"))
         .body("cities[9].city", equalTo("rudziniec"))
         .body("cities[9].region", equalTo("śląskie"));
+  }
+
+  @Test
+  void shouldReturnLimitedListOfMatchingCities() {
+    given()
+            .queryParam("query", "kr")
+            .when()
+            .get(URL)
+            .then()
+            .assertThat()
+            .statusCode(200)
+            .body("cities", hasSize(cityLookupLimit));
   }
 
   @ParameterizedTest

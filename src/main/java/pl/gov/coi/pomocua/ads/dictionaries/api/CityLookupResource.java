@@ -1,5 +1,6 @@
 package pl.gov.coi.pomocua.ads.dictionaries.api;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +19,9 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "/api/dictionaries/city", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CityLookupResource {
 
+    @Value("${app.city-lookup-limit}")
+    public int cityLookupLimit;
+
     private final CityRepository cityRepository;
 
     public CityLookupResource(CityRepository cityRepository) {
@@ -35,6 +39,7 @@ public class CityLookupResource {
         List<CityLookupDto> cities = cityRepository
                 .findByLocationCityWithSort(query.toLowerCase(), sort)
                 .stream()
+                .limit(cityLookupLimit)
                 .map(CityLookupDto::fromEntity)
                 .collect(Collectors.toList());
 

@@ -46,6 +46,7 @@ app:
     accept-level: ${CAPTCHA_ACCEPT_LEVEL:0.4}
   locale:
     header: X-Language
+  city-lookup-limit: ${CITY_LOOKUP_LIMIT:20}
 
 keycloak:
   enabled: ${KEYCLOAK_ENABLED:true}
