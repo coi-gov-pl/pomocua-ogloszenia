@@ -254,7 +254,7 @@ public class LawOfferResourceTest extends BaseResourceTest<LawOffer> {
                     .queryParam("location.city", searchCriteria.getLocation().getCity())
                     .queryParam("location.region", searchCriteria.getLocation().getRegion());
         }
-        if (searchCriteria.getHelpMode() != null) {
+        if (!CollectionUtils.isEmpty(searchCriteria.getHelpMode())) {
             builder.queryParam("helpMode", searchCriteria.getHelpMode());
         }
         if (searchCriteria.getHelpKind() != null) {

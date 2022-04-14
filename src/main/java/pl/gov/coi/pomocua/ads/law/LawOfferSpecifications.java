@@ -10,6 +10,7 @@ import pl.gov.coi.pomocua.ads.law.LawOffer.HelpMode;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class LawOfferSpecifications {
 
@@ -20,7 +21,7 @@ public class LawOfferSpecifications {
         if (criteria.getLocation() != null) {
             specifications.add(fromLocation(criteria.getLocation()));
         }
-        if (criteria.getHelpMode() != null) {
+        if (!CollectionUtils.isEmpty(criteria.getHelpMode())) {
             specifications.add(fromHelpMode(criteria.getHelpMode()));
         }
         if (criteria.getHelpKind() != null) {
@@ -51,7 +52,7 @@ public class LawOfferSpecifications {
 
     private static Specification<LawOffer> fromHelpMode(List<HelpMode> helpMode) {
         List<Specification<LawOffer>> specifications = new LinkedList<>();
-        helpMode.forEach(mode ->
+        helpMode.stream().filter(Objects::nonNull).forEach(mode ->
                 specifications.add((root, cq, cb) -> cb.like(root.get("helpMode"), prepareForQuery(mode.name()))));
         return orSpecifications(specifications);
 
@@ -63,7 +64,7 @@ public class LawOfferSpecifications {
 
     private static Specification<LawOffer> fromLanguage(List<Language> language) {
         List<Specification<LawOffer>> specifications = new LinkedList<>();
-        language.forEach(lang ->
+        language.stream().filter(Objects::nonNull).forEach(lang ->
                 specifications.add((root, cq, cb) -> cb.like(root.get("language"), prepareForQuery(lang.name()))));
         return orSpecifications(specifications);
     }
