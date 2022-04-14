@@ -12,9 +12,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
+import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.UserId;
-import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.Language;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer.LengthOfStay;
 
 import java.time.Instant;
