@@ -3,6 +3,7 @@ package pl.gov.coi.pomocua.ads.mail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.CharEncoding;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -32,7 +33,9 @@ public class MailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, CharEncoding.UTF_8);
             helper.setFrom(sendFrom);
             helper.setTo(to);
-            helper.setReplyTo(replyTo);
+            if (StringUtils.isNotEmpty(replyTo)) {
+                helper.setReplyTo(replyTo);
+            }
             helper.setSubject(subject);
             helper.setText(htmlContent, true);
             mailSender.send(message);
