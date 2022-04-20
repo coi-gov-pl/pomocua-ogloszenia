@@ -8,6 +8,9 @@ import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationOffer;
 import pl.gov.coi.pomocua.ads.accomodations.AccommodationsRepository;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
+import pl.gov.coi.pomocua.ads.health.HealthOffer;
+import pl.gov.coi.pomocua.ads.health.HealthOfferRepository;
+import pl.gov.coi.pomocua.ads.health.HealthCareSpecialization;
 import pl.gov.coi.pomocua.ads.job.JobOffer;
 import pl.gov.coi.pomocua.ads.job.JobOfferRepository;
 import pl.gov.coi.pomocua.ads.law.LawOffer;
@@ -23,6 +26,7 @@ import pl.gov.coi.pomocua.ads.job.JobOffer.ContractType;
 import pl.gov.coi.pomocua.ads.job.JobOffer.WorkTime;
 import pl.gov.coi.pomocua.ads.law.LawOffer.HelpKind;
 import pl.gov.coi.pomocua.ads.law.LawOffer.HelpMode;
+import pl.gov.coi.pomocua.ads.health.HealthOffer.HealthCareMode;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
@@ -38,6 +42,7 @@ public class FakeOffersCreator {
     private final MaterialAidOfferRepository materialAidOfferRepository;
     private final JobOfferRepository jobOfferRepository;
     private final LawOfferRepository lawOfferRepository;
+    private final HealthOfferRepository healthOfferRepository;
     private final CurrentUser currentUser;
 
     @PostConstruct
@@ -180,5 +185,33 @@ public class FakeOffersCreator {
 
         lawOfferRepository.save(o1);
         lawOfferRepository.save(o2);
+    }
+
+    @PostConstruct
+    public void healthOffer() {
+        HealthOffer o1 = new HealthOffer();
+        o1.title = "Pomoc zdrowotna - medycyna ogólna";
+        o1.description = "Pomoc zdrowotna w zakresie medycyny ogólnej, stacjonarnie Gdańsk lub telefonicznie";
+        o1.userId = currentUser.getCurrentUserId();
+        o1.userFirstName = "Małgorzata";
+        o1.specialization = HealthCareSpecialization.GENERAL;
+        o1.setMode(List.of(HealthCareMode.IN_FACILITY, HealthCareMode.BY_PHONE));
+        o1.setLanguage(List.of(Language.PL, Language.EN));
+        o1.location = new Location("Pomorskie", "Gdańsk");
+        o1.phoneNumber = "+48789234567";
+
+        HealthOffer o2 = new HealthOffer();
+        o2.title = "Pomoc zdrowotna - pediatria";
+        o2.description = "Pomoc zdrowotna w zakresie pediatrii, stacjonarnie Warszawa, online, telefonicznie";
+        o2.userId = currentUser.getCurrentUserId();
+        o2.userFirstName = "Ewelina";
+        o2.specialization = HealthCareSpecialization.PEDIATRICS;
+        o2.setMode(List.of(HealthCareMode.AT_HOME, HealthCareMode.IN_FACILITY, HealthCareMode.ONLINE));
+        o2.setLanguage(List.of(Language.PL, Language.EN, Language.UA));
+        o2.location = new Location("Mazowieckie", "Warszawa");
+        o2.phoneNumber = "+48654321778";
+
+        healthOfferRepository.save(o1);
+        healthOfferRepository.save(o2);
     }
 }

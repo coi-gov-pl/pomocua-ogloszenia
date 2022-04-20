@@ -8,6 +8,7 @@ import pl.gov.coi.pomocua.ads.Location;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import pl.gov.coi.pomocua.ads.job.JobOffer.Industry;
 import pl.gov.coi.pomocua.ads.job.JobOffer.WorkTime;
@@ -76,7 +77,7 @@ public class JobOfferSpecifications {
 
     private static Specification<JobOffer> fromLanguage(List<Language> language) {
         List<Specification<JobOffer>> specifications = new LinkedList<>();
-        language.forEach(lang ->
+        language.stream().filter(Objects::nonNull).forEach(lang ->
                 specifications.add((root, cq, cb) -> cb.like(root.get("language"), prepareForQuery(lang.name()))));
         return orSpecifications(specifications);
     }
