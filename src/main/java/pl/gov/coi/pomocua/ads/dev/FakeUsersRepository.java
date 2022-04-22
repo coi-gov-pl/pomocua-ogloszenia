@@ -21,7 +21,7 @@ public class FakeUsersRepository implements UsersRepository {
     }
 
     @Override
-    public void removeUser(UserId userId) {
-
+    public User obfuscateUser(UserId userId) {
+        return new User(currentUser.getCurrentUserId(), "obfuscate@email.invalid", "obfuscate");
     }
 }

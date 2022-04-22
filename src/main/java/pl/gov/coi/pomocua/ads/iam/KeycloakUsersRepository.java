@@ -15,6 +15,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class KeycloakUsersRepository implements UsersRepository {
 
+    private static final String OBFUSCATED = "OBFUSCATED";
+
     private final UsersResource usersResource;
 
     @Override
@@ -28,13 +30,32 @@ public class KeycloakUsersRepository implements UsersRepository {
     }
 
     @Override
-    public void removeUser(UserId userId) {
+    public User obfuscateUser(UserId userId) {
         try {
             UserResource userResource = usersResource.get(userId.value);
             userResource.logout();
-            userResource.remove();
+
+            UserRepresentation userRepresentation = userResource.toRepresentation();
+            User user = new User(userId, userRepresentation.getEmail(), userRepresentation.getFirstName());
+
+            obfuscateUserRepresentation(userRepresentation);
+
+            userRepresentation.getFederatedIdentities().forEach(rep -> userResource.removeFederatedIdentity(rep.getIdentityProvider()));
+            userResource.update(userRepresentation);
+
+            return user;
         } catch (NotFoundException e) {
             throw new UserNotFoundException();
         }
+    }
+
+    private void obfuscateUserRepresentation(UserRepresentation userRepresentation) {
+        userRepresentation.setEnabled(false);
+        userRepresentation.setUsername(userRepresentation.getId());
+        userRepresentation.setFirstName(OBFUSCATED);
+        userRepresentation.setLastName(OBFUSCATED);
+
+        userRepresentation.setEmail(OBFUSCATED);
+        userRepresentation.setEmailVerified(false);
     }
 }
