@@ -10,11 +10,17 @@
 </head>
 <body>
 <div>
-    <p>Ktoś odpowiedział na twoje ogłoszenie ${OFFER_TITLE!''}.</p>
+    <p>Twoje konto w serwisie Pomagam Ukrainie zostało usunięte.</p>
 
-    <p>${REPLY_TO_EMAIL!''}</p>
+    <p>Wystawione przez Ciebie ogłoszenia nie są już dostępne.</p>
 
-    <p>${MESSAGE!''}</p>
+    <p>Pamiętaj, że w każdej chwili możesz do nas wrócić.</p>
+
+    <br/>
+
+    <p>Dziękujemy za Twoją pomoc!</p>
+
+    <p>#PomagamUkrainie</p>
 </div>
 </body>
 </html>

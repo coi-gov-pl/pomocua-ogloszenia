@@ -8,5 +8,5 @@ public interface UsersRepository {
 
     Optional<User> getById(UserId userId);
 
-    void removeUser(UserId userId);
+    User obfuscateUser(UserId userId);
 }

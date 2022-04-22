@@ -40,7 +40,14 @@ public class TestUsersRepository implements UsersRepository {
     }
 
     @Override
-    public void removeUser(UserId userId) {
-        users.remove(userId);
+    public User obfuscateUser(UserId userId) {
+        User user = users.get(userId);
+        users.put(userId, new User(
+                userId,
+                "obfuscate@email.com",
+                "obfuscate"
+        ));
+
+        return user;
     }
 }
