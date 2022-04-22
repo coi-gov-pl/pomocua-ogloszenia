@@ -1,3 +1,5 @@
+CREATE EXTENSION pg_trgm;
+
 CREATE INDEX idx_health_offer_mode ON health_offer USING gist (mode gist_trgm_ops);
 CREATE INDEX idx_health_offer_language ON health_offer USING gist (language gist_trgm_ops);
 
