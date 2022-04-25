@@ -137,7 +137,7 @@ public class FakeOffersCreator {
         o1.mode = Mode.ONSITE;
         o1.setWorkTime(List.of(WorkTime.FULL_TIME, WorkTime.PART_TIME));
         o1.setContractType(List.of(ContractType.EMPLOYMENT));
-        o1.setIndustry(List.of(Industry.FINANCES));
+        o1.industry = Industry.FINANCES;
         o1.setLanguage(List.of(Language.PL, Language.EN));
         o1.location = new Location("Pomorskie", "Gdańsk");
         o1.phoneNumber = "+48789234567";
@@ -150,7 +150,7 @@ public class FakeOffersCreator {
         o2.mode = Mode.ONSITE;
         o2.setWorkTime(List.of(WorkTime.FULL_TIME));
         o2.setContractType(List.of(ContractType.EMPLOYMENT));
-        o2.setIndustry(List.of(Industry.HEALTH_AND_BEAUTY, Industry.MARKETING));
+        o2.industry = Industry.BEAUTY;
         o2.setLanguage(List.of(Language.PL, Language.EN, Language.UA));
         o2.location = new Location("Mazowieckie", "Warszawa");
         o2.phoneNumber = "+48654321778";

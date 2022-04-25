@@ -19,7 +19,7 @@ public class JobTestDataGenerator {
                 .description("sample job description")
                 .location(new Location("Mazowieckie", "Warszawa"))
                 .mode(Mode.ONSITE)
-                .industry(List.of(Industry.FINANCES, Industry.DESK_JOB));
+                .industry(Industry.FINANCES);
     };
 
     public static JobOfferDefinitionDTO sampleUpdateJson() {
@@ -28,7 +28,7 @@ public class JobTestDataGenerator {
         updateJson.description = "new description";
         updateJson.mode = Mode.TELEWORK;
         updateJson.location = new Location("Pomorskie", "Gdańsk");
-        updateJson.industry = List.of(Industry.CONSULTING);
+        updateJson.industry = Industry.CONSULTING;
         updateJson.workTime = List.of(WorkTime.FULL_TIME, WorkTime.PART_TIME);
         updateJson.contractType = List.of(ContractType.B2B);
         updateJson.language = List.of(Language.PL, Language.EN);
@@ -40,7 +40,7 @@ public class JobTestDataGenerator {
             String title,
             String description,
             Mode mode,
-            List<Industry> industry,
+            Industry industry,
             List<WorkTime> workTime,
             List<ContractType> contractType,
             Location location,
@@ -51,7 +51,7 @@ public class JobTestDataGenerator {
         offer.title = Optional.ofNullable(title).orElse("some title");
         offer.description = Optional.ofNullable(description).orElse("some description");
         offer.mode = Optional.ofNullable(mode).orElse(Mode.ONSITE);
-        offer.setIndustry(Optional.ofNullable(industry).orElse(List.of(Industry.FINANCES)));
+        offer.industry = Optional.ofNullable(industry).orElse(Industry.FINANCES);
         offer.setWorkTime(Optional.ofNullable(workTime).orElse(List.of(WorkTime.FULL_TIME)));
         offer.setContractType(Optional.ofNullable(contractType).orElse(List.of(ContractType.EMPLOYMENT)));
         offer.location = Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa"));
