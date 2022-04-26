@@ -1,5 +1,6 @@
 package pl.gov.coi.pomocua.ads.dictionaries.api;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,6 +21,9 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "/api/dictionaries/city", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CityLookupResource {
 
+    @Value("${app.city-lookup-limit}")
+    public int cityLookupLimit;
+
     private final CityRepository cityRepository;
 
     public CityLookupResource(CityRepository cityRepository) {
@@ -32,10 +36,10 @@ public class CityLookupResource {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "location.city"));
+        Pageable pageable = PageRequest.of(0, cityLookupLimit, Sort.by(Sort.Direction.ASC, "location.city"));
 
         List<CityLookupDto> cities = cityRepository
-                .findByLocationCityWithPageable(query.toLowerCase(), pageable)
+                .findByLocationCity(query.toLowerCase(), pageable)
                 .stream()
                 .map(CityLookupDto::fromEntity)
                 .collect(Collectors.toList());
