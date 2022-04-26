@@ -31,6 +31,7 @@ public class LawOfferDefinitionDTO {
     @Pattern(regexp = DESCRIPTION_ALLOWED_TEXT)
     public String description;
 
+    @Valid
     public Location location;
 
     @NotEmpty

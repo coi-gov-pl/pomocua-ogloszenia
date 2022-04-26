@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Length;
 import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -38,6 +39,7 @@ public class HealthOfferDefinitionDTO {
     @NotNull
     public HealthCareSpecialization specialization;
 
+    @Valid
     public Location location;
 
     @NotEmpty
