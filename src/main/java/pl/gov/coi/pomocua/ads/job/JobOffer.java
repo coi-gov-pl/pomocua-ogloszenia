@@ -32,23 +32,9 @@ public class JobOffer extends BaseOffer {
     @Embedded
     public Location location;
 
-    @NotEmpty
-    private String industry;
-
-    public void setIndustry(List<Industry> values) {
-        if (CollectionUtils.isEmpty(values)) {
-            industry = "";
-        } else {
-            industry = values.stream().map(Enum::name).collect(Collectors.joining(","));
-        }
-    }
-
-    public List<Industry> getIndustry() {
-        if (!StringUtils.hasText(industry)) {
-            return Collections.emptyList();
-        }
-        return Arrays.stream(industry.split(",")).map(Industry::valueOf).collect(Collectors.toList());
-    }
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    public Industry industry;
 
     @NotEmpty
     private String workTime;
@@ -119,25 +105,31 @@ public class JobOffer extends BaseOffer {
     }
 
     public enum Industry {
-        FINANCES,
-        HEALTH_AND_SAFETY,
-        ENGINEERING,
+        RESEARCH,
+        BANKING,
+        CONSTRUCTION,
+        CALL_CENTER,
+        E_COMMERCE,
         EDUCATION,
+        ENERGETICS,
+        FINANCES,
+        BEAUTY,
+        GASTRONOMY,
         HOTEL,
-        INTERNET,
+        HR,
+        ENGINEERING,
         IT,
-        ENTERTAINMENT,
+        LOGISTICS,
+        MARKETING,
         REAL_ASSETS,
         CUSTOMER_SERVICE,
-        DESK_JOB,
         MANUAL_JOB,
         CONSULTING,
         MANUFACTURING,
-        MARKETING,
         PUBLIC_SECTOR,
-        LOGISTICS,
-        TRADE,
-        HEALTH_AND_BEAUTY,
+        SALES,
+        TRANSPORT,
+        HEALTH,
         MISC
     }
 

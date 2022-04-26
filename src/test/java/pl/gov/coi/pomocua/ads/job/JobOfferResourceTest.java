@@ -26,7 +26,6 @@ import java.util.List;
 import pl.gov.coi.pomocua.ads.job.JobOffer.Industry;
 import pl.gov.coi.pomocua.ads.job.JobOffer.WorkTime;
 import pl.gov.coi.pomocua.ads.job.JobOffer.ContractType;
-import pl.gov.coi.pomocua.ads.job.JobOffer.Mode;
 
 public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
 
@@ -76,19 +75,19 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
         @Test
         void shouldSearchByIndustry() {
             JobOffer offer = postOffer(aJobOffer()
-                    .industry(List.of(Industry.TRADE))
+                    .industry(Industry.SALES)
                     .build());
 
             JobOffer offer2 = postOffer(aJobOffer()
-                    .industry(List.of(Industry.TRADE, Industry.CONSULTING))
+                    .industry(Industry.SALES)
                     .build());
 
             postOffer(aJobOffer()
-                    .industry(List.of(Industry.CONSULTING, Industry.DESK_JOB))
+                    .industry(Industry.CONSULTING)
                     .build());
 
             JobOfferSearchCriteria searchCriteria = new JobOfferSearchCriteria();
-            searchCriteria.setIndustry(Industry.TRADE);
+            searchCriteria.setIndustry(Industry.SALES);
             var results = searchOffers(searchCriteria);
 
             assertThat(results).hasSize(2).contains(offer, offer2);
@@ -226,14 +225,7 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
         @Test
         void shouldRejectNullIndustry() {
             JobOffer offer = sampleOfferRequest();
-            offer.setIndustry(null);
-            assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
-        }
-
-        @Test
-        void shouldRejectEmptyIndustry() {
-            JobOffer offer = sampleOfferRequest();
-            offer.setIndustry(Collections.emptyList());
+            offer.industry = null;
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
@@ -296,7 +288,7 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
             assertThat(updatedOffer.mode).isEqualTo(Mode.TELEWORK);
             assertThat(updatedOffer.location.region).isEqualTo("Pomorskie");
             assertThat(updatedOffer.location.city).isEqualTo("Gdańsk");
-            assertThat(updatedOffer.getIndustry()).isEqualTo(List.of(Industry.CONSULTING));
+            assertThat(updatedOffer.industry).isEqualTo(Industry.CONSULTING);
             assertThat(updatedOffer.getWorkTime()).isEqualTo(List.of(WorkTime.FULL_TIME, WorkTime.PART_TIME));
             assertThat(updatedOffer.getContractType()).isEqualTo(List.of(ContractType.B2B));
             assertThat(updatedOffer.getLanguage()).isEqualTo(List.of(Language.PL, Language.EN));

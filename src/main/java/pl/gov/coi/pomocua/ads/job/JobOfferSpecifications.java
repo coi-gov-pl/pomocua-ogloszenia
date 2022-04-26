@@ -60,7 +60,7 @@ public class JobOfferSpecifications {
     }
 
     private static Specification<JobOffer> fromIndustry(Industry industry) {
-        return (root, cq, cb) -> cb.like(root.get("industry"), prepareForQuery(industry.name()));
+        return (root, cq, cb) -> cb.equal(root.get("industry"), industry);
     }
 
     private static Specification<JobOffer> fromWorkTime(WorkTime workTime) {

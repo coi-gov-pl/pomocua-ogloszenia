@@ -54,10 +54,7 @@ public class JobResourceFunctionalTest extends BaseResourceFunctionalTest {
             "city": "Warszawa"
           },
           "mode": "ONSITE",
-          "industry": [
-            "FINANCES",
-            "DESK_JOB"
-          ],
+          "industry": "FINANCES",
           "workTime": [
             "FULL_TIME",
             "PART_TIME"
@@ -83,7 +80,7 @@ public class JobResourceFunctionalTest extends BaseResourceFunctionalTest {
                 .body("location.region", equalTo("Mazowieckie"))
                 .body("location.city", equalTo("Warszawa"))
                 .body("mode", equalTo("ONSITE"))
-                .body("industry", equalTo(List.of("FINANCES", "DESK_JOB")))
+                .body("industry", equalTo("FINANCES"))
                 .body("workTime", equalTo(List.of("FULL_TIME", "PART_TIME")))
                 .body("contractType", equalTo(List.of("EMPLOYMENT", "B2B")))
                 .body("language", equalTo(List.of("UA", "PL")));
@@ -97,7 +94,7 @@ public class JobResourceFunctionalTest extends BaseResourceFunctionalTest {
                 .body("content[0].location.region", equalTo("Mazowieckie"))
                 .body("content[0].location.city", equalTo("Warszawa"))
                 .body("content[0].mode", equalTo("ONSITE"))
-                .body("content[0].industry", equalTo(List.of("FINANCES", "DESK_JOB")))
+                .body("content[0].industry", equalTo("FINANCES"))
                 .body("content[0].workTime", equalTo(List.of("FULL_TIME", "PART_TIME")))
                 .body("content[0].contractType", equalTo(List.of("EMPLOYMENT", "B2B")))
                 .body("content[0].language", equalTo(List.of("UA", "PL")));
@@ -113,7 +110,7 @@ public class JobResourceFunctionalTest extends BaseResourceFunctionalTest {
         assertThat(jobOffer.location.region).isEqualTo("Mazowieckie");
         assertThat(jobOffer.location.city).isEqualTo("Warszawa");
         assertThat(jobOffer.mode).isEqualTo(Mode.ONSITE);
-        assertThat(jobOffer.getIndustry()).isEqualTo(List.of(Industry.FINANCES, Industry.DESK_JOB));
+        assertThat(jobOffer.industry).isEqualTo(Industry.FINANCES);
         assertThat(jobOffer.getWorkTime()).isEqualTo(List.of(WorkTime.FULL_TIME, WorkTime.PART_TIME));
         assertThat(jobOffer.getContractType()).isEqualTo(List.of(ContractType.EMPLOYMENT, ContractType.B2B));
         assertThat(jobOffer.getLanguage()).isEqualTo(List.of(Language.UA, Language.PL));

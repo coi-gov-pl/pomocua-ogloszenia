@@ -38,8 +38,8 @@ public class JobOfferDefinitionDTO {
 
     public Location location;
 
-    @NotEmpty
-    public List<Industry> industry;
+    @NotNull
+    public Industry industry;
 
     @NotEmpty
     public List<WorkTime> workTime;
@@ -57,7 +57,7 @@ public class JobOfferDefinitionDTO {
         offer.title = title;
         offer.mode = mode;
         offer.location = location;
-        offer.setIndustry(industry);
+        offer.industry = industry;
         offer.setWorkTime(workTime);
         offer.setContractType(contractType);
         offer.setLanguage(language);
