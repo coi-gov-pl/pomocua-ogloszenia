@@ -11,6 +11,7 @@ import pl.gov.coi.pomocua.ads.job.JobOffer.ContractType;
 import pl.gov.coi.pomocua.ads.phone.PhoneDetails;
 import pl.gov.coi.pomocua.ads.phone.PhoneUtil;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -36,6 +37,7 @@ public class JobOfferDefinitionDTO {
     @NotNull
     public Mode mode;
 
+    @Valid
     public Location location;
 
     @NotEmpty
