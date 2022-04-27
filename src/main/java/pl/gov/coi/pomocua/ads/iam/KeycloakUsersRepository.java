@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.util.CollectionUtils;
 import pl.gov.coi.pomocua.ads.UserId;
 import pl.gov.coi.pomocua.ads.users.User;
 import pl.gov.coi.pomocua.ads.users.UserNotFoundException;
@@ -40,7 +41,11 @@ public class KeycloakUsersRepository implements UsersRepository {
 
             obfuscateUserRepresentation(userRepresentation);
 
-            userRepresentation.getFederatedIdentities().forEach(rep -> userResource.removeFederatedIdentity(rep.getIdentityProvider()));
+            if (!CollectionUtils.isEmpty(userRepresentation.getFederatedIdentities())) {
+                userRepresentation.getFederatedIdentities()
+                        .forEach(rep -> userResource.removeFederatedIdentity(rep.getIdentityProvider()));
+            }
+
             userResource.update(userRepresentation);
 
             return user;
