@@ -9,12 +9,18 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Optional;
 
 public class PhoneUtil {
+    private static final String PLUS = "+";
     private static final String DEFAULT_REGION = "PL";
     private static final PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
 
+    private static PhoneNumber parse(String value) throws NumberParseException {
+        String phoneNumber = StringUtils.prependIfMissing(value, PLUS);
+        return phoneNumberUtil.parse(phoneNumber, DEFAULT_REGION);
+    }
+
     public static boolean isValid(String value) {
         try {
-            PhoneNumber phoneNumber = phoneNumberUtil.parse(value, DEFAULT_REGION);
+            PhoneNumber phoneNumber = parse(value);
             return phoneNumberUtil.isValidNumber(phoneNumber);
         } catch (NumberParseException e) {
             return false;
@@ -25,7 +31,7 @@ public class PhoneUtil {
         if (StringUtils.isEmpty(value)) return Optional.empty();
 
         try {
-            PhoneNumber phoneNumber = phoneNumberUtil.parse(value, DEFAULT_REGION);
+            PhoneNumber phoneNumber = parse(value);
             return Optional.of(new PhoneDetails(String.valueOf(phoneNumber.getCountryCode()),
                     String.valueOf(phoneNumber.getNationalNumber())));
         } catch (NumberParseException e) {
