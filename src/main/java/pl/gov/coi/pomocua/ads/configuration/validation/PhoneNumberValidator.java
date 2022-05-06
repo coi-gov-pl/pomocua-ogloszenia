@@ -1,6 +1,6 @@
 package pl.gov.coi.pomocua.ads.configuration.validation;
 
-import pl.gov.coi.pomocua.ads.PhoneUtil;
+import pl.gov.coi.pomocua.ads.phone.PhoneUtil;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

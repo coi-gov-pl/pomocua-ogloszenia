@@ -38,4 +38,16 @@ public class TestUsersRepository implements UsersRepository {
     public Optional<User> getById(UserId userId) {
         return Optional.ofNullable(users.get(userId));
     }
+
+    @Override
+    public User obfuscateUser(UserId userId) {
+        User user = users.get(userId);
+        users.put(userId, new User(
+                userId,
+                "obfuscate@email.com",
+                "obfuscate"
+        ));
+
+        return user;
+    }
 }

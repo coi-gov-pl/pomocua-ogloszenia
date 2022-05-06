@@ -44,6 +44,7 @@ public class TransportTestDataGenerator {
             Integer capacity,
             LocalDate transportDate,
             String phoneNumber,
+            String phoneCountryCode,
             BaseOffer.Status status
     ) {
         TransportOffer result = new TransportOffer();
@@ -54,6 +55,7 @@ public class TransportTestDataGenerator {
         result.capacity = capacity;
         result.transportDate = transportDate;
         result.phoneNumber = phoneNumber;
+        result.phoneCountryCode = phoneCountryCode;
         result.status = Optional.ofNullable(status).orElse(BaseOffer.Status.ACTIVE);
         return result;
     }

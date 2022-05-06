@@ -101,7 +101,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         @Test
         void shouldIgnoreSuppliedIdOnCreate() {
             T request = sampleOfferRequest();
-            request.id = 42L;
+            request.id = 422L;
             T response = restTemplate.postForObject("/api/secure/" + getOfferSuffix(), request, getClazz());
             assertThat(response.id).isNotNull();
             assertThat(response.id).isNotEqualTo(request.id);
@@ -178,7 +178,8 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
                 T createdOffer = postOffer(offer);
 
                 T offerFromRepository = getOfferFromRepository(createdOffer.id);
-                assertThat(offerFromRepository.phoneNumber).isEqualTo("+48123456789");
+                assertThat(offerFromRepository.phoneNumber).isEqualTo("123456789");
+                assertThat(offerFromRepository.phoneCountryCode).isEqualTo("48");
             }
         }
     }
@@ -306,7 +307,7 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         T entity = response.getBody();
         assertThat(entity.id).isNotNull();
         assertThat(entity).usingRecursiveComparison()
-                .ignoringFields("id", "modifiedDate", "userFirstName", "phoneNumber")
+                .ignoringFields("id", "modifiedDate", "userFirstName", "phoneNumber", "phoneCountryCode")
                 .isEqualTo(request);
         return entity;
     }

@@ -19,4 +19,9 @@ public class FakeUsersRepository implements UsersRepository {
     public Optional<User> getById(UserId userId) {
         return Optional.of(new User(currentUser.getCurrentUserId(), "fake@email.invalid", "John"));
     }
+
+    @Override
+    public User obfuscateUser(UserId userId) {
+        return new User(currentUser.getCurrentUserId(), "obfuscate@email.invalid", "obfuscate");
+    }
 }
