@@ -30,6 +30,7 @@ public class LawResource {
     private final LawOfferRepository repository;
     private final CurrentUser currentUser;
     private final UsersService usersService;
+    private final LawOfferSpecifications specifications;
 
     @PostMapping("secure/law")
     @ResponseStatus(HttpStatus.CREATED)
@@ -57,7 +58,7 @@ public class LawResource {
 
     @GetMapping("law")
     public Offers<LawOffer> list(Pageable pageRequest, LawOfferSearchCriteria searchCriteria) {
-        return Offers.page(repository.findAll(LawOfferSpecifications.from(searchCriteria), pageRequest));
+        return Offers.page(repository.findAll(specifications.from(searchCriteria), pageRequest));
     }
 
     @GetMapping("law/{id}")

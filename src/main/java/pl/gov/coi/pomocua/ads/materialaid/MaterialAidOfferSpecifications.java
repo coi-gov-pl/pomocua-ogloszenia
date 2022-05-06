@@ -1,48 +1,28 @@
 package pl.gov.coi.pomocua.ads.materialaid;
 
 import org.springframework.data.jpa.domain.Specification;
-import pl.gov.coi.pomocua.ads.BaseOffer;
-import pl.gov.coi.pomocua.ads.Location;
-import pl.gov.coi.pomocua.ads.transport.TransportOffer;
+import org.springframework.stereotype.Component;
+import pl.gov.coi.pomocua.ads.BaseOfferSpecifications;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class MaterialAidOfferSpecifications {
+@Component
+public class MaterialAidOfferSpecifications extends BaseOfferSpecifications<MaterialAidOffer, MaterialAidOfferSearchCriteria> {
 
-    public static Specification<MaterialAidOffer> from(MaterialAidOfferSearchCriteria criteria) {
+    @Override
+    protected List<Specification<MaterialAidOffer>> fromOfferSpecific(MaterialAidOfferSearchCriteria criteria) {
         List<Specification<MaterialAidOffer>> specifications = new LinkedList<>();
-
-        specifications.add(onlyActive());
         if (criteria.getLocation() != null) {
-            specifications.add(fromLocation(criteria.getLocation()));
+            specifications.add(fromLocation("location", criteria.getLocation()));
         }
         if (criteria.getCategory() != null) {
             specifications.add(fromCategory(criteria.getCategory()));
         }
-        return joinSpecifications(specifications);
-    }
-
-    private static Specification<MaterialAidOffer> onlyActive() {
-        return (root, cq, cb) -> cb.equal(root.get("status"), BaseOffer.Status.ACTIVE);
-    }
-
-    private static Specification<MaterialAidOffer> fromLocation(Location location) {
-        List<Specification<MaterialAidOffer>> specifications = new LinkedList<>();
-        if (location.getCity() != null) {
-            specifications.add((root, cq, cb) -> cb.equal(cb.upper(root.get("location").get("city")), location.getCity().toUpperCase()));
-        }
-        if (location.getRegion() != null) {
-            specifications.add((root, cq, cb) -> cb.equal(cb.upper(root.get("location").get("region")), location.getRegion().toUpperCase()));
-        }
-        return joinSpecifications(specifications);
+        return specifications;
     }
 
     private static Specification<MaterialAidOffer> fromCategory(MaterialAidCategory category) {
         return (root, cq, cb) -> cb.equal(root.get("category"), category);
-    }
-
-    private static Specification<MaterialAidOffer> joinSpecifications(List<Specification<MaterialAidOffer>> specifications) {
-        return specifications.stream().reduce(Specification::and).orElse(null);
     }
 }

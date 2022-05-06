@@ -22,6 +22,7 @@ public class HealthResource {
     private final HealthOfferRepository repository;
     private final CurrentUser currentUser;
     private final UsersService usersService;
+    private final HealthOfferSpecifications specifications;
 
     @PostMapping("secure/health-care")
     @ResponseStatus(HttpStatus.CREATED)
@@ -49,7 +50,7 @@ public class HealthResource {
 
     @GetMapping("health-care")
     public Offers<HealthOffer> list(Pageable pageRequest, HealthOfferSearchCriteria searchCriteria) {
-        return Offers.page(repository.findAll(HealthOfferSpecifications.from(searchCriteria), pageRequest));
+        return Offers.page(repository.findAll(specifications.from(searchCriteria), pageRequest));
     }
 
     @GetMapping("health-care/{id}")

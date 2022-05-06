@@ -73,6 +73,25 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
         }
 
         @Test
+        void shouldSearchByLocationWithNullLocation() {
+            JobOffer offer1 = postOffer(aJobOffer()
+                    .location(null)
+                    .build());
+            JobOffer offer2 = postOffer(aJobOffer()
+                    .location(new Location("Mazowieckie", "Warszawa"))
+                    .build());
+            postOffer(aJobOffer()
+                    .location(new Location("Pomorskie", "Gdańsk"))
+                    .build());
+
+            JobOfferSearchCriteria searchCriteria = new JobOfferSearchCriteria();
+            searchCriteria.setLocation(new Location("Mazowieckie", "WARSZAWA"));
+            var results = searchOffers(searchCriteria);
+
+            assertThat(results).hasSize(2).contains(offer1, offer2);
+        }
+
+        @Test
         void shouldSearchByIndustry() {
             JobOffer offer = postOffer(aJobOffer()
                     .industry(Industry.SALES)

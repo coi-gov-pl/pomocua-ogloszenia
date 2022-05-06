@@ -25,6 +25,7 @@ public class TransportResource {
     private final TransportOfferRepository repository;
     private final CurrentUser currentUser;
     private final UsersService usersService;
+    private final TransportOfferSpecifications specifications;
 
     @PostMapping("secure/transport")
     @ResponseStatus(HttpStatus.CREATED)
@@ -55,7 +56,7 @@ public class TransportResource {
     public Offers<TransportOffer> list(Pageable pageRequest, TransportOfferSearchCriteria searchCriteria) {
 
         Pageable pageable = TransportSort.modifySort((PageRequest) pageRequest, searchCriteria);
-        return page(repository.findAll(TransportOfferSpecifications.from(searchCriteria), pageable));
+        return page(repository.findAll(specifications.from(searchCriteria), pageable));
     }
 
     @GetMapping("transport/{id}")

@@ -25,6 +25,7 @@ public class MaterialAidResource {
     private final MaterialAidOfferRepository repository;
     private final CurrentUser currentUser;
     private final UsersService usersService;
+    private final MaterialAidOfferSpecifications specifications;
 
     @Operation(description = "Creates material aid offer")
     @PostMapping(value = "secure/material-aid")
@@ -54,7 +55,7 @@ public class MaterialAidResource {
     @Operation(description = "Allows to search for material aid offers using different criteria (passes as query params). Each criteria is optional.")
     @GetMapping("material-aid")
     public Offers<MaterialAidOffer> list(Pageable pageRequest, MaterialAidOfferSearchCriteria searchCriteria) {
-        return page(repository.findAll(MaterialAidOfferSpecifications.from(searchCriteria), pageRequest));
+        return page(repository.findAll(specifications.from(searchCriteria), pageRequest));
     }
 
     @GetMapping("material-aid/{id}")

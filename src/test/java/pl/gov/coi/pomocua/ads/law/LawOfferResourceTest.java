@@ -69,6 +69,25 @@ public class LawOfferResourceTest extends BaseResourceTest<LawOffer> {
         }
 
         @Test
+        void shouldSearchByLocationWithNullLocation() {
+            LawOffer offer1 = postOffer(aLawOffer()
+                    .location(null)
+                    .build());
+            LawOffer offer2 = postOffer(aLawOffer()
+                    .location(new Location("Mazowieckie", "Warszawa"))
+                    .build());
+            postOffer(aLawOffer()
+                    .location(new Location("Pomorskie", "Gdańsk"))
+                    .build());
+
+            LawOfferSearchCriteria searchCriteria = new LawOfferSearchCriteria();
+            searchCriteria.setLocation(new Location("Mazowieckie", "WARSZAWA"));
+            var results = searchOffers(searchCriteria);
+
+            assertThat(results).hasSize(2).contains(offer1, offer2);
+        }
+
+        @Test
         void shouldSearchByHelpMode() {
             LawOffer offer = postOffer(aLawOffer()
                     .helpMode(List.of(HelpMode.BY_PHONE))
