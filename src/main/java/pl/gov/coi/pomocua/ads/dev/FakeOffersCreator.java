@@ -18,6 +18,8 @@ import pl.gov.coi.pomocua.ads.law.LawOfferRepository;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidCategory;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOfferRepository;
+import pl.gov.coi.pomocua.ads.translation.TranslationOffer;
+import pl.gov.coi.pomocua.ads.translation.TranslationOfferRepository;
 import pl.gov.coi.pomocua.ads.transport.TransportOffer;
 import pl.gov.coi.pomocua.ads.transport.TransportOfferRepository;
 import pl.gov.coi.pomocua.ads.job.JobOffer.Mode;
@@ -27,6 +29,7 @@ import pl.gov.coi.pomocua.ads.job.JobOffer.WorkTime;
 import pl.gov.coi.pomocua.ads.law.LawOffer.HelpKind;
 import pl.gov.coi.pomocua.ads.law.LawOffer.HelpMode;
 import pl.gov.coi.pomocua.ads.health.HealthOffer.HealthCareMode;
+import pl.gov.coi.pomocua.ads.translation.TranslationOffer.TranslationMode;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
@@ -43,6 +46,7 @@ public class FakeOffersCreator {
     private final JobOfferRepository jobOfferRepository;
     private final LawOfferRepository lawOfferRepository;
     private final HealthOfferRepository healthOfferRepository;
+    private final TranslationOfferRepository translationOfferRepository;
     private final CurrentUser currentUser;
 
     @PostConstruct
@@ -213,5 +217,33 @@ public class FakeOffersCreator {
 
         healthOfferRepository.save(o1);
         healthOfferRepository.save(o2);
+    }
+
+    @PostConstruct
+    public void translationOffer() {
+        TranslationOffer o1 = new TranslationOffer();
+        o1.title = "Pomoc w tłumaczeniach";
+        o1.description = "Pomoc w tłumaczeniach UA na PL, PL na UA";
+        o1.userId = currentUser.getCurrentUserId();
+        o1.userFirstName = "Małgorzata";
+        o1.setMode(List.of(TranslationMode.BY_EMAIL));
+        o1.setLanguage(List.of(Language.UA, Language.PL));
+        o1.location = new Location("Pomorskie", "Gdańsk");
+        o1.phoneCountryCode = "48";
+        o1.phoneNumber = "789234567";
+
+        TranslationOffer o2 = new TranslationOffer();
+        o2.title = "Pomoc w tłumaczeniach";
+        o2.description = "Pomoc w tłumaczeniach UA na PL, RU na PL, PL na UA, PL na RU";
+        o2.userId = currentUser.getCurrentUserId();
+        o2.userFirstName = "Ewelina";
+        o2.setMode(List.of(TranslationMode.BY_EMAIL, TranslationMode.ONLINE, TranslationMode.BY_PHONE));
+        o2.setLanguage(List.of(Language.UA, Language.PL, Language.RU));
+        o2.location = new Location("Mazowieckie", "Warszawa");
+        o2.phoneCountryCode = "48";
+        o2.phoneNumber = "654321778";
+
+        translationOfferRepository.save(o1);
+        translationOfferRepository.save(o2);
     }
 }
