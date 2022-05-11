@@ -30,6 +30,7 @@ public class TranslationResource {
     private final TranslationOfferRepository repository;
     private final CurrentUser currentUser;
     private final UsersService usersService;
+    private final TranslationOfferSpecifications specifications;
 
     @PostMapping("secure/translation")
     @ResponseStatus(HttpStatus.CREATED)
@@ -55,10 +56,9 @@ public class TranslationResource {
         repository.save(offer);
     }
 
-    //TODO criteria
     @GetMapping("translation")
-    public Offers<TranslationOffer> list(Pageable pageRequest) {
-        return Offers.page(repository.findAll(pageRequest));
+    public Offers<TranslationOffer> list(Pageable pageRequest, TranslationOfferSearchCriteria searchCriteria) {
+        return Offers.page(repository.findAll(specifications.from(searchCriteria), pageRequest));
     }
 
     @GetMapping("translation/{id}")
