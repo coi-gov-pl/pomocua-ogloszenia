@@ -13,8 +13,6 @@ import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.Offers;
-import pl.gov.coi.pomocua.ads.job.JobOffer;
-import pl.gov.coi.pomocua.ads.job.JobOfferSearchCriteria;
 
 import java.net.URI;
 import java.util.Collections;
@@ -22,10 +20,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.gov.coi.pomocua.ads.health.HealthTestDataGenerator.aHealthOffer;
-import static pl.gov.coi.pomocua.ads.job.JobTestDataGenerator.aJobOffer;
 
 import pl.gov.coi.pomocua.ads.health.HealthOffer.HealthCareMode;
-import pl.gov.coi.pomocua.ads.job.JobTestDataGenerator;
 
 public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer> {
 
