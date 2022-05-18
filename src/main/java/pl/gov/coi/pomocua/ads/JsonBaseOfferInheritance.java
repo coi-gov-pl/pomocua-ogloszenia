@@ -11,6 +11,7 @@ import pl.gov.coi.pomocua.ads.health.HealthOffer;
 import pl.gov.coi.pomocua.ads.job.JobOffer;
 import pl.gov.coi.pomocua.ads.law.LawOffer;
 import pl.gov.coi.pomocua.ads.materialaid.MaterialAidOffer;
+import pl.gov.coi.pomocua.ads.other.OtherOffer;
 import pl.gov.coi.pomocua.ads.translation.TranslationOffer;
 import pl.gov.coi.pomocua.ads.transport.TransportOffer;
 
@@ -25,7 +26,8 @@ import java.lang.annotation.RetentionPolicy;
         @Type(value = JobOffer.class, name = "JOB"),
         @Type(value = LawOffer.class, name = "LAW"),
         @Type(value = HealthOffer.class, name = "HEALTH"),
-        @Type(value = TranslationOffer.class, name = "TRANSLATION")
+        @Type(value = TranslationOffer.class, name = "TRANSLATION"),
+        @Type(value = OtherOffer.class, name = "OTHER")
 })
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside
