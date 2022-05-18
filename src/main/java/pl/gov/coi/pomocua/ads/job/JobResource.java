@@ -30,6 +30,7 @@ public class JobResource {
     private final JobOfferRepository repository;
     private final CurrentUser currentUser;
     private final UsersService usersService;
+    private final JobOfferSpecifications specifications;
 
     @PostMapping("secure/job")
     @ResponseStatus(HttpStatus.CREATED)
@@ -57,7 +58,7 @@ public class JobResource {
 
     @GetMapping("job")
     public Offers<JobOffer> list(Pageable pageRequest, JobOfferSearchCriteria searchCriteria) {
-        return Offers.page(repository.findAll(JobOfferSpecifications.from(searchCriteria), pageRequest));
+        return Offers.page(repository.findAll(specifications.from(searchCriteria), pageRequest));
     }
 
     @GetMapping("job/{id}")

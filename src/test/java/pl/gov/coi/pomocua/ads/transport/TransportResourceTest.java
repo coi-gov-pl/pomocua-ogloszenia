@@ -78,6 +78,29 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
         }
 
         @Test
+        void shouldFindByOriginWithNullOrigin() {
+            TransportOffer transportOffer1 = postOffer(aTransportOffer()
+                    .origin(new Location("mazowieckie", "warszawa"))
+                    .build());
+            TransportOffer transportOffer2 = postOffer(aTransportOffer()
+                    .origin(null)
+                    .build());
+            postOffer(aTransportOffer()
+                    .origin(new Location("Pomorskie", "Wejherowo"))
+                    .build());
+            postOffer(aTransportOffer()
+                    .origin(new Location("Wielkopolskie", "Warszawa"))
+                    .build());
+
+            TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
+            searchCriteria.setOrigin(new Location("Mazowieckie", "Warszawa"));
+            var results = searchOffers(searchCriteria);
+
+            assertThat(results).hasSize(2);
+            assertThat(results).contains(transportOffer1, transportOffer2);
+        }
+
+        @Test
         void shouldFindByDestination() {
             TransportOffer transportOffer1 = postOffer(aTransportOffer()
                     .destination(new Location("pomorskie", "GdyniA"))
@@ -92,6 +115,26 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer> {
 
             assertThat(results).hasSize(1);
             assertThat(results).first().isEqualTo(transportOffer1);
+        }
+
+        @Test
+        void shouldFindByDestinationWithNullDestination() {
+            TransportOffer transportOffer1 = postOffer(aTransportOffer()
+                    .destination(new Location("pomorskie", "GdyniA"))
+                    .build());
+            TransportOffer transportOffer2 = postOffer(aTransportOffer()
+                    .destination(null)
+                    .build());
+            postOffer(aTransportOffer()
+                    .destination(new Location("Pomorskie", "Wejherowo"))
+                    .build());
+
+            TransportOfferSearchCriteria searchCriteria = new TransportOfferSearchCriteria();
+            searchCriteria.setDestination(new Location("Pomorskie", "Gdynia"));
+            var results = searchOffers(searchCriteria);
+
+            assertThat(results).hasSize(2);
+            assertThat(results).contains(transportOffer1, transportOffer2);
         }
 
         @Test

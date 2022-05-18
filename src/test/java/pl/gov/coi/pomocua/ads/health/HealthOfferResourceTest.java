@@ -68,6 +68,25 @@ public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer> {
         }
 
         @Test
+        void shouldSearchByLocationWithNullLocation() {
+            HealthOffer offer1 = postOffer(aHealthOffer()
+                    .location(null)
+                    .build());
+            HealthOffer offer2 = postOffer(aHealthOffer()
+                    .location(new Location("Mazowieckie", "Warszawa"))
+                    .build());
+            postOffer(aHealthOffer()
+                    .location(new Location("Pomorskie", "Gdańsk"))
+                    .build());
+
+            HealthOfferSearchCriteria searchCriteria = new HealthOfferSearchCriteria();
+            searchCriteria.setLocation(new Location("Mazowieckie", "WARSZAWA"));
+            var results = searchOffers(searchCriteria);
+
+            assertThat(results).hasSize(2).contains(offer1, offer2);
+        }
+
+        @Test
         void shouldSearchByMode() {
             postOffer(aHealthOffer()
                     .mode(List.of(HealthCareMode.IN_FACILITY))
