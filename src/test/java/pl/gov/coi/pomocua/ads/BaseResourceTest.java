@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
@@ -29,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(CleanDatabaseExtension.class)
 @Import(TestConfiguration.class)
-public abstract class BaseResourceTest<T extends BaseOffer> {
+public abstract class BaseResourceTest<T extends BaseOffer, V extends BaseOfferVM> {
 
     @Autowired
     protected TestRestTemplate restTemplate;
@@ -37,6 +38,8 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     protected TestTimeProvider testTimeProvider;
     @Autowired
     protected TestUser testUser;
+    @MockBean
+    OffersTranslationUtil translationUtil;
 
     @AfterEach
     void tearDown() {
@@ -56,24 +59,24 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
             UserId userId = new UserId("some-current-id");
             testUser.setCurrentUser(new User(userId, "some@email.com", "John"));
 
-            T response = postSampleOffer();
+            V response = postSampleOffer();
 
-            T createdOffer = getOfferFromRepository(response.id);
+            T createdOffer = getOfferFromRepository(response.getId());
             assertThat(createdOffer.userId).isEqualTo(userId);
             assertThat(createdOffer.userFirstName).isEqualTo("John");
         }
 
         @Test
         void shouldSetActiveStatus() {
-            T created = postSampleOffer();
+            V created = postSampleOffer();
 
-            T createdEntity = getOfferFromRepository(created.id);
+            T createdEntity = getOfferFromRepository(created.getId());
             assertThat(createdEntity.status).isEqualTo(BaseOffer.Status.ACTIVE);
         }
 
         @Test
         void shouldReturnCreatedOfferOnList() {
-            T response = postSampleOffer();
+            V response = postSampleOffer();
 
             var content = listOffers();
             assertThat(content).contains(response);
@@ -81,8 +84,8 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
         @Test
         void shouldReturnCreatedOffer() {
-            T created = postSampleOffer();
-            T returned = restTemplate.getForObject("/api/" + getOfferSuffix() + "/{id}", getClazz(), created.id);
+            V created = postSampleOffer();
+            V returned = restTemplate.getForObject("/api/" + getOfferSuffix() + "/{id}", getClazz(), created.getId());
             assertThat(returned).isEqualTo(created);
         }
 
@@ -90,9 +93,9 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         void shouldSetModifiedDateWhenOfferCreated() {
             testTimeProvider.setCurrentTime(Instant.parse("2022-03-05T14:20:00Z"));
 
-            T created = postSampleOffer();
+            V created = postSampleOffer();
 
-            Optional<T> createdEntity = getRepository().findById(created.id);
+            Optional<T> createdEntity = getRepository().findById(created.getId());
             assertThat(createdEntity)
                     .isNotEmpty()
                     .get().extracting(e -> e.modifiedDate).isEqualTo(Instant.parse("2022-03-05T14:20:00Z"));
@@ -100,84 +103,84 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
         @Test
         void shouldIgnoreSuppliedIdOnCreate() {
-            T request = sampleOfferRequest();
-            request.id = 422L;
-            T response = restTemplate.postForObject("/api/secure/" + getOfferSuffix(), request, getClazz());
-            assertThat(response.id).isNotNull();
-            assertThat(response.id).isNotEqualTo(request.id);
+            V request = sampleOfferRequest();
+            request.setId(422L);
+            V response = restTemplate.postForObject("/api/secure/" + getOfferSuffix(), request, getClazz());
+            assertThat(response.getId()).isNotNull();
+            assertThat(response.getId()).isNotEqualTo(request.getId());
         }
 
         @Nested
         class Validation {
             @Test
             void shouldRejectBlankTitle() {
-                T offer = sampleOfferRequest();
-                offer.title = "       ";
+                V offer = sampleOfferRequest();
+                offer.setTitle("       ");
                 assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
             }
 
             @ParameterizedTest
             @ValueSource(strings = {"<", ">", "(", ")", "%", "@", "\"", "'"})
             void shouldRejectIncorrectTitle(String notAllowedChar) {
-                T offer = sampleOfferRequest();
-                offer.title = "title" + notAllowedChar;
+                V offer = sampleOfferRequest();
+                offer.setTitle("title" + notAllowedChar);
                 assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
             }
 
             @Test
             void shouldRejectTooLongTitle() {
-                T offer = sampleOfferRequest();
-                offer.title = "x".repeat(100);
+                V offer = sampleOfferRequest();
+                offer.setTitle("x".repeat(100));
                 assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
             }
 
             @Test
             void shouldRejectBlankDescription() {
-                T offer = sampleOfferRequest();
-                offer.description = "       ";
+                V offer = sampleOfferRequest();
+                offer.setDescription("       ");
                 assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
             }
 
             @ParameterizedTest
             @ValueSource(strings = {"<", ">", "%", "\"", "'"})
             void shouldRejectIncorrectDescription(String notAllowedChar) {
-                T offer = sampleOfferRequest();
-                offer.description = "description" + notAllowedChar;
+                V offer = sampleOfferRequest();
+                offer.setDescription("description" + notAllowedChar);
                 assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
             }
 
             @ParameterizedTest
             @ValueSource(strings = {"invalid phone", "+48 invalid phone", "0048123", "+48 123 123", "+48 123", "+48000000000", "0048123456"})
             void shouldRejectInvalidPhoneNumber(String invalidPhoneNumber) {
-                T offer = sampleOfferRequest();
-                offer.phoneNumber = invalidPhoneNumber;
+                V offer = sampleOfferRequest();
+                offer.setPhoneNumber(invalidPhoneNumber);
                 assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
             }
 
             @Test
             void shouldAcceptMissingPhoneNumber() {
-                T offer = sampleOfferRequest();
-                offer.phoneNumber = null;
+                V offer = sampleOfferRequest();
+                offer.setPhoneNumber(null);
                 assertPostResponseStatus(offer, HttpStatus.CREATED);
             }
 
             @ParameterizedTest
             @ValueSource(strings = {"+48123456789", "+48 123 456 789", "+48 123-456-789", "0048 123456789", "0048 (123) 456-789"})
             void shouldAcceptPhoneNumberInVariousFormats(String phoneNumber) {
-                T offer = sampleOfferRequest();
-                offer.phoneNumber = phoneNumber;
+                V offer = sampleOfferRequest();
+                offer.setPhoneNumber(phoneNumber);
                 assertPostResponseStatus(offer, HttpStatus.CREATED);
             }
 
             @ParameterizedTest
             @ValueSource(strings = {"+48123456789", "+48 123 456 789", "+48 123-456-789", "0048 123456789", "0048 (123) 456-789"})
             void shouldSaveNormalizedPhoneNumber(String phoneNumber) {
-                T offer = sampleOfferRequest();
-                offer.phoneNumber = phoneNumber;
+                V offer = sampleOfferRequest();
+                offer.setPhoneNumber(phoneNumber);
 
-                T createdOffer = postOffer(offer);
+                V createdOffer = postOffer(offer);
 
-                T offerFromRepository = getOfferFromRepository(createdOffer.id);
+                T offerFromRepository = getOfferFromRepository(createdOffer.getId());
                 assertThat(offerFromRepository.phoneNumber).isEqualTo("123456789");
                 assertThat(offerFromRepository.phoneCountryCode).isEqualTo("48");
             }
@@ -188,9 +191,9 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     class FetchingSingle {
         @Test
         void shouldReturnSingleOffer() {
-            T createdOffer = postSampleOffer();
+            V createdOffer = postSampleOffer();
 
-            ResponseEntity<T> response = fetchOffer(createdOffer.id);
+            ResponseEntity<V> response = fetchOffer(createdOffer.getId());
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(createdOffer);
@@ -198,22 +201,22 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
 
         @Test
         void shouldReturn404WhenSingleOfferNotFound() {
-            ResponseEntity<T> response = fetchOffer(123L);
+            ResponseEntity<V> response = fetchOffer(123L);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         }
 
         @Test
         void shouldReturn404WhenOfferDeactivated() {
-            T offer = postSampleOffer();
-            deleteOffer(offer.id);
+            V offer = postSampleOffer();
+            deleteOffer(offer.getId());
 
-            ResponseEntity<T> response = fetchOffer(offer.id);
+            ResponseEntity<V> response = fetchOffer(offer.getId());
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         }
 
-        private ResponseEntity<T> fetchOffer(Long id) {
+        private ResponseEntity<V> fetchOffer(Long id) {
             return restTemplate.getForEntity("/api/%s/%d".formatted(getOfferSuffix(), id), getClazz());
         }
     }
@@ -222,20 +225,20 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
     class Deactivating {
         @Test
         void shouldDeactivateOffer() {
-            T offer = postSampleOffer();
+            V offer = postSampleOffer();
 
-            deleteOffer(offer.id);
+            deleteOffer(offer.getId());
 
-            T deactivatedOffer = getOfferFromRepository(offer.id);
+            T deactivatedOffer = getOfferFromRepository(offer.getId());
             assertThat(deactivatedOffer.status).isEqualTo(BaseOffer.Status.INACTIVE);
         }
 
         @Test
         void deactivatingIsIdempotent() {
-            T created = postSampleOffer();
-            deleteOffer(created.id);
+            V created = postSampleOffer();
+            deleteOffer(created.getId());
 
-            ResponseEntity<Void> secondResponse = deleteOffer(created.id);
+            ResponseEntity<Void> secondResponse = deleteOffer(created.getId());
 
             assertThat(secondResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         }
@@ -250,26 +253,26 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         @Test
         void shouldReturn404WhenTryingToDeactivateOfferBelongingToAnotherUser() {
             testUser.setCurrentUserWithId(new UserId("user-1"));
-            T offer = postSampleOffer();
+            V offer = postSampleOffer();
 
             testUser.setCurrentUserWithId(new UserId("user-2"));
-            ResponseEntity<Void> response = deleteOffer(offer.id);
+            ResponseEntity<Void> response = deleteOffer(offer.getId());
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-            T notDeactivatedOffer = getOfferFromRepository(offer.id);
+            T notDeactivatedOffer = getOfferFromRepository(offer.getId());
             assertThat(notDeactivatedOffer.status).isEqualTo(BaseOffer.Status.ACTIVE);
         }
     }
 
-    protected abstract Class<T> getClazz();
+    protected abstract Class<V> getClazz();
 
     protected abstract String getOfferSuffix();
 
-    protected abstract T sampleOfferRequest();
+    protected abstract V sampleOfferRequest();
 
     protected abstract CrudRepository<T, Long> getRepository();
 
-    protected void assertPostResponseStatus(T offer, HttpStatus status) {
+    protected void assertPostResponseStatus(V offer, HttpStatus status) {
         String url = "/api/secure/" + getOfferSuffix();
         var response = status.is2xxSuccessful() ?
                 restTemplate.postForEntity(url, offer, getClazz()) :
@@ -277,37 +280,37 @@ public abstract class BaseResourceTest<T extends BaseOffer> {
         assertThat(response.getStatusCode()).isEqualTo(status);
     }
 
-    protected Offers<T> listOffers(URI url) {
+    protected OffersVM<V> listOffers(URI url) {
         var list = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<Offers<BaseOffer>>() {
+                new ParameterizedTypeReference<OffersVM<BaseOfferVM>>() {
                 });
-        return (Offers<T>) list.getBody();
+        return (OffersVM<V>) list.getBody();
 
     }
 
-    protected List<T> listOffers(String requestParams) {
+    protected List<V> listOffers(String requestParams) {
         return listOffers(URI.create("/api/" + getOfferSuffix() + requestParams)).content;
     }
 
-    protected List<T> listOffers() {
+    protected List<V> listOffers() {
         return listOffers("");
     }
 
-    protected T postSampleOffer() {
-        T request = sampleOfferRequest();
+    protected V postSampleOffer() {
+        V request = sampleOfferRequest();
         return postOffer(request);
     }
 
-    protected T postOffer(T request) {
-        ResponseEntity<T> response = restTemplate.postForEntity("/api/secure/" + getOfferSuffix(), request, getClazz());
+    protected V postOffer(V request) {
+        ResponseEntity<V> response = restTemplate.postForEntity("/api/secure/" + getOfferSuffix(), request, getClazz());
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        T entity = response.getBody();
-        assertThat(entity.id).isNotNull();
+        V entity = response.getBody();
+        assertThat(entity.getId()).isNotNull();
         assertThat(entity).usingRecursiveComparison()
-                .ignoringFields("id", "modifiedDate", "userFirstName", "phoneNumber", "phoneCountryCode")
+                .ignoringFields("id", "modifiedDate", "userFirstName", "phoneNumber", "phoneCountryCode", "status")
                 .isEqualTo(request);
         return entity;
     }

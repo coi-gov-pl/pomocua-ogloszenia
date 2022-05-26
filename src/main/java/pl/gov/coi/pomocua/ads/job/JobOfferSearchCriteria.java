@@ -19,4 +19,5 @@ public class JobOfferSearchCriteria {
     private ContractType contractType;
     private Mode mode;
     private List<Language> language;
+    private Language lang = Language.PL;
 }

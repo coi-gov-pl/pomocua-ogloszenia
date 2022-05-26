@@ -9,28 +9,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.gov.coi.pomocua.ads.BaseResourceTest;
-import pl.gov.coi.pomocua.ads.Language;
 
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
+import pl.gov.coi.pomocua.ads.BaseResourceTest;
+import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
-import pl.gov.coi.pomocua.ads.Offers;
+import pl.gov.coi.pomocua.ads.OffersVM;
 import pl.gov.coi.pomocua.ads.translation.TranslationOffer.TranslationMode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.gov.coi.pomocua.ads.translation.TranslationTestDataGenerator.aTranslationOffer;
 
-public class TranslationOfferResourceTest extends BaseResourceTest<TranslationOffer> {
+public class TranslationOfferResourceTest extends BaseResourceTest<TranslationOffer, TranslationOfferVM> {
 
     @Autowired
     private TranslationOfferRepository repository;
 
     @Override
-    protected Class<TranslationOffer> getClazz() {
-        return TranslationOffer.class;
+    protected Class<TranslationOfferVM> getClazz() {
+        return TranslationOfferVM.class;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class TranslationOfferResourceTest extends BaseResourceTest<TranslationOf
     }
 
     @Override
-    protected TranslationOffer sampleOfferRequest() {
+    protected TranslationOfferVM sampleOfferRequest() {
         return aTranslationOffer().build();
     }
 
@@ -52,7 +52,7 @@ public class TranslationOfferResourceTest extends BaseResourceTest<TranslationOf
     class Searching {
         @Test
         void shouldSearchByLocationWithIgnoreCase() {
-            TranslationOffer offer1 = postOffer(aTranslationOffer()
+            TranslationOfferVM offer1 = postOffer(aTranslationOffer()
                     .location(new Location("Mazowieckie", "Warszawa"))
                     .build());
 
@@ -69,11 +69,11 @@ public class TranslationOfferResourceTest extends BaseResourceTest<TranslationOf
 
         @Test
         void shouldSearchByLocationWithNullLocation() {
-            TranslationOffer offer1 = postOffer(aTranslationOffer()
+            TranslationOfferVM offer1 = postOffer(aTranslationOffer()
                     .location(null)
                     .build());
 
-            TranslationOffer offer2 = postOffer(aTranslationOffer()
+            TranslationOfferVM offer2 = postOffer(aTranslationOffer()
                     .location(new Location("Mazowieckie", "Warszawa"))
                     .build());
 
@@ -94,11 +94,11 @@ public class TranslationOfferResourceTest extends BaseResourceTest<TranslationOf
                     .mode(List.of(TranslationMode.ONLINE))
                     .build());
 
-            TranslationOffer offer = postOffer(aTranslationOffer()
+            TranslationOfferVM offer = postOffer(aTranslationOffer()
                     .mode(List.of(TranslationMode.ONLINE, TranslationMode.BY_EMAIL))
                     .build());
 
-            TranslationOffer offer2 = postOffer(aTranslationOffer()
+            TranslationOfferVM offer2 = postOffer(aTranslationOffer()
                     .mode(List.of(TranslationMode.STATIONARY, TranslationMode.BY_EMAIL))
                     .build());
 
@@ -111,11 +111,11 @@ public class TranslationOfferResourceTest extends BaseResourceTest<TranslationOf
 
         @Test
         void shouldSearchByLanguage() {
-            TranslationOffer offer = postOffer(aTranslationOffer()
+            TranslationOfferVM offer = postOffer(aTranslationOffer()
                     .language(List.of(Language.PL, Language.UA))
                     .build());
 
-            TranslationOffer offer2 = postOffer(aTranslationOffer()
+            TranslationOfferVM offer2 = postOffer(aTranslationOffer()
                     .language(List.of(Language.EN))
                     .build());
 
@@ -143,13 +143,13 @@ public class TranslationOfferResourceTest extends BaseResourceTest<TranslationOf
             var results = searchOffers(page);
 
             assertThat(results.totalElements).isEqualTo(6);
-            assertThat(results.content).hasSize(2).extracting(r -> r.title).containsExactly("c", "d");
+            assertThat(results.content).hasSize(2).extracting(r -> r.getTitle()).containsExactly("c", "d");
         }
 
         @Test
         void shouldIgnoreDeactivatedOffer() {
-            TranslationOffer offer = postOffer(aTranslationOffer().build());
-            deleteOffer(offer.id);
+            TranslationOfferVM offer = postOffer(aTranslationOffer().build());
+            deleteOffer(offer.getId());
 
             PageRequest page = PageRequest.of(0, 10);
             var results = searchOffers(page);
@@ -163,35 +163,35 @@ public class TranslationOfferResourceTest extends BaseResourceTest<TranslationOf
     class ValidationTest {
         @Test
         void shouldAcceptNullLocation() {
-            TranslationOffer offer = sampleOfferRequest();
-            offer.location = null;
+            TranslationOfferVM offer = sampleOfferRequest();
+            offer.setLocation(null);
             assertPostResponseStatus(offer, HttpStatus.CREATED);
         }
 
         @Test
         void shouldRejectNullMode() {
-            TranslationOffer offer = sampleOfferRequest();
+            TranslationOfferVM offer = sampleOfferRequest();
             offer.setMode(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejestEmptyMode() {
-            TranslationOffer offer = sampleOfferRequest();
+            TranslationOfferVM offer = sampleOfferRequest();
             offer.setMode(Collections.emptyList());
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectNullLanguage() {
-            TranslationOffer offer = sampleOfferRequest();
+            TranslationOfferVM offer = sampleOfferRequest();
             offer.setLanguage(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectEmptyLanguage() {
-            TranslationOffer offer = sampleOfferRequest();
+            TranslationOfferVM offer = sampleOfferRequest();
             offer.setLanguage(Collections.emptyList());
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
@@ -201,13 +201,13 @@ public class TranslationOfferResourceTest extends BaseResourceTest<TranslationOf
     class Updating {
         @Test
         void shouldUpdateOffer() {
-            TranslationOffer offer = postSampleOffer();
+            TranslationOfferVM offer = postSampleOffer();
             var updateJson = TranslationTestDataGenerator.sampleUpdateJson();
 
-            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+            ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-            TranslationOffer updatedOffer = getOfferFromRepository(offer.id);
+            TranslationOffer updatedOffer = getOfferFromRepository(offer.getId());
             assertThat(updatedOffer.title).isEqualTo("new title");
             assertThat(updatedOffer.description).isEqualTo("new description");
             assertThat(updatedOffer.getMode()).isEqualTo(List.of(TranslationMode.STATIONARY));
@@ -217,7 +217,7 @@ public class TranslationOfferResourceTest extends BaseResourceTest<TranslationOf
         }
     }
 
-    private List<TranslationOffer> searchOffers(TranslationOfferSearchCriteria searchCriteria) {
+    private List<TranslationOfferVM> searchOffers(TranslationOfferSearchCriteria searchCriteria) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         if (searchCriteria.getLocation() != null) {
             builder
@@ -234,7 +234,7 @@ public class TranslationOfferResourceTest extends BaseResourceTest<TranslationOf
         return listOffers(URI.create(url)).content;
     }
 
-    private Offers<TranslationOffer> searchOffers(PageRequest pageRequest) {
+    private OffersVM<TranslationOfferVM> searchOffers(PageRequest pageRequest) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         builder.queryParam("page", pageRequest.getPageNumber());
         builder.queryParam("size", pageRequest.getPageSize());

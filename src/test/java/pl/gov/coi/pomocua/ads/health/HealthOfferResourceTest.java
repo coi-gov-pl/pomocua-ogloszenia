@@ -9,10 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.gov.coi.pomocua.ads.BaseResourceTest;
-import pl.gov.coi.pomocua.ads.Language;
-import pl.gov.coi.pomocua.ads.Location;
-import pl.gov.coi.pomocua.ads.Offers;
 
 import java.net.URI;
 import java.util.Collections;
@@ -21,16 +17,20 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.gov.coi.pomocua.ads.health.HealthTestDataGenerator.aHealthOffer;
 
+import pl.gov.coi.pomocua.ads.BaseResourceTest;
+import pl.gov.coi.pomocua.ads.Language;
+import pl.gov.coi.pomocua.ads.Location;
+import pl.gov.coi.pomocua.ads.OffersVM;
 import pl.gov.coi.pomocua.ads.health.HealthOffer.HealthCareMode;
 
-public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer> {
+public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer, HealthOfferVM> {
 
     @Autowired
     private HealthOfferRepository repository;
 
     @Override
-    protected Class<HealthOffer> getClazz() {
-        return HealthOffer.class;
+    protected Class<HealthOfferVM> getClazz() {
+        return HealthOfferVM.class;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer> {
     }
 
     @Override
-    protected HealthOffer sampleOfferRequest() {
+    protected HealthOfferVM sampleOfferRequest() {
         return aHealthOffer().build();
     }
 
@@ -52,7 +52,7 @@ public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer> {
     class Searching {
         @Test
         void shouldSearchByLocationWithIgnoreCase() {
-            HealthOffer offer1 = postOffer(aHealthOffer()
+            HealthOfferVM offer1 = postOffer(aHealthOffer()
                     .location(new Location("Mazowieckie", "Warszawa"))
                     .build());
 
@@ -69,10 +69,10 @@ public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer> {
 
         @Test
         void shouldSearchByLocationWithNullLocation() {
-            HealthOffer offer1 = postOffer(aHealthOffer()
+            HealthOfferVM offer1 = postOffer(aHealthOffer()
                     .location(null)
                     .build());
-            HealthOffer offer2 = postOffer(aHealthOffer()
+            HealthOfferVM offer2 = postOffer(aHealthOffer()
                     .location(new Location("Mazowieckie", "Warszawa"))
                     .build());
             postOffer(aHealthOffer()
@@ -92,11 +92,11 @@ public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer> {
                     .mode(List.of(HealthCareMode.IN_FACILITY))
                     .build());
 
-            HealthOffer offer = postOffer(aHealthOffer()
+            HealthOfferVM offer = postOffer(aHealthOffer()
                     .mode(List.of(HealthCareMode.IN_FACILITY, HealthCareMode.BY_PHONE))
                     .build());
 
-            HealthOffer offer2 = postOffer(aHealthOffer()
+            HealthOfferVM offer2 = postOffer(aHealthOffer()
                     .mode(List.of(HealthCareMode.ONLINE, HealthCareMode.BY_PHONE))
                     .build());
 
@@ -113,7 +113,7 @@ public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer> {
                     .specialization(HealthCareSpecialization.PEDIATRICS)
                     .build());
 
-            HealthOffer offer = postOffer(aHealthOffer()
+            HealthOfferVM offer = postOffer(aHealthOffer()
                     .specialization(HealthCareSpecialization.GENERAL)
                     .build());
 
@@ -130,11 +130,11 @@ public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer> {
 
         @Test
         void shouldSearchByLanguage() {
-            HealthOffer offer = postOffer(aHealthOffer()
+            HealthOfferVM offer = postOffer(aHealthOffer()
                     .language(List.of(Language.PL, Language.UA))
                     .build());
 
-            HealthOffer offer2 = postOffer(aHealthOffer()
+            HealthOfferVM offer2 = postOffer(aHealthOffer()
                     .language(List.of(Language.EN))
                     .build());
 
@@ -162,13 +162,13 @@ public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer> {
             var results = searchOffers(page);
 
             assertThat(results.totalElements).isEqualTo(6);
-            assertThat(results.content).hasSize(2).extracting(r -> r.title).containsExactly("c", "d");
+            assertThat(results.content).hasSize(2).extracting(r -> r.getTitle()).containsExactly("c", "d");
         }
 
         @Test
         void shouldIgnoreDeactivatedOffer() {
-            HealthOffer offer = postOffer(aHealthOffer().build());
-            deleteOffer(offer.id);
+            HealthOfferVM offer = postOffer(aHealthOffer().build());
+            deleteOffer(offer.getId());
 
             PageRequest page = PageRequest.of(0, 10);
             var results = searchOffers(page);
@@ -182,42 +182,42 @@ public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer> {
     class ValidationTest {
         @Test
         void shouldAcceptNullLocation() {
-            HealthOffer offer = sampleOfferRequest();
-            offer.location = null;
+            HealthOfferVM offer = sampleOfferRequest();
+            offer.setLocation(null);
             assertPostResponseStatus(offer, HttpStatus.CREATED);
         }
 
         @Test
         void shouldRejectNullMode() {
-            HealthOffer offer = sampleOfferRequest();
+            HealthOfferVM offer = sampleOfferRequest();
             offer.setMode(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectEmptyMode() {
-            HealthOffer offer = sampleOfferRequest();
+            HealthOfferVM offer = sampleOfferRequest();
             offer.setMode(Collections.emptyList());
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectNullSpecialization() {
-            HealthOffer offer = sampleOfferRequest();
-            offer.specialization = null;
+            HealthOfferVM offer = sampleOfferRequest();
+            offer.setSpecialization(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectNullLanguage() {
-            HealthOffer offer = sampleOfferRequest();
+            HealthOfferVM offer = sampleOfferRequest();
             offer.setLanguage(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectEmptyLanguage() {
-            HealthOffer offer = sampleOfferRequest();
+            HealthOfferVM offer = sampleOfferRequest();
             offer.setLanguage(Collections.emptyList());
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
@@ -227,13 +227,13 @@ public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer> {
     class Updating {
         @Test
         void shouldUpdateOffer() {
-            HealthOffer offer = postSampleOffer();
+            HealthOfferVM offer = postSampleOffer();
             var updateJson = HealthTestDataGenerator.sampleUpdateJson();
 
-            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+            ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-            HealthOffer updatedOffer = getOfferFromRepository(offer.id);
+            HealthOffer updatedOffer = getOfferFromRepository(offer.getId());
             assertThat(updatedOffer.title).isEqualTo("new title");
             assertThat(updatedOffer.description).isEqualTo("new description");
             assertThat(updatedOffer.getMode()).isEqualTo(List.of(HealthCareMode.ONLINE));
@@ -244,7 +244,7 @@ public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer> {
         }
     }
 
-    private List<HealthOffer> searchOffers(HealthOfferSearchCriteria searchCriteria) {
+    private List<HealthOfferVM> searchOffers(HealthOfferSearchCriteria searchCriteria) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         if (searchCriteria.getLocation() != null) {
             builder
@@ -264,7 +264,7 @@ public class HealthOfferResourceTest extends BaseResourceTest<HealthOffer> {
         return listOffers(URI.create(url)).content;
     }
 
-    private Offers<HealthOffer> searchOffers(PageRequest pageRequest) {
+    private OffersVM<HealthOfferVM> searchOffers(PageRequest pageRequest) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         builder.queryParam("page", pageRequest.getPageNumber());
         builder.queryParam("size", pageRequest.getPageSize());

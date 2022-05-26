@@ -67,3 +67,9 @@ keycloak:
         - name: PERMIT ALL
           patterns:
             - /*
+
+translator:
+  endpoint: ${TRANSLATOR_ENDPOINT:https://api.cognitive.microsofttranslator.com}
+  key: ${TRANSLATOR_KEY:invalid}
+  region: ${TRANSLATOR_REGION:invalid}
+  offers-per-minute: ${TRANSLATOR_OFFERS_PER_MINUTE:10}

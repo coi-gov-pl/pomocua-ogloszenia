@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class LawTestDataGenerator {
-    public static LawOfferBuilder aLawOffer() {
+    public static LawOfferVMBuilder aLawOffer() {
         return LawTestDataGenerator.builder()
                 .title("sample law offer")
                 .description("sample law description")
@@ -31,7 +31,7 @@ public class LawTestDataGenerator {
     }
 
     @Builder
-    private static LawOffer lawOfferBuilder(
+    private static LawOfferVM lawOfferVMBuilder(
             String title,
             String description,
             List<HelpMode> helpMode,
@@ -40,14 +40,14 @@ public class LawTestDataGenerator {
             List<Language> language,
             String phoneNumber
     ) {
-        LawOffer offer = new LawOffer();
-        offer.title = Optional.ofNullable(title).orElse("some title");
-        offer.description = Optional.ofNullable(description).orElse("some description");
+        LawOfferVM offer = new LawOfferVM();
+        offer.setTitle(Optional.ofNullable(title).orElse("some title"));
+        offer.setDescription(Optional.ofNullable(description).orElse("some description"));
         offer.setHelpMode(Optional.ofNullable(helpMode).orElse(List.of(HelpMode.ONLINE)));
         offer.setHelpKind(Optional.ofNullable(helpKind).orElse(List.of(HelpKind.IMMIGRATION_LAW)));
-        offer.location = Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa"));
+        offer.setLocation(Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa")));
         offer.setLanguage(Optional.ofNullable(language).orElse(List.of(Language.PL, Language.UA)));
-        offer.phoneNumber = Optional.ofNullable(phoneNumber).orElse("+48123456789");
+        offer.setPhoneNumber(Optional.ofNullable(phoneNumber).orElse("+48123456789"));
         return offer;
     }
 }

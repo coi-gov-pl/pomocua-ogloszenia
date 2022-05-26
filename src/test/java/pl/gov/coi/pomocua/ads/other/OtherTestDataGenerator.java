@@ -1,13 +1,14 @@
 package pl.gov.coi.pomocua.ads.other;
 
 import lombok.Builder;
+import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 
 import java.util.Optional;
 
 public class OtherTestDataGenerator {
 
-    public static OtherOfferBuilder aOtherOffer() {
+    public static OtherOfferVMBuilder aOtherOffer() {
         return OtherTestDataGenerator.builder()
                 .title("sample other offer")
                 .description("sample other offer description")
@@ -23,17 +24,17 @@ public class OtherTestDataGenerator {
     }
 
     @Builder
-    private static OtherOffer otherOfferBuilder(
+    private static OtherOfferVM otherOfferVMBuilder(
             String title,
             String description,
             Location location,
             String phoneNumber
     ) {
-        OtherOffer offer = new OtherOffer();
-        offer.title = Optional.ofNullable(title).orElse("some title");
-        offer.description = Optional.ofNullable(description).orElse("some description");
-        offer.location = Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa"));
-        offer.phoneNumber = Optional.ofNullable(phoneNumber).orElse("48123456789");
+        OtherOfferVM offer = new OtherOfferVM();
+        offer.setTitle(Optional.ofNullable(title).orElse("some title"));
+        offer.setDescription(Optional.ofNullable(description).orElse("some description"));
+        offer.setLocation(Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa")));
+        offer.setPhoneNumber(Optional.ofNullable(phoneNumber).orElse("48123456789"));
         return offer;
     }
 }

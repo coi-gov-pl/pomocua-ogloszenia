@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class HealthTestDataGenerator {
-    public static HealthOfferBuilder aHealthOffer() {
+    public static HealthOfferVMBuilder aHealthOffer() {
         return HealthTestDataGenerator.builder()
                 .title("sample health offer")
                 .description("sample health offer description")
@@ -31,7 +31,7 @@ public class HealthTestDataGenerator {
     }
 
     @Builder
-    private static HealthOffer healthOfferBuilder(
+    private static HealthOfferVM healthOfferVMBuilder(
             String title,
             String description,
             List<HealthCareMode> mode,
@@ -40,14 +40,14 @@ public class HealthTestDataGenerator {
             List<Language> language,
             String phoneNumber
     ) {
-        HealthOffer offer = new HealthOffer();
-        offer.title = Optional.ofNullable(title).orElse("some title");
-        offer.description = Optional.ofNullable(description).orElse("some description");
+        HealthOfferVM offer = new HealthOfferVM();
+        offer.setTitle(Optional.ofNullable(title).orElse("some title"));
+        offer.setDescription(Optional.ofNullable(description).orElse("some description"));
         offer.setMode(Optional.ofNullable(mode).orElse(List.of(HealthCareMode.IN_FACILITY, HealthCareMode.ONLINE)));
-        offer.specialization = Optional.ofNullable(specialization).orElse(HealthCareSpecialization.GENERAL);
-        offer.location = Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa"));
+        offer.setSpecialization(Optional.ofNullable(specialization).orElse(HealthCareSpecialization.GENERAL));
+        offer.setLocation(Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa")));
         offer.setLanguage(Optional.ofNullable(language).orElse(List.of(Language.PL, Language.UA)));
-        offer.phoneNumber = Optional.ofNullable(phoneNumber).orElse("+48123456789");
+        offer.setPhoneNumber(Optional.ofNullable(phoneNumber).orElse("+48123456789"));
         return offer;
     }
 }

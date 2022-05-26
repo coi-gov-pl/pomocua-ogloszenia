@@ -1,80 +1,60 @@
 package pl.gov.coi.pomocua.ads.job;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import pl.gov.coi.pomocua.ads.BaseOffer;
-import pl.gov.coi.pomocua.ads.OfferNotFoundException;
-import pl.gov.coi.pomocua.ads.Offers;
+import org.springframework.web.bind.annotation.*;
+import pl.gov.coi.pomocua.ads.Language;
+import pl.gov.coi.pomocua.ads.OffersVM;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
-import pl.gov.coi.pomocua.ads.users.User;
+import pl.gov.coi.pomocua.ads.BaseOfferResource;
+import pl.gov.coi.pomocua.ads.OffersTranslationUtil;
 import pl.gov.coi.pomocua.ads.users.UsersService;
 
 import javax.validation.Valid;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping(value = "/api/", produces = MediaType.APPLICATION_JSON_VALUE)
-public class JobResource {
+public class JobResource extends BaseOfferResource<JobOffer, JobOfferDefinitionDTO, JobOfferRepository> {
 
-    private final JobOfferRepository repository;
-    private final CurrentUser currentUser;
-    private final UsersService usersService;
     private final JobOfferSpecifications specifications;
+
+    public JobResource(JobOfferRepository repository,
+                       CurrentUser currentUser,
+                       UsersService usersService,
+                       OffersTranslationUtil translationUtil,
+                       JobOfferSpecifications specifications) {
+        super(repository, currentUser, usersService, translationUtil);
+        this.specifications = specifications;
+    }
 
     @PostMapping("secure/job")
     @ResponseStatus(HttpStatus.CREATED)
-    public JobOffer create(@Valid @RequestBody JobOfferDefinitionDTO offerDefinition) {
+    public JobOfferVM create(@Valid @RequestBody JobOfferDefinitionDTO offerDefinition) {
         JobOffer offer = new JobOffer();
-        offerDefinition.applyTo(offer);
-
-        User currentUser = usersService.getCurrentUser();
-        offer.attachTo(currentUser);
-
-        return repository.save(offer);
+        return JobOfferVM.from(createOffer(offer, offerDefinition), Language.PL);
     }
 
     @DeleteMapping("secure/job/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        JobOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
-                .orElseThrow(OfferNotFoundException::new);
-
-        if (!offer.isActive()) return;
-
-        offer.status = BaseOffer.Status.INACTIVE;
-        repository.save(offer);
+        deleteOffer(id);
     }
 
     @GetMapping("job")
-    public Offers<JobOffer> list(Pageable pageRequest, JobOfferSearchCriteria searchCriteria) {
-        return Offers.page(repository.findAll(specifications.from(searchCriteria), pageRequest));
+    public OffersVM<JobOfferVM> list(Pageable pageRequest, JobOfferSearchCriteria searchCriteria) {
+        return OffersVM.page(repository.findAll(specifications.from(searchCriteria), pageRequest)
+                .map(offer -> JobOfferVM.from(offer, searchCriteria.getLang())));
     }
 
     @GetMapping("job/{id}")
-    public JobOffer get(@PathVariable Long id) {
-        return repository.findById(id).filter(BaseOffer::isActive).orElseThrow(OfferNotFoundException::new);
+    public JobOfferVM get(@PathVariable Long id, @RequestParam(required = false, defaultValue = "PL") Language lang) {
+        return JobOfferVM.from(getOffer(id), lang);
     }
 
     @PutMapping("secure/job/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable Long id, @Valid @RequestBody JobOfferDefinitionDTO update) {
-        JobOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
-                .filter(BaseOffer::isActive)
-                .orElseThrow(OfferNotFoundException::new);
-
-        update.applyTo(offer);
-
-        repository.save(offer);
+        updateOffer(id, update);
     }
 }

@@ -14,4 +14,5 @@ public class HealthOfferSearchCriteria {
     private HealthCareSpecialization specialization;
     private List<Language> language;
     private List<HealthCareMode> mode;
+    private Language lang = Language.PL;
 }

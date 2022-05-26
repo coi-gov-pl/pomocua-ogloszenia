@@ -53,6 +53,7 @@ dependencies {
 	implementation "com.googlecode.libphonenumber:libphonenumber:${googleLibPhoneNumber}"
 	implementation platform('com.google.cloud:libraries-bom:24.3.0')
 	implementation 'com.google.cloud:google-cloud-recaptchaenterprise'
+	implementation 'com.google.code.gson:gson:2.9.0'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
