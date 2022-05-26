@@ -6,9 +6,6 @@ import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.BaseOfferVM;
 
-import javax.persistence.Embedded;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -17,7 +14,6 @@ public class JobOfferVM extends BaseOfferVM {
 
     private JobOffer.Mode mode;
 
-    @Embedded
     private Location location;
 
     private JobOffer.Industry industry;
@@ -28,8 +24,6 @@ public class JobOfferVM extends BaseOfferVM {
 
     private List<Language> language;
 
-    @NotNull
-    @Transient
     public final JobOffer.Type type = JobOffer.Type.JOB;
 
     public static JobOfferVM from(JobOffer offer, Language viewLang) {

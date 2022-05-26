@@ -33,12 +33,12 @@ public abstract class BaseOfferDefinitionDTO<T extends BaseOffer> {
         offer.description = description;
         offer.detectedLanguage = null;
         offer.translationErrorCounter = 0;
-        offer.title_ua = null;
-        offer.description_ua = null;
-        offer.title_en = null;
-        offer.description_en = null;
-        offer.title_ru = null;
-        offer.description_ru = null;
+        offer.titleUa = null;
+        offer.descriptionUa = null;
+        offer.titleEn = null;
+        offer.descriptionEn = null;
+        offer.titleRu = null;
+        offer.descriptionRu = null;
         applyOfferSpecific(offer);
 
         Optional<PhoneDetails> phoneDetails = PhoneUtil.getPhoneDetails(phoneNumber);

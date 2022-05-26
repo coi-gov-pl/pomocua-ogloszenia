@@ -6,9 +6,6 @@ import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.BaseOfferVM;
 
-import javax.persistence.Embedded;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -19,13 +16,10 @@ public class HealthOfferVM extends BaseOfferVM {
 
     private HealthCareSpecialization specialization;
 
-    @Embedded
     private Location location;
 
     private List<Language> language;
 
-    @NotNull
-    @Transient
     public final HealthOffer.Type type = HealthOffer.Type.HEALTH;
 
     public static HealthOfferVM from(HealthOffer offer, Language viewLang) {

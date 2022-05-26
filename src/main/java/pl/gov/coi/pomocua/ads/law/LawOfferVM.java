@@ -6,16 +6,12 @@ import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.BaseOfferVM;
 
-import javax.persistence.Embedded;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class LawOfferVM extends BaseOfferVM {
 
-    @Embedded
     private Location location;
 
     private List<LawOffer.HelpMode> helpMode;
@@ -24,8 +20,6 @@ public class LawOfferVM extends BaseOfferVM {
 
     private List<Language> language;
 
-    @NotNull
-    @Transient
     public final LawOffer.Type type = LawOffer.Type.LAW;
 
     public static LawOfferVM from(LawOffer offer, Language viewLang) {

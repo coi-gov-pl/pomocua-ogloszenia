@@ -6,16 +6,12 @@ import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.BaseOfferVM;
 
-import javax.persistence.Embedded;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class AccommodationOfferVM extends BaseOfferVM {
 
-    @Embedded
     private Location location;
 
     private Integer guests;
@@ -24,8 +20,6 @@ public class AccommodationOfferVM extends BaseOfferVM {
 
     private List<Language> hostLanguage;
 
-    @NotNull
-    @Transient
     public final AccommodationOffer.Type type = AccommodationOffer.Type.ACCOMMODATION;
 
     public static AccommodationOfferVM from(AccommodationOffer offer, Language viewLang) {

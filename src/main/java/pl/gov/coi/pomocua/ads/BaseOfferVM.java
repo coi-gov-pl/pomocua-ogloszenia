@@ -53,16 +53,16 @@ public class BaseOfferVM {
         offerVM.userFirstName = offer.userFirstName;
         switch (viewLang) {
             case UA -> {
-                offerVM.title = offer.title_ua;
-                offerVM.description = offer.description_ua;
+                offerVM.title = offer.titleUa;
+                offerVM.description = offer.descriptionUa;
             }
             case EN -> {
-                offerVM.title = offer.title_en;
-                offerVM.description = offer.description_en;
+                offerVM.title = offer.titleEn;
+                offerVM.description = offer.descriptionEn;
             }
             case RU -> {
-                offerVM.title = offer.title_ru;
-                offerVM.description = offer.description_ru;
+                offerVM.title = offer.titleRu;
+                offerVM.description = offer.descriptionRu;
             }
             default -> {
                 offerVM.title = offer.title;

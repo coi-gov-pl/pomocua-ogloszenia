@@ -69,14 +69,14 @@ public abstract class BaseOffer {
     @Enumerated(EnumType.STRING)
     public Language detectedLanguage;
 
-    public String title_ua;
-    public String description_ua;
+    public String titleUa;
+    public String descriptionUa;
 
-    public String title_en;
-    public String description_en;
+    public String titleEn;
+    public String descriptionEn;
 
-    public String title_ru;
-    public String description_ru;
+    public String titleRu;
+    public String descriptionRu;
 
     public Byte translationErrorCounter = 0;
 
