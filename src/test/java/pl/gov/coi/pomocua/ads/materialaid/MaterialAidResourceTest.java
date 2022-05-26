@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Location;
-import pl.gov.coi.pomocua.ads.Offers;
+import pl.gov.coi.pomocua.ads.OffersVM;
 import pl.gov.coi.pomocua.ads.UserId;
 
 import java.net.URI;
@@ -26,14 +26,14 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.gov.coi.pomocua.ads.materialaid.MaterialAidTestDataGenerator.aMaterialAidOffer;
 
-class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
+class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer, MaterialAidOfferVM> {
 
     @Autowired
     private MaterialAidOfferRepository repository;
 
     @Override
-    protected Class<MaterialAidOffer> getClazz() {
-        return MaterialAidOffer.class;
+    protected Class<MaterialAidOfferVM> getClazz() {
+        return MaterialAidOfferVM.class;
     }
 
     @Override
@@ -47,7 +47,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
     }
 
     @Override
-    protected MaterialAidOffer sampleOfferRequest() {
+    protected MaterialAidOfferVM sampleOfferRequest() {
         return aMaterialAidOffer().build();
     }
 
@@ -55,7 +55,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
     class Searching {
         @Test
         void shouldSearchByLocation() {
-            MaterialAidOffer offer1 = postOffer(aMaterialAidOffer()
+            MaterialAidOfferVM offer1 = postOffer(aMaterialAidOffer()
                     .location(new Location("Mazowieckie", "Warszawa"))
                     .category(MaterialAidCategory.CLOTHING)
                     .build());
@@ -79,12 +79,12 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
                     .category(MaterialAidCategory.CLOTHING)
                     .build());
 
-            MaterialAidOffer offer2 = postOffer(aMaterialAidOffer()
+            MaterialAidOfferVM offer2 = postOffer(aMaterialAidOffer()
                     .location(new Location("Pomorskie", "Gdańsk"))
                     .category(MaterialAidCategory.FOOD)
                     .build());
 
-            MaterialAidOffer offer3 = postOffer(aMaterialAidOffer()
+            MaterialAidOfferVM offer3 = postOffer(aMaterialAidOffer()
                     .location(new Location("Pomorskie", "Gdynia"))
                     .category(MaterialAidCategory.FOOD)
                     .build());
@@ -111,14 +111,14 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
             assertThat(results.totalElements).isEqualTo(6);
             assertThat(results.content)
                     .hasSize(2)
-                    .extracting(r -> r.title)
+                    .extracting(r -> r.getTitle())
                     .containsExactly("c", "d");
         }
 
         @Test
         void shouldIgnoreDeactivatedOffer() {
-            MaterialAidOffer offer = postOffer(aMaterialAidOffer().build());
-            deleteOffer(offer.id);
+            MaterialAidOfferVM offer = postOffer(aMaterialAidOffer().build());
+            deleteOffer(offer.getId());
 
             PageRequest page = PageRequest.of(0, 10);
             var results = searchOffers(page);
@@ -129,7 +129,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
 
         @Test
         void shouldIgnoreCaseWhenSearchByLocation() {
-            MaterialAidOffer offer1 = postOffer(aMaterialAidOffer()
+            MaterialAidOfferVM offer1 = postOffer(aMaterialAidOffer()
                 .location(new Location("Mazowieckie", "Warszawa"))
                 .category(MaterialAidCategory.CLOTHING)
                 .build());
@@ -151,15 +151,15 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
     class ValidationTest {
         @Test
         void shouldRejectNullCategory() {
-            MaterialAidOffer offer = sampleOfferRequest();
-            offer.category = null;
+            MaterialAidOfferVM offer = sampleOfferRequest();
+            offer.setCategory(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectNullLocation() {
-            MaterialAidOffer offer = sampleOfferRequest();
-            offer.location = null;
+            MaterialAidOfferVM offer = sampleOfferRequest();
+            offer.setLocation(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
     }
@@ -168,13 +168,13 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
     class Updating {
         @Test
         void shouldUpdateOffer() {
-            MaterialAidOffer offer = postSampleOffer();
+            MaterialAidOfferVM offer = postSampleOffer();
             var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
 
-            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+            ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-            MaterialAidOffer updatedOffer = getOfferFromRepository(offer.id);
+            MaterialAidOffer updatedOffer = getOfferFromRepository(offer.getId());
             assertThat(updatedOffer.title).isEqualTo("new title");
             assertThat(updatedOffer.description).isEqualTo("new description");
             assertThat(updatedOffer.location.region).isEqualTo("Pomorskie");
@@ -185,14 +185,14 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         @Test
         public void shouldUpdateModifiedDate() {
             testTimeProvider.setCurrentTime(Instant.parse("2022-03-07T15:23:22Z"));
-            MaterialAidOffer offer = postSampleOffer();
+            MaterialAidOfferVM offer = postSampleOffer();
             var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
 
             testTimeProvider.setCurrentTime(Instant.parse("2022-04-01T12:00:00Z"));
-            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+            ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-            MaterialAidOffer updatedOffer = getOfferFromRepository(offer.id);
+            MaterialAidOffer updatedOffer = getOfferFromRepository(offer.getId());
             assertThat(updatedOffer.modifiedDate).isEqualTo(Instant.parse("2022-04-01T12:00:00Z"));
         }
 
@@ -207,11 +207,11 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
 
         @Test
         void shouldReturn404WhenOfferDeactivated() {
-            MaterialAidOffer offer = postSampleOffer();
-            deleteOffer(offer.id);
+            MaterialAidOfferVM offer = postSampleOffer();
+            deleteOffer(offer.getId());
             var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
 
-            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+            ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         }
@@ -219,11 +219,11 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         @Test
         void shouldReturn404WhenOfferDoesNotBelongToCurrentUser() {
             testUser.setCurrentUserWithId(new UserId("other-user-2"));
-            MaterialAidOffer offer = postSampleOffer();
+            MaterialAidOfferVM offer = postSampleOffer();
             var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
 
             testUser.setCurrentUserWithId(new UserId("current-user-1"));
-            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+            ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         }
@@ -234,122 +234,122 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
             @NullAndEmptySource
             @ValueSource(strings = {"<", ">", "(", ")", "%", "@", "\"", "'"})
             void shouldRejectMissingOrInvalidTitle(String title) {
-                MaterialAidOffer offer = postSampleOffer();
+                MaterialAidOfferVM offer = postSampleOffer();
                 var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
                 updateJson.title = title;
 
-                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+                ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-                MaterialAidOffer notUpdatedOffer = getOfferFromRepository(offer.id);
-                assertThat(notUpdatedOffer.title).isEqualTo(offer.title);
+                MaterialAidOffer notUpdatedOffer = getOfferFromRepository(offer.getId());
+                assertThat(notUpdatedOffer.title).isEqualTo(offer.getTitle());
             }
 
             @Test
             void shouldRejectTooLongTitle() {
-                MaterialAidOffer offer = postSampleOffer();
+                MaterialAidOfferVM offer = postSampleOffer();
                 var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
                 updateJson.title = "a".repeat(81);
 
-                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+                ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-                MaterialAidOffer notUpdatedOffer = getOfferFromRepository(offer.id);
-                assertThat(notUpdatedOffer.title).isEqualTo(offer.title);
+                MaterialAidOffer notUpdatedOffer = getOfferFromRepository(offer.getId());
+                assertThat(notUpdatedOffer.title).isEqualTo(offer.getTitle());
             }
 
             @ParameterizedTest
             @NullAndEmptySource
             @ValueSource(strings = {"<", ">", "%", "\"", "'"})
             void shouldRejectMissingOrInvalidDescription(String description) {
-                MaterialAidOffer offer = postSampleOffer();
+                MaterialAidOfferVM offer = postSampleOffer();
                 var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
                 updateJson.description = description;
 
-                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+                ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-                MaterialAidOffer notUpdatedOffer = getOfferFromRepository(offer.id);
-                assertThat(notUpdatedOffer.description).isEqualTo(offer.description);
+                MaterialAidOffer notUpdatedOffer = getOfferFromRepository(offer.getId());
+                assertThat(notUpdatedOffer.description).isEqualTo(offer.getDescription());
             }
 
             @Test
             void shouldRejectTooLongDescription() {
-                MaterialAidOffer offer = postSampleOffer();
+                MaterialAidOfferVM offer = postSampleOffer();
                 var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
                 updateJson.description = "a".repeat(2001);
 
-                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+                ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-                MaterialAidOffer notUpdatedOffer = getOfferFromRepository(offer.id);
-                assertThat(notUpdatedOffer.description).isEqualTo(offer.description);
+                MaterialAidOffer notUpdatedOffer = getOfferFromRepository(offer.getId());
+                assertThat(notUpdatedOffer.description).isEqualTo(offer.getDescription());
             }
 
             @ParameterizedTest
             @NullSource
             @MethodSource("pl.gov.coi.pomocua.ads.materialaid.MaterialAidResourceTest#invalidLocations")
             void shouldRejectMissingOrInvalidLocation(Location location) {
-                MaterialAidOffer offer = postSampleOffer();
+                MaterialAidOfferVM offer = postSampleOffer();
                 var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
                 updateJson.location = location;
 
-                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+                ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-                MaterialAidOffer notUpdatedOffer = getOfferFromRepository(offer.id);
-                assertThat(notUpdatedOffer.location).isEqualTo(offer.location);
+                MaterialAidOffer notUpdatedOffer = getOfferFromRepository(offer.getId());
+                assertThat(notUpdatedOffer.location).isEqualTo(offer.getLocation());
             }
 
             @Test
             void shouldRejectMissingCategory() {
-                MaterialAidOffer offer = postSampleOffer();
+                MaterialAidOfferVM offer = postSampleOffer();
                 var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
                 updateJson.category = null;
 
-                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+                ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-                MaterialAidOffer notUpdatedOffer = getOfferFromRepository(offer.id);
-                assertThat(notUpdatedOffer.category).isEqualTo(offer.category);
+                MaterialAidOffer notUpdatedOffer = getOfferFromRepository(offer.getId());
+                assertThat(notUpdatedOffer.category).isEqualTo(offer.getCategory());
             }
 
             @ParameterizedTest
             @ValueSource(strings = {"invalid phone", "+48 invalid phone", "0048123", "+48 123 123", "+48 123", "+48000000000", "0048123456"})
             void shouldRejectInvalidPhoneNumber(String invalidPhoneNumber) {
-                MaterialAidOffer offer = postSampleOffer();
+                MaterialAidOfferVM offer = postSampleOffer();
                 var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
                 updateJson.phoneNumber = invalidPhoneNumber;
 
-                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+                ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             }
 
             @Test
             void shouldAcceptMissingPhoneNumber() {
-                MaterialAidOffer offer = postSampleOffer();
+                MaterialAidOfferVM offer = postSampleOffer();
                 var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
                 updateJson.phoneNumber = null;
 
-                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+                ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-                MaterialAidOffer updatedOffer = getOfferFromRepository(offer.id);
+                MaterialAidOffer updatedOffer = getOfferFromRepository(offer.getId());
                 assertThat(updatedOffer.phoneNumber).isNull();
             }
 
             @ParameterizedTest
             @ValueSource(strings = {"+48123456789", "+48 123 456 789", "+48 123-456-789", "0048 123456789", "0048 (123) 456-789"})
             void shouldAcceptPhoneNumberInVariousFormatsAndNormalizeIt(String phoneNumber) {
-                MaterialAidOffer offer = postSampleOffer();
+                MaterialAidOfferVM offer = postSampleOffer();
                 var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
                 updateJson.phoneNumber = phoneNumber;
 
-                ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+                ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
                 assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-                MaterialAidOffer updatedOffer = getOfferFromRepository(offer.id);
+                MaterialAidOffer updatedOffer = getOfferFromRepository(offer.getId());
                 assertThat(updatedOffer.phoneNumber).isEqualTo("123456789");
                 assertThat(updatedOffer.phoneCountryCode).isEqualTo("48");
             }
@@ -365,7 +365,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         );
     }
 
-    private List<MaterialAidOffer> searchOffers(MaterialAidOfferSearchCriteria searchCriteria) {
+    private List<MaterialAidOfferVM> searchOffers(MaterialAidOfferSearchCriteria searchCriteria) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         if (searchCriteria.getLocation() != null) {
             builder
@@ -379,7 +379,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer> {
         return listOffers(URI.create(url)).content;
     }
 
-    private Offers<MaterialAidOffer> searchOffers(PageRequest pageRequest) {
+    private OffersVM<MaterialAidOfferVM> searchOffers(PageRequest pageRequest) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         builder.queryParam("page", pageRequest.getPageNumber());
         builder.queryParam("size", pageRequest.getPageSize());

@@ -10,20 +10,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Offers;
+import pl.gov.coi.pomocua.ads.OffersVM;
 
 import java.net.URI;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.gov.coi.pomocua.ads.other.OtherTestDataGenerator.aOtherOffer;
 
-public class OtherOfferResourceTest extends BaseResourceTest<OtherOffer> {
+public class OtherOfferResourceTest extends BaseResourceTest<OtherOffer, OtherOfferVM> {
 
     @Autowired
     private OtherOfferRepository repository;
 
     @Override
-    protected Class<OtherOffer> getClazz() {
-        return OtherOffer.class;
+    protected Class<OtherOfferVM> getClazz() {
+        return OtherOfferVM.class;
     }
 
     @Override
@@ -32,7 +33,7 @@ public class OtherOfferResourceTest extends BaseResourceTest<OtherOffer> {
     }
 
     @Override
-    protected OtherOffer sampleOfferRequest() {
+    protected OtherOfferVM sampleOfferRequest() {
         return aOtherOffer().build();
     }
 
@@ -57,7 +58,7 @@ public class OtherOfferResourceTest extends BaseResourceTest<OtherOffer> {
             var results = searchOffers(page);
 
             assertThat(results.totalElements).isEqualTo(6);
-            assertThat(results.content).hasSize(2).extracting(r -> r.title).containsExactly("c", "d");
+            assertThat(results.content).hasSize(2).extracting(r -> r.getTitle()).containsExactly("c", "d");
         }
     }
 
@@ -65,8 +66,8 @@ public class OtherOfferResourceTest extends BaseResourceTest<OtherOffer> {
     class ValidationTest {
         @Test
         void shouldAcceptNullLocation() {
-            OtherOffer offer = sampleOfferRequest();
-            offer.location = null;
+            OtherOfferVM offer = sampleOfferRequest();
+            offer.setLocation(null);
             assertPostResponseStatus(offer, HttpStatus.CREATED);
         }
     }
@@ -75,13 +76,13 @@ public class OtherOfferResourceTest extends BaseResourceTest<OtherOffer> {
     class Updating {
         @Test
         void shouldUpdateOffer() {
-            OtherOffer offer = postSampleOffer();
+            OtherOfferVM offer = postSampleOffer();
             var updateJson = OtherTestDataGenerator.sampleUpdateJson();
 
-            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+            ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-            OtherOffer updatedOffer = getOfferFromRepository(offer.id);
+            OtherOffer updatedOffer = getOfferFromRepository(offer.getId());
             assertThat(updatedOffer.title).isEqualTo("new title");
             assertThat(updatedOffer.description).isEqualTo("new description");
             assertThat(updatedOffer.location.region).isEqualTo("Pomorskie");
@@ -89,7 +90,7 @@ public class OtherOfferResourceTest extends BaseResourceTest<OtherOffer> {
         }
     }
 
-    private Offers<OtherOffer> searchOffers(PageRequest pageRequest) {
+    private OffersVM<OtherOfferVM> searchOffers(PageRequest pageRequest) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         builder.queryParam("page", pageRequest.getPageNumber());
         builder.queryParam("size", pageRequest.getPageSize());

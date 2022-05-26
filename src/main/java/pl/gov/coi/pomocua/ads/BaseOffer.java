@@ -66,6 +66,20 @@ public abstract class BaseOffer {
     @Enumerated(EnumType.STRING)
     public Status status = Status.ACTIVE;
 
+    @Enumerated(EnumType.STRING)
+    public Language detectedLanguage;
+
+    public String titleUa;
+    public String descriptionUa;
+
+    public String titleEn;
+    public String descriptionEn;
+
+    public String titleRu;
+    public String descriptionRu;
+
+    public Byte translationErrorCounter = 0;
+
     public enum Status {
         ACTIVE, INACTIVE
     }

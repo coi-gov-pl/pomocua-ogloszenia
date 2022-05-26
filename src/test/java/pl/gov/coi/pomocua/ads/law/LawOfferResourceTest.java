@@ -12,7 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import pl.gov.coi.pomocua.ads.BaseResourceTest;
 import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
-import pl.gov.coi.pomocua.ads.Offers;
+import pl.gov.coi.pomocua.ads.OffersVM;
 import pl.gov.coi.pomocua.ads.law.LawOffer.HelpKind;
 import pl.gov.coi.pomocua.ads.law.LawOffer.HelpMode;
 
@@ -23,15 +23,15 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.gov.coi.pomocua.ads.law.LawTestDataGenerator.aLawOffer;
 
-public class LawOfferResourceTest extends BaseResourceTest<LawOffer> {
+public class LawOfferResourceTest extends BaseResourceTest<LawOffer, LawOfferVM> {
 
     @Autowired
     private LawOfferRepository repository;
 
 
     @Override
-    protected Class<LawOffer> getClazz() {
-        return LawOffer.class;
+    protected Class<LawOfferVM> getClazz() {
+        return LawOfferVM.class;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class LawOfferResourceTest extends BaseResourceTest<LawOffer> {
     }
 
     @Override
-    protected LawOffer sampleOfferRequest() {
+    protected LawOfferVM sampleOfferRequest() {
         return aLawOffer().build();
     }
 
@@ -53,7 +53,7 @@ public class LawOfferResourceTest extends BaseResourceTest<LawOffer> {
     class Searching {
         @Test
         void shouldSearchByLocationWithIgnoreCase() {
-            LawOffer offer1 = postOffer(aLawOffer()
+            LawOfferVM offer1 = postOffer(aLawOffer()
                     .location(new Location("Mazowieckie", "Warszawa"))
                     .build());
 
@@ -70,10 +70,10 @@ public class LawOfferResourceTest extends BaseResourceTest<LawOffer> {
 
         @Test
         void shouldSearchByLocationWithNullLocation() {
-            LawOffer offer1 = postOffer(aLawOffer()
+            LawOfferVM offer1 = postOffer(aLawOffer()
                     .location(null)
                     .build());
-            LawOffer offer2 = postOffer(aLawOffer()
+            LawOfferVM offer2 = postOffer(aLawOffer()
                     .location(new Location("Mazowieckie", "Warszawa"))
                     .build());
             postOffer(aLawOffer()
@@ -89,11 +89,11 @@ public class LawOfferResourceTest extends BaseResourceTest<LawOffer> {
 
         @Test
         void shouldSearchByHelpMode() {
-            LawOffer offer = postOffer(aLawOffer()
+            LawOfferVM offer = postOffer(aLawOffer()
                     .helpMode(List.of(HelpMode.BY_PHONE))
                     .build());
 
-            LawOffer offer2 = postOffer(aLawOffer()
+            LawOfferVM offer2 = postOffer(aLawOffer()
                     .helpMode(List.of(HelpMode.BY_PHONE, HelpMode.BY_EMAIL))
                     .build());
 
@@ -110,11 +110,11 @@ public class LawOfferResourceTest extends BaseResourceTest<LawOffer> {
 
         @Test
         void shouldSearchByHelpKind() {
-            LawOffer offer = postOffer(aLawOffer()
+            LawOfferVM offer = postOffer(aLawOffer()
                     .helpKind(List.of(HelpKind.IMMIGRATION_LAW, HelpKind.FAMILY_LAW))
                     .build());
 
-            LawOffer offer2 = postOffer(aLawOffer()
+            LawOfferVM offer2 = postOffer(aLawOffer()
                     .helpKind(List.of(HelpKind.IMMIGRATION_LAW))
                     .build());
 
@@ -131,11 +131,11 @@ public class LawOfferResourceTest extends BaseResourceTest<LawOffer> {
 
         @Test
         void shouldSearchByLanguage() {
-            LawOffer offer = postOffer(aLawOffer()
+            LawOfferVM offer = postOffer(aLawOffer()
                     .language(List.of(Language.PL, Language.UA))
                     .build());
 
-            LawOffer offer2 = postOffer(aLawOffer()
+            LawOfferVM offer2 = postOffer(aLawOffer()
                     .language(List.of(Language.EN))
                     .build());
 
@@ -163,13 +163,13 @@ public class LawOfferResourceTest extends BaseResourceTest<LawOffer> {
             var results = searchOffers(page);
 
             assertThat(results.totalElements).isEqualTo(6);
-            assertThat(results.content).hasSize(2).extracting(r -> r.title).containsExactly("c", "d");
+            assertThat(results.content).hasSize(2).extracting(r -> r.getTitle()).containsExactly("c", "d");
         }
 
         @Test
         void shouldIgnoreDeactivatedOffer() {
-            LawOffer offer = postOffer(aLawOffer().build());
-            deleteOffer(offer.id);
+            LawOfferVM offer = postOffer(aLawOffer().build());
+            deleteOffer(offer.getId());
 
             PageRequest page = PageRequest.of(0, 10);
             var results = searchOffers(page);
@@ -183,63 +183,63 @@ public class LawOfferResourceTest extends BaseResourceTest<LawOffer> {
     class ValidationTest {
         @Test
         void shouldAcceptNullLocation() {
-            LawOffer offer = sampleOfferRequest();
-            offer.location = null;
+            LawOfferVM offer = sampleOfferRequest();
+            offer.setLocation(null);
             assertPostResponseStatus(offer, HttpStatus.CREATED);
         }
 
         @Test
         void shouldRejectEmptyTitle() {
-            LawOffer offer = sampleOfferRequest();
-            offer.title = "";
+            LawOfferVM offer = sampleOfferRequest();
+            offer.setTitle("");
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectEmptyDescription() {
-            LawOffer offer = sampleOfferRequest();
-            offer.description = "";
+            LawOfferVM offer = sampleOfferRequest();
+            offer.setDescription("");
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectEmptyHelpMode() {
-            LawOffer offer = sampleOfferRequest();
+            LawOfferVM offer = sampleOfferRequest();
             offer.setHelpMode(Collections.emptyList());
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectNullHelpMode() {
-            LawOffer offer = sampleOfferRequest();
+            LawOfferVM offer = sampleOfferRequest();
             offer.setHelpMode(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectEmptyHelpKind() {
-            LawOffer offer = sampleOfferRequest();
+            LawOfferVM offer = sampleOfferRequest();
             offer.setHelpKind(Collections.emptyList());
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectNullHelpKind() {
-            LawOffer offer = sampleOfferRequest();
+            LawOfferVM offer = sampleOfferRequest();
             offer.setHelpKind(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectNullLanguage() {
-            LawOffer offer = sampleOfferRequest();
+            LawOfferVM offer = sampleOfferRequest();
             offer.setLanguage(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectEmptyLanguage() {
-            LawOffer offer = sampleOfferRequest();
+            LawOfferVM offer = sampleOfferRequest();
             offer.setLanguage(Collections.emptyList());
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
@@ -249,13 +249,13 @@ public class LawOfferResourceTest extends BaseResourceTest<LawOffer> {
     class Updating {
         @Test
         void shouldUpdateOffer() {
-            LawOffer offer = postSampleOffer();
+            LawOfferVM offer = postSampleOffer();
             var updateJson = LawTestDataGenerator.sampleUpdateJson();
 
-            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+            ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-            LawOffer updatedOffer = getOfferFromRepository(offer.id);
+            LawOffer updatedOffer = getOfferFromRepository(offer.getId());
             assertThat(updatedOffer.title).isEqualTo("new title");
             assertThat(updatedOffer.description).isEqualTo("new description");
             assertThat(updatedOffer.location.region).isEqualTo("Pomorskie");
@@ -266,7 +266,7 @@ public class LawOfferResourceTest extends BaseResourceTest<LawOffer> {
         }
     }
 
-    private List<LawOffer> searchOffers(LawOfferSearchCriteria searchCriteria) {
+    private List<LawOfferVM> searchOffers(LawOfferSearchCriteria searchCriteria) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         if (searchCriteria.getLocation() != null) {
             builder
@@ -286,7 +286,7 @@ public class LawOfferResourceTest extends BaseResourceTest<LawOffer> {
         return listOffers(URI.create(url)).content;
     }
 
-    private Offers<LawOffer> searchOffers(PageRequest pageRequest) {
+    private OffersVM<LawOfferVM> searchOffers(PageRequest pageRequest) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         builder.queryParam("page", pageRequest.getPageNumber());
         builder.queryParam("size", pageRequest.getPageSize());

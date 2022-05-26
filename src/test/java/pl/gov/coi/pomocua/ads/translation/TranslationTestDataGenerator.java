@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public class TranslationTestDataGenerator {
 
-    public static TranslationOfferBuilder aTranslationOffer() {
+    public static TranslationOfferVMBuilder aTranslationOffer() {
         return TranslationTestDataGenerator.builder()
                 .title("sample translation offer")
                 .description("sample translation offer description")
@@ -30,7 +30,7 @@ public class TranslationTestDataGenerator {
     }
 
     @Builder
-    private static TranslationOffer translationOfferBuilder(
+    private static TranslationOfferVM translationOfferVMBuilder(
             String title,
             String description,
             List<TranslationMode> mode,
@@ -38,13 +38,13 @@ public class TranslationTestDataGenerator {
             List<Language> language,
             String phoneNumber
     ) {
-        TranslationOffer offer = new TranslationOffer();
-        offer.title = Optional.ofNullable(title).orElse("some title");
-        offer.description = Optional.ofNullable(description).orElse("some description");
+        TranslationOfferVM offer = new TranslationOfferVM();
+        offer.setTitle(Optional.ofNullable(title).orElse("some title"));
+        offer.setDescription(Optional.ofNullable(description).orElse("some description"));
         offer.setMode(Optional.ofNullable(mode).orElse(List.of(TranslationMode.BY_EMAIL, TranslationMode.BY_PHONE)));
-        offer.location = Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa"));
+        offer.setLocation(Optional.ofNullable(location).orElse(new Location("mazowieckie", "warszawa")));
         offer.setLanguage(Optional.ofNullable(language).orElse(List.of(Language.PL, Language.UA)));
-        offer.phoneNumber = Optional.ofNullable(phoneNumber).orElse("48123456789");
+        offer.setPhoneNumber(Optional.ofNullable(phoneNumber).orElse("48123456789"));
         return offer;
     }
 }

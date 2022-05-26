@@ -9,14 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.gov.coi.pomocua.ads.BaseResourceTest;
-import pl.gov.coi.pomocua.ads.Language;
-import pl.gov.coi.pomocua.ads.Location;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.gov.coi.pomocua.ads.job.JobTestDataGenerator.aJobOffer;
 
-import pl.gov.coi.pomocua.ads.Offers;
+import pl.gov.coi.pomocua.ads.BaseResourceTest;
+import pl.gov.coi.pomocua.ads.Language;
+import pl.gov.coi.pomocua.ads.Location;
+import pl.gov.coi.pomocua.ads.OffersVM;
 import pl.gov.coi.pomocua.ads.job.JobOffer.Mode;
 
 import java.net.URI;
@@ -27,15 +27,14 @@ import pl.gov.coi.pomocua.ads.job.JobOffer.Industry;
 import pl.gov.coi.pomocua.ads.job.JobOffer.WorkTime;
 import pl.gov.coi.pomocua.ads.job.JobOffer.ContractType;
 
-public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
+public class JobOfferResourceTest extends BaseResourceTest<JobOffer, JobOfferVM> {
 
     @Autowired
     private JobOfferRepository repository;
 
-
     @Override
-    protected Class<JobOffer> getClazz() {
-        return JobOffer.class;
+    protected Class<JobOfferVM> getClazz() {
+        return JobOfferVM.class;
     }
 
     @Override
@@ -49,7 +48,7 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
     }
 
     @Override
-    protected JobOffer sampleOfferRequest() {
+    protected JobOfferVM sampleOfferRequest() {
         return aJobOffer().build();
     }
 
@@ -57,7 +56,7 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
     class Searching {
         @Test
         void shouldSearchByLocationWithIgnoreCase() {
-            JobOffer offer1 = postOffer(aJobOffer()
+            JobOfferVM offer1 = postOffer(aJobOffer()
                     .location(new Location("Mazowieckie", "Warszawa"))
                     .build());
 
@@ -74,10 +73,10 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
 
         @Test
         void shouldSearchByLocationWithNullLocation() {
-            JobOffer offer1 = postOffer(aJobOffer()
+            JobOfferVM offer1 = postOffer(aJobOffer()
                     .location(null)
                     .build());
-            JobOffer offer2 = postOffer(aJobOffer()
+            JobOfferVM offer2 = postOffer(aJobOffer()
                     .location(new Location("Mazowieckie", "Warszawa"))
                     .build());
             postOffer(aJobOffer()
@@ -93,11 +92,11 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
 
         @Test
         void shouldSearchByIndustry() {
-            JobOffer offer = postOffer(aJobOffer()
+            JobOfferVM offer = postOffer(aJobOffer()
                     .industry(Industry.SALES)
                     .build());
 
-            JobOffer offer2 = postOffer(aJobOffer()
+            JobOfferVM offer2 = postOffer(aJobOffer()
                     .industry(Industry.SALES)
                     .build());
 
@@ -114,11 +113,11 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
 
         @Test
         void shouldSearchByWorkTime() {
-            JobOffer offer = postOffer(aJobOffer()
+            JobOfferVM offer = postOffer(aJobOffer()
                     .workTime(List.of(WorkTime.FULL_TIME, WorkTime.TEMPORARY))
                     .build());
 
-            JobOffer offer2 = postOffer(aJobOffer()
+            JobOfferVM offer2 = postOffer(aJobOffer()
                     .workTime(List.of(WorkTime.TEMPORARY))
                     .build());
 
@@ -135,11 +134,11 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
 
         @Test
         void shouldSearchByContractType() {
-            JobOffer offer = postOffer(aJobOffer()
+            JobOfferVM offer = postOffer(aJobOffer()
                     .contractType(List.of(ContractType.EMPLOYMENT))
                     .build());
 
-            JobOffer offer2 = postOffer(aJobOffer()
+            JobOfferVM offer2 = postOffer(aJobOffer()
                     .contractType(List.of(ContractType.B2B, ContractType.EMPLOYMENT))
                     .build());
 
@@ -160,7 +159,7 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
                     .mode(Mode.ONSITE)
                     .build());
 
-            JobOffer offer = postOffer(aJobOffer()
+            JobOfferVM offer = postOffer(aJobOffer()
                     .mode(Mode.TELEWORK)
                     .build());
 
@@ -177,11 +176,11 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
 
         @Test
         void shouldSearchByLanguage() {
-            JobOffer offer = postOffer(aJobOffer()
+            JobOfferVM offer = postOffer(aJobOffer()
                     .language(List.of(Language.PL, Language.UA))
                     .build());
 
-            JobOffer offer2 = postOffer(aJobOffer()
+            JobOfferVM offer2 = postOffer(aJobOffer()
                     .language(List.of(Language.EN))
                     .build());
 
@@ -209,13 +208,13 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
             var results = searchOffers(page);
 
             assertThat(results.totalElements).isEqualTo(6);
-            assertThat(results.content).hasSize(2).extracting(r -> r.title).containsExactly("c", "d");
+            assertThat(results.content).hasSize(2).extracting(r -> r.getTitle()).containsExactly("c", "d");
         }
 
         @Test
         void shouldIgnoreDeactivatedOffer() {
-            JobOffer offer = postOffer(aJobOffer().build());
-            deleteOffer(offer.id);
+            JobOfferVM offer = postOffer(aJobOffer().build());
+            deleteOffer(offer.getId());
 
             PageRequest page = PageRequest.of(0, 10);
             var results = searchOffers(page);
@@ -229,63 +228,63 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
     class ValidationTest {
         @Test
         void shouldAcceptNullLocation() {
-            JobOffer offer = sampleOfferRequest();
-            offer.location = null;
+            JobOfferVM offer = sampleOfferRequest();
+            offer.setLocation(null);
             assertPostResponseStatus(offer, HttpStatus.CREATED);
         }
 
         @Test
         void shouldRejectNullMode() {
-            JobOffer offer = sampleOfferRequest();
-            offer.mode = null;
+            JobOfferVM offer = sampleOfferRequest();
+            offer.setMode(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectNullIndustry() {
-            JobOffer offer = sampleOfferRequest();
-            offer.industry = null;
+            JobOfferVM offer = sampleOfferRequest();
+            offer.setIndustry(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectNullWorkTime() {
-            JobOffer offer = sampleOfferRequest();
+            JobOfferVM offer = sampleOfferRequest();
             offer.setWorkTime(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectEmptyWorkTime() {
-            JobOffer offer = sampleOfferRequest();
+            JobOfferVM offer = sampleOfferRequest();
             offer.setWorkTime(Collections.emptyList());
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectNullContractType() {
-            JobOffer offer = sampleOfferRequest();
+            JobOfferVM offer = sampleOfferRequest();
             offer.setContractType(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectEmptyContractType() {
-            JobOffer offer = sampleOfferRequest();
+            JobOfferVM offer = sampleOfferRequest();
             offer.setContractType(Collections.emptyList());
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectNullLanguage() {
-            JobOffer offer = sampleOfferRequest();
+            JobOfferVM offer = sampleOfferRequest();
             offer.setLanguage(null);
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
 
         @Test
         void shouldRejectEmptyLanguage() {
-            JobOffer offer = sampleOfferRequest();
+            JobOfferVM offer = sampleOfferRequest();
             offer.setLanguage(Collections.emptyList());
             assertPostResponseStatus(offer, HttpStatus.BAD_REQUEST);
         }
@@ -295,13 +294,13 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
     class Updating {
         @Test
         void shouldUpdateOffer() {
-            JobOffer offer = postSampleOffer();
+            JobOfferVM offer = postSampleOffer();
             var updateJson = JobTestDataGenerator.sampleUpdateJson();
 
-            ResponseEntity<Void> response = updateOffer(offer.id, updateJson);
+            ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-            JobOffer updatedOffer = getOfferFromRepository(offer.id);
+            JobOffer updatedOffer = getOfferFromRepository(offer.getId());
             assertThat(updatedOffer.title).isEqualTo("new title");
             assertThat(updatedOffer.description).isEqualTo("new description");
             assertThat(updatedOffer.mode).isEqualTo(Mode.TELEWORK);
@@ -314,7 +313,7 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
         }
     }
 
-    private List<JobOffer> searchOffers(JobOfferSearchCriteria searchCriteria) {
+    private List<JobOfferVM> searchOffers(JobOfferSearchCriteria searchCriteria) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         if (searchCriteria.getLocation() != null) {
             builder
@@ -340,7 +339,7 @@ public class JobOfferResourceTest extends BaseResourceTest<JobOffer> {
         return listOffers(URI.create(url)).content;
     }
 
-    private Offers<JobOffer> searchOffers(PageRequest pageRequest) {
+    private OffersVM<JobOfferVM> searchOffers(PageRequest pageRequest) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/api/" + getOfferSuffix());
         builder.queryParam("page", pageRequest.getPageNumber());
         builder.queryParam("size", pageRequest.getPageSize());

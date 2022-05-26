@@ -1,72 +1,60 @@
 package pl.gov.coi.pomocua.ads.health;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import pl.gov.coi.pomocua.ads.BaseOffer;
-import pl.gov.coi.pomocua.ads.OfferNotFoundException;
-import pl.gov.coi.pomocua.ads.Offers;
+import pl.gov.coi.pomocua.ads.Language;
+import pl.gov.coi.pomocua.ads.OffersVM;
 import pl.gov.coi.pomocua.ads.authentication.CurrentUser;
-import pl.gov.coi.pomocua.ads.users.User;
+import pl.gov.coi.pomocua.ads.BaseOfferResource;
+import pl.gov.coi.pomocua.ads.OffersTranslationUtil;
 import pl.gov.coi.pomocua.ads.users.UsersService;
 
 import javax.validation.Valid;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping(value = "/api/", produces = MediaType.APPLICATION_JSON_VALUE)
-public class HealthResource {
+public class HealthResource extends BaseOfferResource<HealthOffer, HealthOfferDefinitionDTO, HealthOfferRepository> {
 
-    private final HealthOfferRepository repository;
-    private final CurrentUser currentUser;
-    private final UsersService usersService;
     private final HealthOfferSpecifications specifications;
+
+    public HealthResource(HealthOfferRepository repository,
+                          CurrentUser currentUser,
+                          UsersService usersService,
+                          OffersTranslationUtil translationUtil,
+                          HealthOfferSpecifications specifications) {
+        super(repository, currentUser, usersService, translationUtil);
+        this.specifications = specifications;
+    }
 
     @PostMapping("secure/health-care")
     @ResponseStatus(HttpStatus.CREATED)
-    public HealthOffer create(@Valid @RequestBody HealthOfferDefinitionDTO offerDefinition) {
+    public HealthOfferVM create(@Valid @RequestBody HealthOfferDefinitionDTO offerDefinition) {
         HealthOffer offer = new HealthOffer();
-        offerDefinition.applyTo(offer);
-
-        User currentUser = usersService.getCurrentUser();
-        offer.attachTo(currentUser);
-
-        return repository.save(offer);
+        return HealthOfferVM.from(createOffer(offer, offerDefinition), Language.PL);
     }
 
     @DeleteMapping("secure/health-care/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        HealthOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
-                .orElseThrow(OfferNotFoundException::new);
-
-        if (!offer.isActive()) return;
-
-        offer.status = BaseOffer.Status.INACTIVE;
-        repository.save(offer);
+        deleteOffer(id);
     }
 
     @GetMapping("health-care")
-    public Offers<HealthOffer> list(Pageable pageRequest, HealthOfferSearchCriteria searchCriteria) {
-        return Offers.page(repository.findAll(specifications.from(searchCriteria), pageRequest));
+    public OffersVM<HealthOfferVM> list(Pageable pageRequest, HealthOfferSearchCriteria searchCriteria) {
+        return OffersVM.page(repository.findAll(specifications.from(searchCriteria), pageRequest)
+                .map(offer -> HealthOfferVM.from(offer, searchCriteria.getLang())));
     }
 
     @GetMapping("health-care/{id}")
-    public HealthOffer get(@PathVariable Long id) {
-        return repository.findById(id).filter(BaseOffer::isActive).orElseThrow(OfferNotFoundException::new);
+    public HealthOfferVM get(@PathVariable Long id, @RequestParam(required = false, defaultValue = "PL") Language lang) {
+        return HealthOfferVM.from(getOffer(id), lang);
     }
 
     @PutMapping("secure/health-care/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable Long id, @Valid @RequestBody HealthOfferDefinitionDTO update) {
-        HealthOffer offer = repository.findByIdAndUserId(id, currentUser.getCurrentUserId())
-                .filter(BaseOffer::isActive)
-                .orElseThrow(OfferNotFoundException::new);
-
-        update.applyTo(offer);
-
-        repository.save(offer);
+        updateOffer(id, update);
     }
 }

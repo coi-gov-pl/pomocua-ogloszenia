@@ -1,6 +1,7 @@
 package pl.gov.coi.pomocua.ads.transport;
 
 import lombok.Builder;
+import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.BaseOffer;
 import pl.gov.coi.pomocua.ads.Location;
 
@@ -11,7 +12,7 @@ public class TransportTestDataGenerator {
 
     public static final LocalDate TRANSPORT_DATE = LocalDate.now().plusDays(2L);
 
-    public static TransportOfferBuilder aTransportOffer() {
+    public static TransportOfferVMBuilder aTransportOffer() {
         return TransportTestDataGenerator.builder()
                 .title("some title")
                 .description("some description")
@@ -36,7 +37,7 @@ public class TransportTestDataGenerator {
     }
 
     @Builder
-    private static TransportOffer transportOfferBuilder(
+    private static TransportOfferVM transportOfferVMBuilder(
             String title,
             String description,
             Location origin,
@@ -47,16 +48,16 @@ public class TransportTestDataGenerator {
             String phoneCountryCode,
             BaseOffer.Status status
     ) {
-        TransportOffer result = new TransportOffer();
-        result.title = Optional.ofNullable(title).orElse("some title");
-        result.description = Optional.ofNullable(description).orElse("some description");
-        result.origin = origin;
-        result.destination = destination;
-        result.capacity = capacity;
-        result.transportDate = transportDate;
-        result.phoneNumber = phoneNumber;
-        result.phoneCountryCode = phoneCountryCode;
-        result.status = Optional.ofNullable(status).orElse(BaseOffer.Status.ACTIVE);
+        TransportOfferVM result = new TransportOfferVM();
+        result.setTitle(Optional.ofNullable(title).orElse("some title"));
+        result.setDescription(Optional.ofNullable(description).orElse("some description"));
+        result.setOrigin(origin);
+        result.setDestination(destination);
+        result.setCapacity(capacity);
+        result.setTransportDate(transportDate);
+        result.setPhoneNumber(phoneNumber);
+        result.setPhoneCountryCode(phoneCountryCode);
+        result.setStatus(Optional.ofNullable(status).orElse(BaseOffer.Status.ACTIVE));
         return result;
     }
 }

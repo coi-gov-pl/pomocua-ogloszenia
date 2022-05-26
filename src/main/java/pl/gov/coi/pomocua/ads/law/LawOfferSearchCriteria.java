@@ -14,4 +14,5 @@ public class LawOfferSearchCriteria {
     private List<HelpMode> helpMode;
     private HelpKind helpKind;
     private List<Language> language;
+    private Language lang = Language.PL;
 }

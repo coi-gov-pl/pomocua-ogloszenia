@@ -13,4 +13,5 @@ public class TranslationOfferSearchCriteria {
     private Location location;
     private List<TranslationMode> mode;
     private List<Language> language;
+    private Language lang = Language.PL;
 }

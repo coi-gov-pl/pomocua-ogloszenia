@@ -6,15 +6,15 @@ import pl.gov.coi.pomocua.ads.Location;
 import java.util.List;
 
 public class AccommodationsTestDataGenerator {
-    public static AccommodationOffer sampleOffer() {
-        AccommodationOffer request = new AccommodationOffer();
-        request.title = "sample work";
-        request.location = new Location("Mazowieckie", "Warszawa");
-        request.hostLanguage = List.of(Language.PL, Language.UA);
-        request.description = "description";
-        request.lengthOfStay = AccommodationOffer.LengthOfStay.MONTH_2;
-        request.guests = 5;
-        request.phoneNumber = "+48123456789";
+    public static AccommodationOfferVM sampleOffer() {
+        AccommodationOfferVM request = new AccommodationOfferVM();
+        request.setTitle("sample work");
+        request.setLocation(new Location("Mazowieckie", "Warszawa"));
+        request.setHostLanguage(List.of(Language.PL, Language.UA));
+        request.setDescription("description");
+        request.setLengthOfStay(AccommodationOffer.LengthOfStay.MONTH_2);
+        request.setGuests(5);
+        request.setPhoneNumber("+48123456789");
         return request;
     }
 
