@@ -5,6 +5,7 @@ import org.hibernate.envers.Audited;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import pl.gov.coi.pomocua.ads.BaseOffer;
+import pl.gov.coi.pomocua.ads.BaseOfferVisitor;
 import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Audited
-public class LawOffer extends BaseOffer {
+public class LawOffer extends BaseOffer<LawOfferVM> {
 
     @Embedded
     public Location location;
@@ -83,6 +84,11 @@ public class LawOffer extends BaseOffer {
     @NotNull
     @Transient
     public final Type type = Type.LAW;
+
+    @Override
+    public LawOfferVM accept(BaseOfferVisitor visitor, Language viewLang) {
+        return visitor.visit(this, viewLang);
+    }
 
     public enum Type {
         LAW

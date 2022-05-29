@@ -2,7 +2,6 @@ package pl.gov.coi.pomocua.ads.myoffers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,15 +55,13 @@ class MyOffersResourceTest {
             AccommodationOfferVM accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOfferVM.class);
             MaterialAidOfferVM materialAidOffer = postOffer(aMaterialAidOffer().build(), "material-aid", MaterialAidOfferVM.class);
 
-            BaseOffer[] offers = listOffers();
+            BaseOfferVM[] offers = listOffers();
             assertThat(offers).extracting("id").containsExactly(accOffer.getId(), materialAidOffer.getId());
             assertThat(offers).extracting("title").containsExactly(accOffer.getTitle(), materialAidOffer.getTitle());
             assertThat(offers).extracting("description").containsExactly(accOffer.getDescription(), materialAidOffer.getDescription());
             assertThat(offers).extracting("status").doesNotContain(BaseOffer.Status.INACTIVE);
         }
 
-        //TODO
-        @Disabled("Test fails, VM not implemented")
         @Test
         void shouldReturnOffersOnlyForLoggedUser() {
             UserId accommodationOfferUserId = new UserId("acommodation offer user id");
@@ -76,9 +73,9 @@ class MyOffersResourceTest {
             postOffer(aMaterialAidOffer().build(), "material-aid", MaterialAidOfferVM.class);
 
             testUser.setCurrentUserWithId(accommodationOfferUserId);
-            BaseOffer[] offers = listOffers();
+            BaseOfferVM[] offers = listOffers();
             assertThat(offers).hasSize(1);
-            assertThat(offers[0]).isInstanceOf(AccommodationOffer.class);
+            assertThat(offers[0]).isInstanceOf(AccommodationOfferVM.class);
             assertThat(offers[0]).isEqualTo(accOffer);
         }
 
@@ -88,7 +85,7 @@ class MyOffersResourceTest {
             BaseOfferVM createdOffer = postOffer(offer, urlSuffix, BaseOfferVM.class);
             deleteOffer(createdOffer.getId(), urlSuffix);
 
-            BaseOffer[] offers = listOffers();
+            BaseOfferVM[] offers = listOffers();
 
             assertThat(offers).isEmpty();
         }
@@ -105,8 +102,8 @@ class MyOffersResourceTest {
                     .containsExactly(jsonDiscriminator);
         }
 
-        private BaseOffer[] listOffers() {
-            ResponseEntity<PageableResponse<BaseOffer>> response = restTemplate.exchange(
+        private BaseOfferVM[] listOffers() {
+            ResponseEntity<PageableResponse<BaseOfferVM>> response = restTemplate.exchange(
                     "/api/secure/my-offers", HttpMethod.GET, null, new ParameterizedTypeReference<>() {}
             );
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -122,14 +119,12 @@ class MyOffersResourceTest {
 
     @Nested
     class GettingSingle {
-        //TODO
-        @Disabled("Test fails, VM not implemented")
         @Test
         void shouldReturnOfferForCurrentUser() {
             testUser.setCurrentUserWithId(new UserId("accommodation offer user id"));
             AccommodationOfferVM accOffer = postOffer(AccommodationsTestDataGenerator.sampleOffer(), "accommodations", AccommodationOfferVM.class);
 
-            ResponseEntity<AccommodationOffer> response = getOffer(accOffer.getId(), AccommodationOffer.class);
+            ResponseEntity<AccommodationOfferVM> response = getOffer(accOffer.getId(), AccommodationOfferVM.class);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody()).isEqualTo(accOffer);

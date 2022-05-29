@@ -5,24 +5,39 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.Instant;
+
+import static pl.gov.coi.pomocua.ads.BaseOffer.DESCRIPTION_ALLOWED_TEXT;
+import static pl.gov.coi.pomocua.ads.BaseOffer.TITLE_ALLOWED_TEXT;
 
 @EqualsAndHashCode
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
 @JsonBaseOfferVMInheritance
 @Data
-public class BaseOfferVM {
+public abstract class BaseOfferVM {
 
+    @NotNull
     private Long id;
 
     @JsonIgnore
     private UserId userId;
 
+    @NotNull
     private String userFirstName;
 
+    @NotBlank
+    @Length(max = 80)
+    @Pattern(regexp = TITLE_ALLOWED_TEXT)
     private String title;
 
+    @NotBlank
+    @Length(max = 2000)
+    @Pattern(regexp = DESCRIPTION_ALLOWED_TEXT)
     private String description;
 
     private String phoneNumber;
@@ -33,18 +48,13 @@ public class BaseOfferVM {
     private Instant modifiedDate;
 
     @JsonIgnore
+    @NotNull
     private BaseOffer.Status status;
 
     private Language detectedLanguage;
 
     protected static void mapBase(BaseOffer offer, Language viewLang, BaseOfferVM offerVM) {
         mapProperties(offer, viewLang, offerVM);
-    }
-
-    public static BaseOfferVM from(BaseOffer offer, Language viewLang) {
-        BaseOfferVM result = new BaseOfferVM();
-        mapProperties(offer, viewLang, result);
-        return result;
     }
 
     private static void mapProperties(BaseOffer offer, Language viewLang, BaseOfferVM offerVM) {
