@@ -5,6 +5,7 @@ import org.hibernate.envers.Audited;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import pl.gov.coi.pomocua.ads.BaseOffer;
+import pl.gov.coi.pomocua.ads.BaseOfferVisitor;
 import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Audited
-public class TranslationOffer extends BaseOffer {
+public class TranslationOffer extends BaseOffer<TranslationOfferVM> {
 
     @NotEmpty
     private String mode;
@@ -65,6 +66,11 @@ public class TranslationOffer extends BaseOffer {
     @NotNull
     @Transient
     public final Type type = Type.TRANSLATION;
+
+    @Override
+    public TranslationOfferVM accept(BaseOfferVisitor visitor, Language viewLang) {
+        return visitor.visit(this, viewLang);
+    }
 
     public enum Type {
         TRANSLATION

@@ -3,6 +3,7 @@ package pl.gov.coi.pomocua.ads.accomodations;
 import lombok.EqualsAndHashCode;
 import org.hibernate.envers.Audited;
 import pl.gov.coi.pomocua.ads.BaseOffer;
+import pl.gov.coi.pomocua.ads.BaseOfferVisitor;
 import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 
@@ -22,7 +23,7 @@ import static javax.persistence.EnumType.STRING;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Audited
-public class AccommodationOffer extends BaseOffer {
+public class AccommodationOffer extends BaseOffer<AccommodationOfferVM> {
 
     @Embedded
     @Valid
@@ -44,6 +45,11 @@ public class AccommodationOffer extends BaseOffer {
     @NotNull
     @Transient
     public final Type type = Type.ACCOMMODATION;
+
+    @Override
+    public AccommodationOfferVM accept(BaseOfferVisitor visitor, Language viewLang) {
+        return visitor.visit(this, viewLang);
+    }
 
     public enum Type {
         ACCOMMODATION

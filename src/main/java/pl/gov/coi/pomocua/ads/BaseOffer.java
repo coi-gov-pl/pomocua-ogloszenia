@@ -12,7 +12,16 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import pl.gov.coi.pomocua.ads.phone.PhoneUtil;
 import pl.gov.coi.pomocua.ads.users.User;
 
-import javax.persistence.*;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.PostLoad;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -27,7 +36,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY)
 @JsonBaseOfferInheritance
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseOffer {
+public abstract class BaseOffer <T extends BaseOfferVM> {
     public static final String TITLE_ALLOWED_TEXT = "^[^'\"%<>()@]*$";
     public static final String DESCRIPTION_ALLOWED_TEXT = "^[^'\"%<>]*$";
 
@@ -103,4 +112,6 @@ public abstract class BaseOffer {
     public boolean isActive() {
         return status == Status.ACTIVE;
     }
+
+    public abstract T accept(BaseOfferVisitor visitor, Language viewLang);
 }

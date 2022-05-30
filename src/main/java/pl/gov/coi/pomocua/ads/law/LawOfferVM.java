@@ -6,6 +6,8 @@ import pl.gov.coi.pomocua.ads.Language;
 import pl.gov.coi.pomocua.ads.Location;
 import pl.gov.coi.pomocua.ads.BaseOfferVM;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -14,12 +16,16 @@ public class LawOfferVM extends BaseOfferVM {
 
     private Location location;
 
+    @NotEmpty
     private List<LawOffer.HelpMode> helpMode;
 
+    @NotEmpty
     private List<LawOffer.HelpKind> helpKind;
 
+    @NotEmpty
     private List<Language> language;
 
+    @NotNull
     public final LawOffer.Type type = LawOffer.Type.LAW;
 
     public static LawOfferVM from(LawOffer offer, Language viewLang) {
