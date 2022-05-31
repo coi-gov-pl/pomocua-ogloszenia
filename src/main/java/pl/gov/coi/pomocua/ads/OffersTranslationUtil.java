@@ -46,48 +46,60 @@ public class OffersTranslationUtil {
             String sourceDescription = offer.description;
             TranslatorResponse titleTranslatorResponse = translatorResponseList.get(0);
             TranslatorResponse descriptionTranslatorResponse = translatorResponseList.get(1);
-            Language detectedLanguage = descriptionTranslatorResponse.getDetectedLanguage();
-            offer.detectedLanguage = detectedLanguage;
-            switch (detectedLanguage) {
+            Language detectedLanguageTitle = titleTranslatorResponse.getDetectedLanguage();
+            Language detectedLanguageDescription = descriptionTranslatorResponse.getDetectedLanguage();
+            offer.detectedLanguage = detectedLanguageDescription;
+            switch (detectedLanguageTitle) {
                 case UA -> {
                     offer.titleUa = sourceTitle;
-                    offer.descriptionUa = sourceDescription;
                     offer.title = titleTranslatorResponse.getTranslations().get(Language.PL);
-                    offer.description = descriptionTranslatorResponse.getTranslations().get(Language.PL);
                     offer.titleEn = titleTranslatorResponse.getTranslations().get(Language.EN);
-                    offer.descriptionEn = descriptionTranslatorResponse.getTranslations().get(Language.EN);
                     offer.titleRu = titleTranslatorResponse.getTranslations().get(Language.RU);
-                    offer.descriptionRu = descriptionTranslatorResponse.getTranslations().get(Language.RU);
                 }
                 case PL -> {
                     offer.titleUa = titleTranslatorResponse.getTranslations().get(Language.UA);
-                    offer.descriptionUa = descriptionTranslatorResponse.getTranslations().get(Language.UA);
                     offer.titleEn = titleTranslatorResponse.getTranslations().get(Language.EN);
-                    offer.descriptionEn = descriptionTranslatorResponse.getTranslations().get(Language.EN);
                     offer.titleRu = titleTranslatorResponse.getTranslations().get(Language.RU);
-                    offer.descriptionRu = descriptionTranslatorResponse.getTranslations().get(Language.RU);
                 }
                 case EN -> {
                     offer.titleUa = titleTranslatorResponse.getTranslations().get(Language.UA);
-                    offer.descriptionUa = descriptionTranslatorResponse.getTranslations().get(Language.UA);
                     offer.title = titleTranslatorResponse.getTranslations().get(Language.PL);
-                    offer.description = descriptionTranslatorResponse.getTranslations().get(Language.PL);
                     offer.titleEn = sourceTitle;
-                    offer.descriptionEn = sourceDescription;
                     offer.titleRu = titleTranslatorResponse.getTranslations().get(Language.RU);
-                    offer.descriptionRu = descriptionTranslatorResponse.getTranslations().get(Language.RU);
                 }
                 case RU -> {
                     offer.titleUa = titleTranslatorResponse.getTranslations().get(Language.UA);
-                    offer.descriptionUa = descriptionTranslatorResponse.getTranslations().get(Language.UA);
                     offer.title = titleTranslatorResponse.getTranslations().get(Language.PL);
-                    offer.description = descriptionTranslatorResponse.getTranslations().get(Language.PL);
                     offer.titleEn = titleTranslatorResponse.getTranslations().get(Language.EN);
-                    offer.descriptionEn = descriptionTranslatorResponse.getTranslations().get(Language.EN);
                     offer.titleRu = sourceTitle;
+                }
+            }
+            switch (detectedLanguageDescription) {
+                case UA -> {
+                    offer.descriptionUa = sourceDescription;
+                    offer.description = descriptionTranslatorResponse.getTranslations().get(Language.PL);
+                    offer.descriptionEn = descriptionTranslatorResponse.getTranslations().get(Language.EN);
+                    offer.descriptionRu = descriptionTranslatorResponse.getTranslations().get(Language.RU);
+                }
+                case PL -> {
+                    offer.descriptionUa = descriptionTranslatorResponse.getTranslations().get(Language.UA);
+                    offer.descriptionEn = descriptionTranslatorResponse.getTranslations().get(Language.EN);
+                    offer.descriptionRu = descriptionTranslatorResponse.getTranslations().get(Language.RU);
+                }
+                case EN -> {
+                    offer.descriptionUa = descriptionTranslatorResponse.getTranslations().get(Language.UA);
+                    offer.description = descriptionTranslatorResponse.getTranslations().get(Language.PL);
+                    offer.descriptionEn = sourceDescription;
+                    offer.descriptionRu = descriptionTranslatorResponse.getTranslations().get(Language.RU);
+                }
+                case RU -> {
+                    offer.descriptionUa = descriptionTranslatorResponse.getTranslations().get(Language.UA);
+                    offer.description = descriptionTranslatorResponse.getTranslations().get(Language.PL);
+                    offer.descriptionEn = descriptionTranslatorResponse.getTranslations().get(Language.EN);
                     offer.descriptionRu = sourceDescription;
                 }
             }
+            offer.translationErrorCounter = 0;
         } else {
             offer.translationErrorCounter++;
         }

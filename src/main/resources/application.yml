@@ -28,6 +28,10 @@ spring:
       mail:
         transport.protocol: ${MAIL_TRANSPORT_PROTOCOL:smtp}
         smtp.starttls.enable: ${MAIL_STARTTLS_ENABLE:true}
+  jpa:
+    properties:
+      hibernate:
+        metadata_builder_contributor: pl.gov.coi.pomocua.ads.SqlFunctionsMetadataBuilderContributor
 
 app:
   keycloak:

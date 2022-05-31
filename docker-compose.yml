@@ -15,7 +15,8 @@ services:
       - POSTGRES_USER
       - POSTGRES_HOST_AUTH_METHOD
     container_name: ads-postgres
-    image: postgres:13.5-alpine
+    build:
+      ./docker/postgres
     ports:
     - mode: ingress
       target: 5432
