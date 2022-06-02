@@ -67,13 +67,15 @@ public class TranslatorService {
         List<TranslatorResponse> responseList = new LinkedList<>();
         for (JsonElement e : jsonArray) {
             JsonObject jsonDetectedLanguage = e.getAsJsonObject().get("detectedLanguage").getAsJsonObject();
-            String detectedLanguage = jsonDetectedLanguage.get("language").getAsString();
-            EnumMap<Language, String> translationMap =
-                    mapTranslationsFromJsonArray(e.getAsJsonObject().get("translations").getAsJsonArray(),
-                            detectedLanguage);
-            responseList.add(new TranslatorResponse(
-                    Language.fromIsoCode(detectedLanguage),
-                    translationMap));
+            String detectedLanguageString = jsonDetectedLanguage.get("language").getAsString().toLowerCase();
+            if (isLanguageSupported(detectedLanguageString)) {
+                EnumMap<Language, String> translationMap =
+                        mapTranslationsFromJsonArray(e.getAsJsonObject().get("translations").getAsJsonArray(),
+                                detectedLanguageString);
+                responseList.add(new TranslatorResponse(
+                        Language.fromIsoCode(detectedLanguageString),
+                        translationMap));
+            }
         }
         return responseList;
     }
@@ -81,13 +83,17 @@ public class TranslatorService {
     private EnumMap<Language, String> mapTranslationsFromJsonArray(JsonArray jsonArray, String detectedLanguage) {
         EnumMap<Language, String> translationMap = new EnumMap<>(Language.class);
         for (JsonElement t : jsonArray) {
-            String translationLanguage = t.getAsJsonObject().get("to").getAsString();
-            if (!translationLanguage.equals(detectedLanguage)) {
+            String translationLanguageString = t.getAsJsonObject().get("to").getAsString().toLowerCase();
+            if (isLanguageSupported(translationLanguageString) && !translationLanguageString.equals(detectedLanguage)) {
                 String translation = t.getAsJsonObject().get("text").getAsString();
-                translationMap.put(Language.fromIsoCode(translationLanguage), translation);
+                translationMap.put(Language.fromIsoCode(translationLanguageString), translation);
             }
         }
         return translationMap;
+    }
+
+    private boolean isLanguageSupported(String codeInLowerCase) {
+        return ",ua,pl,en,ru,uk,".contains(codeInLowerCase);
     }
 
     @Data
