@@ -61,22 +61,27 @@ public abstract class BaseOfferVM {
         offerVM.id = offer.id;
         offerVM.userId = offer.userId;
         offerVM.userFirstName = offer.userFirstName;
-        switch (viewLang) {
-            case UA -> {
-                offerVM.title = offer.titleUa;
-                offerVM.description = offer.descriptionUa;
-            }
-            case EN -> {
-                offerVM.title = offer.titleEn;
-                offerVM.description = offer.descriptionEn;
-            }
-            case RU -> {
-                offerVM.title = offer.titleRu;
-                offerVM.description = offer.descriptionRu;
-            }
-            default -> {
-                offerVM.title = offer.title;
-                offerVM.description = offer.description;
+        if (offer.detectedLanguage == null) {
+            offerVM.title = offer.title;
+            offerVM.description = offer.description;
+        } else {
+            switch (viewLang) {
+                case UA -> {
+                    offerVM.title = offer.titleUa;
+                    offerVM.description = offer.descriptionUa;
+                }
+                case EN -> {
+                    offerVM.title = offer.titleEn;
+                    offerVM.description = offer.descriptionEn;
+                }
+                case RU -> {
+                    offerVM.title = offer.titleRu;
+                    offerVM.description = offer.descriptionRu;
+                }
+                default -> {
+                    offerVM.title = offer.title;
+                    offerVM.description = offer.description;
+                }
             }
         }
         offerVM.phoneNumber = offer.phoneNumber;
