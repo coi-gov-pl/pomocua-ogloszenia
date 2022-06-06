@@ -364,7 +364,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer, TransportOf
         class Validation {
             @ParameterizedTest
             @NullAndEmptySource
-            @ValueSource(strings = {"<", ">", "(", ")", "%", "@", "\"", "'"})
+            @ValueSource(strings = {"<", ">", "(", ")", "%", "@", "\""})
             void shouldRejectMissingOrInvalidTitle(String title) {
                 TransportOfferVM offer = postSampleOffer();
                 var updateJson = TransportTestDataGenerator.sampleUpdateJson();
@@ -392,7 +392,7 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer, TransportOf
 
             @ParameterizedTest
             @NullAndEmptySource
-            @ValueSource(strings = {"<", ">", "%", "\"", "'"})
+            @ValueSource(strings = {"<", ">", "%", "\""})
             void shouldRejectMissingOrInvalidDescription(String description) {
                 TransportOfferVM offer = postSampleOffer();
                 var updateJson = TransportTestDataGenerator.sampleUpdateJson();
@@ -549,7 +549,9 @@ class TransportResourceTest extends BaseResourceTest<TransportOffer, TransportOf
                 new Location(null, "city"),
                 new Location("   ", "city"),
                 new Location("region", null),
-                new Location("region", "   ")
+                new Location("region", "   "),
+                new Location("region", "Warblewo<>\"{}$#"),
+                new Location("<>\"{}$#woj. pomorskie, pow. słupski, gm. Słupsk", "city")
         );
     }
 

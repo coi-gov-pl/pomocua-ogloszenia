@@ -263,7 +263,7 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer, Ac
         class Validation {
             @ParameterizedTest
             @NullAndEmptySource
-            @ValueSource(strings = {"<", ">", "(", ")", "%", "@", "\"", "'"})
+            @ValueSource(strings = {"<", ">", "(", ")", "%", "@", "\""})
             void shouldRejectMissingOrInvalidTitle(String title) {
                 AccommodationOfferVM offer = postSampleOffer();
                 var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
@@ -291,7 +291,7 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer, Ac
 
             @ParameterizedTest
             @NullAndEmptySource
-            @ValueSource(strings = {"<", ">", "%", "\"", "'"})
+            @ValueSource(strings = {"<", ">", "%", "\""})
             void shouldRejectMissingOrInvalidDescription(String description) {
                 AccommodationOfferVM offer = postSampleOffer();
                 var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
@@ -413,6 +413,20 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer, Ac
                 assertThat(updatedOffer.phoneNumber).isEqualTo("123456789");
                 assertThat(updatedOffer.phoneCountryCode).isEqualTo("48");
             }
+
+            @ParameterizedTest
+            @MethodSource("pl.gov.coi.pomocua.ads.accomodations.AccommodationsResourceTest#validLocations")
+            void shouldAcceptValidLocations(Location location) {
+                AccommodationOfferVM offer = postSampleOffer();
+                var updateJson = AccommodationsTestDataGenerator.sampleUpdateJson();
+                updateJson.location = location;
+
+                ResponseEntity<Void> response = updateOffer(offer.getId(), updateJson);
+
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+                AccommodationOffer updatedOffer = getOfferFromRepository(offer.getId());
+                assertThat(updatedOffer.location).isEqualTo(location);
+            }
         }
     }
 
@@ -421,7 +435,18 @@ class AccommodationsResourceTest extends BaseResourceTest<AccommodationOffer, Ac
                 new Location(null, "city"),
                 new Location("   ", "city"),
                 new Location("region", null),
-                new Location("region", "   ")
+                new Location("region", "   "),
+                new Location("region", "Warblewo<>\"{}$#"),
+                new Location("<>\"{}$#woj. pomorskie, pow. słupski, gm. Słupsk", "city")
+        );
+    }
+
+    static Stream<Location> validLocations() {
+        return Stream.of(
+                new Location("woj. dolnośląskie, pow. kłodzki, gm. Stronie Śląskie", "Stronie Śląskie (miasto)"),
+                new Location("woj. dolnośląskie, pow. dzierżoniowski, gm. Niemcza", "Przerzeczyn-Zdrój"),
+                new Location("woj. zachodniopomorskie, pow. policki, gm. Dobra (Szczecińska)", "Wołczkowo"),
+                new Location("woj. dolnośląskie, pow. kłodzki, gm. Lądek-Zdrój", "Konradów")
         );
     }
 }

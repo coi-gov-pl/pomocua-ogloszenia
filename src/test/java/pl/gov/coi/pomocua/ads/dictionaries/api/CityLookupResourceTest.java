@@ -44,7 +44,7 @@ class CityLookupResourceTest {
     @Test
     void shouldReturnListOfMatchingCities() {
         // given:
-        givenFollowingCitiesExists("mazowieckie/war1", "mazowieckie/war2");
+        givenFollowingCitiesExists("mazowieckie/warszawa", "mazowieckie/wartowice");
 
         // when:
         ResponseEntity<CityLookupResponse> response = restTemplate.getForEntity(URL + "/?query=War", CityLookupResponse.class);
@@ -54,8 +54,8 @@ class CityLookupResourceTest {
         assertThat(response.getBody().cities())
                 .extracting("city", "region")
                 .contains(
-                        tuple("war1", "mazowieckie"),
-                        tuple("war2", "mazowieckie")
+                        tuple("warszawa", "mazowieckie"),
+                        tuple("wartowice", "mazowieckie")
                 );
     }
 
