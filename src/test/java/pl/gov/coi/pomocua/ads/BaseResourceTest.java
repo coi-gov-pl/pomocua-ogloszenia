@@ -120,7 +120,7 @@ public abstract class BaseResourceTest<T extends BaseOffer, V extends BaseOfferV
             }
 
             @ParameterizedTest
-            @ValueSource(strings = {"<", ">", "(", ")", "%", "@", "\"", "'"})
+            @ValueSource(strings = {"<", ">", "(", ")", "%", "@", "\""})
             void shouldRejectIncorrectTitle(String notAllowedChar) {
                 V offer = sampleOfferRequest();
                 offer.setTitle("title" + notAllowedChar);
@@ -142,7 +142,7 @@ public abstract class BaseResourceTest<T extends BaseOffer, V extends BaseOfferV
             }
 
             @ParameterizedTest
-            @ValueSource(strings = {"<", ">", "%", "\"", "'"})
+            @ValueSource(strings = {"<", ">", "%", "\""})
             void shouldRejectIncorrectDescription(String notAllowedChar) {
                 V offer = sampleOfferRequest();
                 offer.setDescription("description" + notAllowedChar);

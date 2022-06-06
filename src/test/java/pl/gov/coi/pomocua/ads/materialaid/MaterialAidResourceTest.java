@@ -232,7 +232,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer, Materia
         class Validation {
             @ParameterizedTest
             @NullAndEmptySource
-            @ValueSource(strings = {"<", ">", "(", ")", "%", "@", "\"", "'"})
+            @ValueSource(strings = {"<", ">", "(", ")", "%", "@", "\""})
             void shouldRejectMissingOrInvalidTitle(String title) {
                 MaterialAidOfferVM offer = postSampleOffer();
                 var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
@@ -260,7 +260,7 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer, Materia
 
             @ParameterizedTest
             @NullAndEmptySource
-            @ValueSource(strings = {"<", ">", "%", "\"", "'"})
+            @ValueSource(strings = {"<", ">", "%", "\""})
             void shouldRejectMissingOrInvalidDescription(String description) {
                 MaterialAidOfferVM offer = postSampleOffer();
                 var updateJson = MaterialAidTestDataGenerator.sampleUpdateJson();
@@ -361,7 +361,9 @@ class MaterialAidResourceTest extends BaseResourceTest<MaterialAidOffer, Materia
                 new Location(null, "city"),
                 new Location("   ", "city"),
                 new Location("region", null),
-                new Location("region", "   ")
+                new Location("region", "   "),
+                new Location("region", "Warblewo<>\"{}$#"),
+                new Location("<>\"{}$#woj. pomorskie, pow. słupski, gm. Słupsk", "city")
         );
     }
 
