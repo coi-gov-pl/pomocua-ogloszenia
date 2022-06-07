@@ -85,7 +85,7 @@ public class TranslatorService {
         for (JsonElement t : jsonArray) {
             String translationLanguageString = t.getAsJsonObject().get("to").getAsString().toLowerCase();
             if (isLanguageSupported(translationLanguageString) && !translationLanguageString.equals(detectedLanguage)) {
-                String translation = t.getAsJsonObject().get("text").getAsString();
+                String translation = t.getAsJsonObject().get("text").getAsString().replace('"', '\'');
                 translationMap.put(Language.fromIsoCode(translationLanguageString), translation);
             }
         }
