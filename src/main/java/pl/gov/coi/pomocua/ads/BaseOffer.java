@@ -53,12 +53,12 @@ public abstract class BaseOffer <T extends BaseOfferVM> {
     public String userFirstName;
 
     @NotBlank
-    @Length(max = 80)
+    @Length(max = 255)
     @Pattern(regexp = TITLE_ALLOWED_TEXT)
     public String title;
 
     @NotBlank
-    @Length(max = 2000)
+    @Length(max = 4000)
     @Pattern(regexp = DESCRIPTION_ALLOWED_TEXT)
     public String description;
 
